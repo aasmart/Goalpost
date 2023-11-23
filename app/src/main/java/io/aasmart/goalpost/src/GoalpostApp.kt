@@ -85,10 +85,7 @@ fun GoalpostApp(appViewModel: GoalpostViewModel = viewModel()) {
         Column(modifier = Modifier.padding(it)) {
             Greeting()
             GoalsSnippetCard(
-                listOf(
-                    Goal("Do something", "lol", GoalTimePeriod("", 100)),
-                    Goal("Touch Grass", "There's a whole world outside", GoalTimePeriod("", 100))
-                ).toTypedArray()
+                emptyArray()
             )
         }
     }
@@ -104,6 +101,7 @@ fun GoalCard(goal: Goal) {
     Column(modifier = Modifier
         .background(Color.Black.copy(alpha = 0.075F), RoundedCornerShape(6.dp))
         .fillMaxWidth()
+        .padding(2.dp)
     ) {
         Text(
             text = goal.title,
@@ -137,6 +135,27 @@ fun GoalsSnippetCard(
                 .fillMaxWidth(.95f),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
+            if(selectedGoals.isEmpty()) {
+                Text("It looks like you haven't set any goals. Consider " +
+                        "pressing \"${stringResource(id = R.string.set_goals)} to begin " +
+                        "setting goals.")
+
+                TextButton(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = ButtonDefaults.textButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    ),
+                    shape = MaterialTheme.shapes.small,
+                    onClick = { /*TODO*/ }
+                ) {
+                    Text(text = stringResource(R.string.set_goals))
+                }
+
+                return@ElevatedCard
+            }
+
             Text(
                 text = stringResource(id = R.string.current_goal_snippet),
                 color = MaterialTheme.colorScheme.onBackground,
