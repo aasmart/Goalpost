@@ -1,7 +1,7 @@
 package io.aasmart.goalpost.src
 
 import android.Manifest
-import android.graphics.ColorSpace
+import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,11 +12,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,7 +32,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -38,12 +42,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import io.aasmart.goalpost.R
 import io.aasmart.goalpost.src.goals.models.Goal
-import io.aasmart.goalpost.src.goals.models.GoalTimePeriod
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,21 +79,65 @@ private fun BottomBar() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GoalpostApp(appViewModel: GoalpostViewModel = viewModel()) {
+fun GoalpostApp(
+    navController: NavHostController,
+    appViewModel: GoalpostViewModel = viewModel()
+) {
     CheckPermissions()
 
     val context = LocalContext.current
+    val activity = LocalContext.current as Activity
 
+    NavHost(navController = navController, startDestination = "home") {
+        composable("home") {
+            Scaffold(
+                topBar = { /*TopBar()*/ },
+                bottomBar = { BottomBar() }
+            ) {
+                Column(modifier = Modifier.padding(it)) {
+                    Greeting()
+                    GoalsSnippetCard(
+                        emptyArray(),
+                        2
+                    ) { navController.navigate("goals") }
+                }
+            }
+        }
+        composable("goals") {
+            GoalsManager(goals = emptyList())
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun GoalsManager(goals: List<Goal>) {
     Scaffold(
-        topBar = { /*TopBar()*/ },
-        bottomBar = { BottomBar() }
+        bottomBar = { GoalsManagerBottomBar() },
+        floatingActionButton = { GoalsManagerFAB() },
+        floatingActionButtonPosition = FabPosition.Center
     ) {
         Column(modifier = Modifier.padding(it)) {
-            Greeting()
-            GoalsSnippetCard(
-                emptyArray()
-            )
+
         }
+    }
+}
+
+@Composable
+fun GoalsManagerFAB() {
+    FloatingActionButton(
+        onClick = { /*TODO*/ }
+    ) {
+        Icon(Icons.Filled.Add, "Create Goal")
+    }
+}
+
+@Composable
+fun GoalsManagerBottomBar() {
+    BottomAppBar(
+        containerColor = MaterialTheme.colorScheme.primary
+    ) {
+
     }
 }
 
@@ -118,7 +168,8 @@ fun GoalCard(goal: Goal) {
 @Composable
 fun GoalsSnippetCard(
     goals: Array<Goal> = emptyArray(),
-    displayNumGoals: Int = 2                     
+    displayNumGoals: Int = 2,
+    interactNavigate: () -> Unit
 ) {
     val selectedGoals = goals
         .asSequence()
@@ -148,7 +199,7 @@ fun GoalsSnippetCard(
                         contentColor = MaterialTheme.colorScheme.onPrimary
                     ),
                     shape = MaterialTheme.shapes.small,
-                    onClick = { /*TODO*/ }
+                    onClick = { interactNavigate() }
                 ) {
                     Text(text = stringResource(R.string.set_goals))
                 }
@@ -179,7 +230,7 @@ fun GoalsSnippetCard(
                             contentColor = MaterialTheme.colorScheme.onPrimary
                         ),
                         shape = MaterialTheme.shapes.small,
-                        onClick = { /*TODO*/ }
+                        onClick = { interactNavigate() }
                     ) {
                         Text(text = stringResource(R.string.view_goals))
                     }
@@ -215,5 +266,5 @@ fun CheckPermissions() {
 @Composable
 @Preview
 fun GoalsSnippetCardPreview() {
-    GoalsSnippetCard()
+    GoalsSnippetCard(interactNavigate = {})
 }

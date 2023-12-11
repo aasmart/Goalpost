@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Goalpost</string>
     <string name="channel_name">Goalpost</string>
-    <string name="view_goals">View All Goals</string>
+    <string name="view_goals">Manage Goals</string>
     <string name="current_goal_snippet">Here are some of your goals,</string>
     <string name="salutation">Hello</string>
     <string name="set_goals">Set Goals</string>

@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import io.aasmart.goalpost.src.GoalpostApp
 import io.aasmart.goalpost.src.goals.notifications.createNotificationChannel
 import io.aasmart.goalpost.ui.theme.GoalpostTheme
@@ -36,13 +37,15 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
+            val navController = rememberNavController()
+
             GoalpostTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    GoalpostApp()
+                    GoalpostApp(navController)
                 }
             }
         }
