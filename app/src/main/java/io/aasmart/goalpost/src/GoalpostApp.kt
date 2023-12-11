@@ -7,21 +7,30 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -49,6 +59,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import io.aasmart.goalpost.R
+import io.aasmart.goalpost.src.goals.Screen
 import io.aasmart.goalpost.src.goals.models.Goal
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,13 +80,45 @@ private fun TopBar() {
 }
 
 @Composable
-private fun BottomBar() {
+private fun BottomBar(
+    homeHandle: () -> Unit,
+    goalManagerHandle: () -> Unit,
+    settingsHandle: () -> Unit
+) {
     BottomAppBar(
         containerColor = MaterialTheme.colorScheme.primary
     ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(
+                onClick = homeHandle
+            ) {
+                Icon(Icons.Filled.Home, "Home", modifier = Modifier.fillMaxSize())
+            }
 
+            FilledIconButton(
+                onClick = goalManagerHandle,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary.apply { Color(this.red, this.green, this.blue, 0.5f) }
+                ),
+                modifier = Modifier
+                    .shadow(4.dp, shape = CircleShape)
+            ) {
+                Icon(Icons.Filled.Add, "Settings", modifier = Modifier.fillMaxSize())
+            }
+
+            IconButton(
+                onClick = settingsHandle
+            ) {
+                Icon(Icons.Filled.Settings, "Settings", modifier = Modifier.fillMaxSize())
+            }
+        }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -88,56 +131,85 @@ fun GoalpostApp(
     val context = LocalContext.current
     val activity = LocalContext.current as Activity
 
-    NavHost(navController = navController, startDestination = "home") {
+    val homeHandle = { navController.navigate(Screen.Home.route) }
+    val settingsHandle = { navController.navigate(Screen.Settings.route) }
+    val goalManagerHandle = { navController.navigate(Screen.GoalManager.route )}
+
+    NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable("home") {
             Scaffold(
                 topBar = { /*TopBar()*/ },
-                bottomBar = { BottomBar() }
+                bottomBar = {
+                    BottomBar(
+                        homeHandle = homeHandle,
+                        settingsHandle = settingsHandle,
+                        goalManagerHandle = goalManagerHandle
+                    )
+                }
             ) {
                 Column(modifier = Modifier.padding(it)) {
                     Greeting()
                     GoalsSnippetCard(
                         emptyArray(),
                         2
-                    ) { navController.navigate("goals") }
+                    ) { navController.navigate(Screen.GoalManager.route) }
                 }
             }
         }
-        composable("goals") {
-            GoalsManager(goals = emptyList())
+        composable(Screen.GoalManager.route) {
+            GoalsManager(
+                homeHandle = homeHandle,
+                settingsHandle = settingsHandle,
+                goalManagerHandle = goalManagerHandle,
+                goals = emptyList()
+            )
+        }
+        composable(Screen.Settings.route) {
+            Settings(homeHandle, goalManagerHandle, settingsHandle)
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GoalsManager(goals: List<Goal>) {
+fun Settings(
+    homeHandle: () -> Unit,
+    goalManagerHandle: () -> Unit,
+    settingsHandle: () -> Unit
+) {
     Scaffold(
-        bottomBar = { GoalsManagerBottomBar() },
-        floatingActionButton = { GoalsManagerFAB() },
-        floatingActionButtonPosition = FabPosition.Center
+        bottomBar = {
+            BottomBar(
+                homeHandle = homeHandle,
+                goalManagerHandle = goalManagerHandle,
+                settingsHandle = settingsHandle
+            )
+        }
+    ) {
+        it
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun GoalsManager(
+    homeHandle: () -> Unit,
+    goalManagerHandle: () -> Unit,
+    settingsHandle: () -> Unit,
+    goals: List<Goal>
+) {
+    Scaffold(
+        bottomBar = {
+            BottomBar(
+                homeHandle = homeHandle,
+                settingsHandle = settingsHandle,
+                goalManagerHandle = goalManagerHandle
+            )
+        }
     ) {
         Column(modifier = Modifier.padding(it)) {
 
         }
-    }
-}
-
-@Composable
-fun GoalsManagerFAB() {
-    FloatingActionButton(
-        onClick = { /*TODO*/ }
-    ) {
-        Icon(Icons.Filled.Add, "Create Goal")
-    }
-}
-
-@Composable
-fun GoalsManagerBottomBar() {
-    BottomAppBar(
-        containerColor = MaterialTheme.colorScheme.primary
-    ) {
-
     }
 }
 
