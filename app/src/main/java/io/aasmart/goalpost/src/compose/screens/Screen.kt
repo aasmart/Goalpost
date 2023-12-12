@@ -1,4 +1,4 @@
-package io.aasmart.goalpost.src.goals
+package io.aasmart.goalpost.src.compose.screens
 
 sealed class Screen(
     val route: String

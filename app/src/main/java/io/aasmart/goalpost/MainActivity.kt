@@ -1,6 +1,5 @@
 package io.aasmart.goalpost
 
-import android.app.Notification
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
@@ -9,12 +8,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
-import io.aasmart.goalpost.src.GoalpostApp
+import io.aasmart.goalpost.src.compose.GoalpostApp
 import io.aasmart.goalpost.src.goals.notifications.createNotificationChannel
 import io.aasmart.goalpost.ui.theme.GoalpostTheme
 
