@@ -6,4 +6,6 @@ sealed class Screen(
     object Home : Screen("home")
     object GoalManager : Screen("goalManager")
     object Settings : Screen("settings")
+    object GoalCalendar : Screen("goalCalendar")
+    object CreateGoal : Screen("createGoal")
 }

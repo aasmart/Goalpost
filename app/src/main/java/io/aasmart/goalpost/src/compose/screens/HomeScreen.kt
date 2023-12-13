@@ -15,7 +15,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -29,7 +28,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.aasmart.goalpost.R
-import io.aasmart.goalpost.src.compose.BottomNavBar
 import io.aasmart.goalpost.src.goals.models.Goal
 
 @Composable
@@ -133,14 +131,14 @@ fun GoalsSnippetCard(
 @Composable
 fun HomeScreen(
     scaffoldPadding: PaddingValues,
-    goalManagerHandle: () -> Unit
+    createGoalHandle: () -> Unit
 ) {
     Column(modifier = Modifier.padding(scaffoldPadding).fillMaxSize()) {
         Greeting()
         GoalsSnippetCard(
             emptyArray(),
             2,
-            goalManagerHandle
+            createGoalHandle
         )
     }
 }
