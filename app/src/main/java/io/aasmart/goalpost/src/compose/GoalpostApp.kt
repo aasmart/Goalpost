@@ -28,6 +28,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -44,12 +45,12 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import io.aasmart.goalpost.R
-import io.aasmart.goalpost.src.GoalpostViewModel
 import io.aasmart.goalpost.src.compose.screens.CreateGoalScreen
 import io.aasmart.goalpost.src.compose.screens.GoalsManager
 import io.aasmart.goalpost.src.compose.screens.HomeScreen
 import io.aasmart.goalpost.src.compose.screens.Screen
 import io.aasmart.goalpost.src.compose.screens.Settings
+import io.aasmart.goalpost.src.goals.models.Goal
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -159,6 +160,7 @@ fun GoalpostApp(
     val createGoalHandle = { navController.navigate(Screen.CreateGoal.route )}
     val goalCalendarHandle = { navController.navigate(Screen.GoalCalendar.route )}
 
+    val goals = appViewModel.getGoals(context).collectAsState(initial = emptyList())
 
     Scaffold(
         bottomBar = {
@@ -175,18 +177,23 @@ fun GoalpostApp(
             composable(Screen.Home.route) {
                 HomeScreen(
                     padding,
-                    createGoalHandle = createGoalHandle
+                    createGoalHandle = createGoalHandle,
+                    goals = goals.value.toTypedArray()
                 )
             }
             composable(Screen.GoalManager.route) {
                 GoalsManager(
                     padding,
                     createGoalHandle = createGoalHandle,
-                    goals = emptyList()
+                    goals = goals.value
                 )
             }
             composable(Screen.CreateGoal.route) {
-                CreateGoalScreen()
+                CreateGoalScreen(
+                    padding,
+                    { goal: Goal -> appViewModel.addGoal(context = context, goal) },
+                    goalManagerHandle = goalManagerHandle
+                )
             }
             composable(Screen.GoalCalendar.route) {
 

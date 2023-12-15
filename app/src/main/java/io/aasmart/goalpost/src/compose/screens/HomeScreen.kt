@@ -56,7 +56,7 @@ fun GoalCard(goal: Goal) {
 
 @Composable
 fun GoalsSnippetCard(
-    goals: Array<Goal> = emptyArray(),
+    goals: Array<Goal>,
     displayNumGoals: Int = 2,
     interactNavigate: () -> Unit
 ) {
@@ -127,24 +127,18 @@ fun GoalsSnippetCard(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     scaffoldPadding: PaddingValues,
-    createGoalHandle: () -> Unit
+    createGoalHandle: () -> Unit,
+    goals: Array<Goal>
 ) {
     Column(modifier = Modifier.padding(scaffoldPadding).fillMaxSize()) {
         Greeting()
         GoalsSnippetCard(
-            emptyArray(),
+            goals,
             2,
             createGoalHandle
         )
     }
-}
-
-@Composable
-@Preview
-fun GoalsSnippetCardPreview() {
-    GoalsSnippetCard(interactNavigate = {})
 }

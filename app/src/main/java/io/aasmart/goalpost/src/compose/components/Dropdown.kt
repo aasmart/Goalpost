@@ -1,6 +1,7 @@
 package io.aasmart.goalpost.src.compose.components
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,56 +33,59 @@ fun Dropdown(
     selectedIndex: Int,
     items: List<String>,
     onItemClicked: (index: Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
 
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { onExpandedChange(!expanded) } ,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        TextField(
-            value = items[selectedIndex],
-            onValueChange = {},
-            label = { Text(text = label) },
-            readOnly = true,
-            singleLine = true,
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier
-                .menuAnchor()
-                .fillMaxWidth()
-        )
-
-        // Use dropdown menu instead of exposed since it's broken
-        // https://stackoverflow.com/questions/70642330/cannot-make-exposeddropdownmenu-same-width-as-outlinedtextfield
-        DropdownMenu(
+    Box(modifier = modifier) {
+        ExposedDropdownMenuBox(
             expanded = expanded,
-            onDismissRequest = { onExpandedChange(false) },
-            modifier = Modifier
-                .width(IntrinsicSize.Min)
-                .exposedDropdownSize()
+            onExpandedChange = { onExpandedChange(!expanded) } ,
+            modifier = Modifier.fillMaxSize()
         ) {
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .height(menuHeight)
-                .verticalScroll(rememberScrollState())
+            TextField(
+                value = if (items.isNotEmpty()) items[selectedIndex] else "",
+                onValueChange = {},
+                label = { Text(text = label) },
+                readOnly = true,
+                singleLine = true,
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
+            )
+
+            // Use dropdown menu instead of exposed since it's broken
+            // https://stackoverflow.com/questions/70642330/cannot-make-exposeddropdownmenu-same-width-as-outlinedtextfield
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { onExpandedChange(false) },
+                modifier = Modifier
+                    .width(IntrinsicSize.Min)
+                    .exposedDropdownSize()
             ) {
-                items.forEachIndexed {index, item ->
-                    DropdownMenuItem(
-                        text = { Text(item) },
-                        onClick = {
-                            onExpandedChange(false)
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(menuHeight)
+                    .verticalScroll(rememberScrollState())
+                ) {
+                    items.forEachIndexed {index, item ->
+                        DropdownMenuItem(
+                            text = { Text(item) },
+                            onClick = {
+                                onExpandedChange(false)
 
-                            Toast.makeText(
-                                context,
-                                item,
-                                Toast.LENGTH_SHORT
-                            ).show()
+                                Toast.makeText(
+                                    context,
+                                    item,
+                                    Toast.LENGTH_SHORT
+                                ).show()
 
-                            onItemClicked(index)
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                                onItemClicked(index)
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
             }
         }
