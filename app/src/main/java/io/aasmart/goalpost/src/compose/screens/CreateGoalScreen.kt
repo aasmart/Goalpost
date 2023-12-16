@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import io.aasmart.goalpost.src.compose.components.Dropdown
 import io.aasmart.goalpost.src.goals.models.Goal
 import io.aasmart.goalpost.src.goals.models.GoalTimePeriod
+import io.aasmart.goalpost.src.utils.InputUtils
 import kotlinx.coroutines.launch
 
 @Composable
@@ -43,7 +44,8 @@ private fun CreateGameButton(
     goalName: String,
     goalDescription: String,
     addGoal : suspend (goal: Goal) -> Unit,
-    goalManagerHandle: () -> Unit
+    goalManagerHandle: () -> Unit,
+    inputsValid: Boolean
 ) {
     val scope = rememberCoroutineScope()
 
@@ -61,7 +63,8 @@ private fun CreateGameButton(
             goalManagerHandle()
         },
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp)
+        shape = RoundedCornerShape(4.dp),
+        enabled = inputsValid
     ) {
         Text(text = "Create Goal")
     }
@@ -74,6 +77,11 @@ fun CreateGoalScreen(
     addGoal: suspend (goal: Goal) -> Unit,
     goalManagerHandle: () -> Unit
 ) {
+    val goalNameMinLength = 1
+    val goalNameMaxLength = 32
+
+    val descriptionMinLength = 1
+
     var goalName by remember { mutableStateOf("") }
     var goalDescription by remember { mutableStateOf("") }
     var expanded by remember {
@@ -83,6 +91,9 @@ fun CreateGoalScreen(
         mutableIntStateOf(0)
     }
 
+    val isNameValid = InputUtils.isValidLength(goalName.trim(), goalNameMinLength, goalNameMaxLength)
+    val isDescriptionValid = InputUtils.isValidLength(goalDescription.trim(), descriptionMinLength)
+
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = Modifier
@@ -91,6 +102,7 @@ fun CreateGoalScreen(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
+        // Name Input
         OutlinedTextField(
             value = goalName,
             onValueChange = { goalName = it },
@@ -98,14 +110,29 @@ fun CreateGoalScreen(
                 Text(text = "Goal Name")
             },
             modifier = Modifier.fillMaxWidth(),
-            maxLines = 1
+            maxLines = 1,
+            isError = !isNameValid,
+            supportingText = {
+                if(!isNameValid)
+                    Text(text = "Name must be between $goalNameMinLength and $goalNameMaxLength characters")
+                else
+                    Text(text = "${goalName.trim().length}/${goalNameMaxLength} characters")
+            }
         )
 
+        // Description Input
         OutlinedTextField(
             value = goalDescription,
             onValueChange = { goalDescription = it },
             label = {
                 Text(text = "Goal Description")
+            },
+            isError = !isDescriptionValid,
+            supportingText = {
+                 if(!isDescriptionValid)
+                     Text(text = "Description must be at least $descriptionMinLength character(s) in length")
+                else
+                    Text(text = "${goalDescription.trim().length} character(s)")
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -155,7 +182,8 @@ fun CreateGoalScreen(
             goalName = goalName,
             goalDescription = goalDescription,
             addGoal = addGoal,
-            goalManagerHandle = goalManagerHandle
+            goalManagerHandle = goalManagerHandle,
+            inputsValid = isNameValid && isDescriptionValid
         )
     }
 }

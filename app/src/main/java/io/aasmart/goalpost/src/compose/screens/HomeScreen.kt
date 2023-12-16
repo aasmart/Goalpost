@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -24,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.aasmart.goalpost.R
@@ -58,7 +56,8 @@ fun GoalCard(goal: Goal) {
 fun GoalsSnippetCard(
     goals: Array<Goal>,
     displayNumGoals: Int = 2,
-    interactNavigate: () -> Unit
+    goalManagerHandle: () -> Unit,
+    createGoalHandle: () -> Unit
 ) {
     val selectedGoals = goals
         .asSequence()
@@ -86,7 +85,7 @@ fun GoalsSnippetCard(
                         contentColor = MaterialTheme.colorScheme.onPrimary
                     ),
                     shape = MaterialTheme.shapes.small,
-                    onClick = { interactNavigate() }
+                    onClick = { createGoalHandle() }
                 ) {
                     Text(text = stringResource(R.string.set_goals))
                 }
@@ -117,7 +116,7 @@ fun GoalsSnippetCard(
                             contentColor = MaterialTheme.colorScheme.onPrimary
                         ),
                         shape = MaterialTheme.shapes.small,
-                        onClick = { interactNavigate() }
+                        onClick = { goalManagerHandle() }
                     ) {
                         Text(text = stringResource(R.string.view_goals))
                     }
@@ -131,6 +130,7 @@ fun GoalsSnippetCard(
 fun HomeScreen(
     scaffoldPadding: PaddingValues,
     createGoalHandle: () -> Unit,
+    goalManagerHandle: () -> Unit,
     goals: Array<Goal>
 ) {
     Column(modifier = Modifier.padding(scaffoldPadding).fillMaxSize()) {
@@ -138,6 +138,7 @@ fun HomeScreen(
         GoalsSnippetCard(
             goals,
             2,
+            goalManagerHandle,
             createGoalHandle
         )
     }

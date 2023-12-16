@@ -177,6 +177,7 @@ fun GoalpostApp(
             composable(Screen.Home.route) {
                 HomeScreen(
                     padding,
+                    goalManagerHandle = goalManagerHandle,
                     createGoalHandle = createGoalHandle,
                     goals = goals.value.toTypedArray()
                 )
