@@ -32,7 +32,7 @@ fun GoalsManager(
             }
         }
     } else {
-        Column(modifier = Modifier.padding(scaffoldPadding)) {
+        Column(modifier = Modifier.padding(scaffoldPadding).fillMaxSize()) {
             Text("test")
         }
     }
