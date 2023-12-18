@@ -7,7 +7,11 @@ import java.util.UUID
 data class Goal(
     val title: String,
     val description: String,
-    val timePeriod: GoalTimePeriod
+    val timePeriod: GoalTimePeriod,
+    /**
+     * The time from epoch in milliseconds when the goal is scheduled to be completed
+     */
+    val completionDate: Long
 ) {
     val id = UUID.randomUUID().toString()
 }
