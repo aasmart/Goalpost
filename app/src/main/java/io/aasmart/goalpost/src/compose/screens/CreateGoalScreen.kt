@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -32,12 +33,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import io.aasmart.goalpost.src.compose.components.DatePickerField
 import io.aasmart.goalpost.src.compose.components.Dropdown
 import io.aasmart.goalpost.src.goals.models.Goal
 import io.aasmart.goalpost.src.goals.models.GoalTimePeriod
 import io.aasmart.goalpost.src.utils.InputUtils
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 @Composable
 private fun CreateGameButton(
@@ -70,6 +75,8 @@ private fun CreateGameButton(
     }
 }
 
+private val weekdays = setOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateGoalScreen(
@@ -77,6 +84,8 @@ fun CreateGoalScreen(
     addGoal: suspend (goal: Goal) -> Unit,
     goalManagerHandle: () -> Unit
 ) {
+    val context = LocalContext.current
+
     val goalNameMinLength = 1
     val goalNameMaxLength = 32
 
@@ -93,6 +102,8 @@ fun CreateGoalScreen(
 
     val isNameValid = InputUtils.isValidLength(goalName.trim(), goalNameMinLength, goalNameMaxLength)
     val isDescriptionValid = InputUtils.isValidLength(goalDescription.trim(), descriptionMinLength)
+
+    var timePeriodDialogVisible by remember { mutableStateOf(false) }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -160,7 +171,7 @@ fun CreateGoalScreen(
             )
 
             OutlinedIconButton(
-                onClick = {},
+                onClick = { timePeriodDialogVisible = true },
                 shape = RoundedCornerShape(4.dp),
                 colors = IconButtonDefaults.outlinedIconButtonColors(
                     contentColor = MaterialTheme.colorScheme.primary,
@@ -177,6 +188,21 @@ fun CreateGoalScreen(
                 )
             }
         }
+
+        // End time date picker
+
+        val now = Instant.now()
+        var datePickerExpanded by remember { mutableStateOf(false) }
+        val datePickerState = rememberDatePickerState()
+
+        DatePickerField(
+            currentTime = now,
+            datePickerState,
+            datePickerExpanded,
+            { datePickerExpanded = it },
+            { it >= now.truncatedTo(ChronoUnit.DAYS).toEpochMilli() }
+        )
+
 
         CreateGameButton(
             goalName = goalName,

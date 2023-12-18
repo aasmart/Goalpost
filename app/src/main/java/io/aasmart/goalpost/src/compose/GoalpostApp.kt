@@ -143,7 +143,6 @@ fun BottomNavBar(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GoalpostApp(
     navController: NavHostController,
