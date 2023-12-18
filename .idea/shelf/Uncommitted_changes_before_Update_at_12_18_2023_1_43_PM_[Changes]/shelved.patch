@@ -1,0 +1,162 @@
+Index: .idea/inspectionProfiles/Project_Default.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/inspectionProfiles/Project_Default.xml b/.idea/inspectionProfiles/Project_Default.xml
+new file mode 100644
+--- /dev/null	(date 1702305147380)
++++ b/.idea/inspectionProfiles/Project_Default.xml	(date 1702305147380)
+@@ -0,0 +1,41 @@
++<component name="InspectionProjectProfileManager">
++  <profile version="1.0">
++    <option name="myName" value="Project Default" />
++    <inspection_tool class="PreviewAnnotationInFunctionWithParameters" enabled="true" level="ERROR" enabled_by_default="true">
++      <option name="composableFile" value="true" />
++      <option name="previewFile" value="true" />
++    </inspection_tool>
++    <inspection_tool class="PreviewApiLevelMustBeValid" enabled="true" level="ERROR" enabled_by_default="true">
++      <option name="composableFile" value="true" />
++      <option name="previewFile" value="true" />
++    </inspection_tool>
++    <inspection_tool class="PreviewDimensionRespectsLimit" enabled="true" level="WARNING" enabled_by_default="true">
++      <option name="composableFile" value="true" />
++      <option name="previewFile" value="true" />
++    </inspection_tool>
++    <inspection_tool class="PreviewFontScaleMustBeGreaterThanZero" enabled="true" level="ERROR" enabled_by_default="true">
++      <option name="composableFile" value="true" />
++      <option name="previewFile" value="true" />
++    </inspection_tool>
++    <inspection_tool class="PreviewMultipleParameterProviders" enabled="true" level="ERROR" enabled_by_default="true">
++      <option name="composableFile" value="true" />
++      <option name="previewFile" value="true" />
++    </inspection_tool>
++    <inspection_tool class="PreviewMustBeTopLevelFunction" enabled="true" level="ERROR" enabled_by_default="true">
++      <option name="composableFile" value="true" />
++      <option name="previewFile" value="true" />
++    </inspection_tool>
++    <inspection_tool class="PreviewNeedsComposableAnnotation" enabled="true" level="ERROR" enabled_by_default="true">
++      <option name="composableFile" value="true" />
++      <option name="previewFile" value="true" />
++    </inspection_tool>
++    <inspection_tool class="PreviewNotSupportedInUnitTestFiles" enabled="true" level="ERROR" enabled_by_default="true">
++      <option name="composableFile" value="true" />
++      <option name="previewFile" value="true" />
++    </inspection_tool>
++    <inspection_tool class="PreviewPickerAnnotation" enabled="true" level="ERROR" enabled_by_default="true">
++      <option name="composableFile" value="true" />
++      <option name="previewFile" value="true" />
++    </inspection_tool>
++  </profile>
++</component>
+\ No newline at end of file
+Index: .idea/deploymentTargetDropDown.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/deploymentTargetDropDown.xml b/.idea/deploymentTargetDropDown.xml
+new file mode 100644
+--- /dev/null	(date 1702510075593)
++++ b/.idea/deploymentTargetDropDown.xml	(date 1702510075593)
+@@ -0,0 +1,34 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="deploymentTargetDropDown">
++    <value>
++      <entry key="app">
++        <State>
++          <targetSelectedWithDropDown>
++            <Target>
++              <type value="QUICK_BOOT_TARGET" />
++              <deviceKey>
++                <Key>
++                  <type value="VIRTUAL_DEVICE_PATH" />
++                  <value value="C:\Users\Alexander\.android\avd\Pixel_2_API_33.avd" />
++                </Key>
++              </deviceKey>
++            </Target>
++          </targetSelectedWithDropDown>
++          <timeTargetWasSelectedWithDropDown value="2023-12-13T23:27:52.546654200Z" />
++          <targetsSelectedWithDialog>
++            <Target>
++              <type value="QUICK_BOOT_TARGET" />
++              <deviceKey>
++                <Key>
++                  <type value="VIRTUAL_DEVICE_PATH" />
++                  <value value="C:\Users\Alexander\.android\avd\Pixel_3a_API_33_x86_64.avd" />
++                </Key>
++              </deviceKey>
++            </Target>
++          </targetsSelectedWithDialog>
++        </State>
++      </entry>
++    </value>
++  </component>
++</project>
+\ No newline at end of file
+Index: app/src/main/java/io/aasmart/goalpost/src/compose/components/GoalTimePeriodDialog.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/io/aasmart/goalpost/src/compose/components/GoalTimePeriodDialog.kt b/app/src/main/java/io/aasmart/goalpost/src/compose/components/GoalTimePeriodDialog.kt
+new file mode 100644
+--- /dev/null	(date 1702764106121)
++++ b/app/src/main/java/io/aasmart/goalpost/src/compose/components/GoalTimePeriodDialog.kt	(date 1702764106121)
+@@ -0,0 +1,54 @@
++package io.aasmart.goalpost.src.compose.components
++
++import androidx.compose.foundation.layout.Row
++import androidx.compose.foundation.layout.fillMaxSize
++import androidx.compose.foundation.layout.padding
++import androidx.compose.foundation.shape.RoundedCornerShape
++import androidx.compose.material3.Card
++import androidx.compose.material3.CardDefaults
++import androidx.compose.material3.MaterialTheme
++import androidx.compose.material3.Text
++import androidx.compose.runtime.Composable
++import androidx.compose.runtime.getValue
++import androidx.compose.runtime.mutableStateListOf
++import androidx.compose.runtime.mutableStateOf
++import androidx.compose.runtime.remember
++import androidx.compose.runtime.setValue
++import androidx.compose.ui.Alignment
++import androidx.compose.ui.Modifier
++import androidx.compose.ui.unit.dp
++import androidx.compose.ui.window.Dialog
++
++private val weekdays = setOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
++
++@Composable
++fun GoalTimePeriodDialog(
++    onDismissRequest: () -> Unit
++) {
++    Dialog(
++        onDismissRequest = onDismissRequest,
++    ) {
++        Card(
++            shape = RoundedCornerShape(4.dp),
++            elevation = CardDefaults.cardElevation(8.dp),
++            modifier = Modifier
++                .padding(8.dp)
++                .fillMaxSize()
++        ) {
++            Text(text = "Create Time Period", style = MaterialTheme.typography.headlineMedium)
++
++            var expanded by remember { mutableStateOf(false) }
++            val selectedIndices = remember { mutableStateListOf<Int>() }
++
++            MultiDropdown(
++                label = "",
++                expanded = expanded,
++                menuHeight = 120.dp,
++                onExpandedChange = { expanded = it },
++                itemNames = weekdays,
++                selectedIndices = selectedIndices.toSet(),
++                onItemClicked = { selectedIndices.add(it) }
++            )
++        }
++    }
++}
+\ No newline at end of file

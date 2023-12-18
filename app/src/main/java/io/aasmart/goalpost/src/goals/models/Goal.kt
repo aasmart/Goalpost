@@ -11,7 +11,8 @@ data class Goal(
     /**
      * The time from epoch in milliseconds when the goal is scheduled to be completed
      */
-    val completionDate: Long
+    val completionDate: Long,
+    val reflections: List<GoalReflection> = emptyList()
 ) {
     val id = UUID.randomUUID().toString()
 }
