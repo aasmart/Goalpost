@@ -48,6 +48,7 @@ import java.time.temporal.ChronoUnit
 private fun CreateGameButton(
     goalName: String,
     goalDescription: String,
+    goalCompletionDate: Long,
     addGoal : suspend (goal: Goal) -> Unit,
     goalManagerHandle: () -> Unit,
     inputsValid: Boolean
@@ -59,7 +60,8 @@ private fun CreateGameButton(
             val goal = Goal(
                 title = goalName,
                 description = goalDescription,
-                timePeriod = GoalTimePeriod("", 0)
+                timePeriod = GoalTimePeriod("", 0),
+                completionDate = goalCompletionDate
             )
 
             scope.launch {
@@ -207,6 +209,7 @@ fun CreateGoalScreen(
         CreateGameButton(
             goalName = goalName,
             goalDescription = goalDescription,
+            goalCompletionDate = datePickerState.selectedDateMillis ?: now.toEpochMilli(),
             addGoal = addGoal,
             goalManagerHandle = goalManagerHandle,
             inputsValid = isNameValid && isDescriptionValid
