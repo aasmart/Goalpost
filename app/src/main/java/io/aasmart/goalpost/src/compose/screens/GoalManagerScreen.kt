@@ -68,7 +68,7 @@ private fun GoalCard(
                 title = { Text("Goal Dates") },
                 tooltipState = dateTooltipState,
                 text = {
-                    val date = ZonedDateTime.ofInstant(Instant.ofEpochMilli(goal.completionDate), ZoneId.systemDefault())
+                    val date = ZonedDateTime.ofInstant(Instant.ofEpochMilli(goal.completionDate), ZoneId.of("UTC"))
                     val dateString =
                         "${date.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} " +
                         "${date.dayOfMonth}, ${date.year}"
