@@ -34,7 +34,7 @@ fun Greeting(name: String = "Person") {
 }
 
 @Composable
-fun GoalCard(goal: Goal) {
+private fun GoalCard(goal: Goal) {
     Column(modifier = Modifier
         .background(Color.Black.copy(alpha = 0.075F), RoundedCornerShape(6.dp))
         .fillMaxWidth()

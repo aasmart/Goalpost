@@ -185,7 +185,8 @@ fun GoalpostApp(
                 GoalsManager(
                     padding,
                     createGoalHandle = createGoalHandle,
-                    goals = goals.value
+                    goals = goals.value,
+                    calendarScreenNav = goalCalendarHandle
                 )
             }
             composable(Screen.CreateGoal.route) {
