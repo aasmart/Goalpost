@@ -46,6 +46,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import io.aasmart.goalpost.R
 import io.aasmart.goalpost.src.compose.screens.CreateGoalScreen
+import io.aasmart.goalpost.src.compose.screens.GoalCalendarScreen
 import io.aasmart.goalpost.src.compose.screens.GoalsManager
 import io.aasmart.goalpost.src.compose.screens.HomeScreen
 import io.aasmart.goalpost.src.compose.screens.Screen
@@ -197,7 +198,7 @@ fun GoalpostApp(
                 )
             }
             composable(Screen.GoalCalendar.route) {
-
+                GoalCalendarScreen(scaffoldPadding = padding)
             }
             composable(Screen.Settings.route) {
                 Settings(
