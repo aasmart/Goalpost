@@ -47,10 +47,12 @@ import com.google.accompanist.permissions.rememberPermissionState
 import io.aasmart.goalpost.R
 import io.aasmart.goalpost.src.compose.screens.CreateGoalScreen
 import io.aasmart.goalpost.src.compose.screens.GoalCalendarScreen
+import io.aasmart.goalpost.src.compose.screens.GoalDetailsScreen
 import io.aasmart.goalpost.src.compose.screens.GoalsManager
 import io.aasmart.goalpost.src.compose.screens.HomeScreen
 import io.aasmart.goalpost.src.compose.screens.Screen
 import io.aasmart.goalpost.src.compose.screens.Settings
+import io.aasmart.goalpost.src.compose.viewmodels.GoalpostViewModel
 import io.aasmart.goalpost.src.goals.models.Goal
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -182,12 +184,17 @@ fun GoalpostApp(
                     goals = goals.value.toTypedArray()
                 )
             }
-            composable(Screen.GoalManager.route) {
+            composable(Screen.GoalManager.route, Screen.GoalManager.args) {
                 GoalsManager(
                     padding,
                     createGoalHandle = createGoalHandle,
                     goals = goals.value,
-                    calendarScreenNav = goalCalendarHandle
+                    calendarScreenNav = goalCalendarHandle,
+                    manageGoalNav = {
+                        navController.navigate(
+                            Screen.GoalDetails.createRoute(it.id)
+                        )
+                    }
                 )
             }
             composable(Screen.CreateGoal.route) {
@@ -203,6 +210,14 @@ fun GoalpostApp(
             composable(Screen.Settings.route) {
                 Settings(
                     padding
+                )
+            }
+            composable(Screen.GoalDetails.route, Screen.GoalDetails.args) {
+                GoalDetailsScreen(
+                    scaffoldPadding = padding,
+                    goalId = it.arguments?.getString("goalId") ?: "",
+                    getGoals = { context -> appViewModel.getGoals(context) },
+                    goalManagerNav = goalManagerHandle
                 )
             }
         }

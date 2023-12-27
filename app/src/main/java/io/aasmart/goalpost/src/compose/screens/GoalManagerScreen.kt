@@ -1,5 +1,6 @@
 package io.aasmart.goalpost.src.compose.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import io.aasmart.goalpost.src.goals.models.Goal
 import java.time.Instant
 import java.time.ZoneId
@@ -45,7 +45,8 @@ import java.util.Locale
 private fun GoalCard(
     goal: Goal,
     cardHeight: Dp = 80.dp,
-    calendarScreenNav: () -> Unit
+    calendarScreenNav: () -> Unit,
+    manageGoalNav: (Goal) -> Unit,
 ) {
     Card(
         elevation = CardDefaults.elevatedCardElevation(4.dp),
@@ -53,6 +54,9 @@ private fun GoalCard(
         modifier = Modifier
             .fillMaxWidth()
             .height(cardHeight)
+            .clickable {
+                manageGoalNav(goal)
+            }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -93,7 +97,7 @@ private fun GoalCard(
             }
 
             IconButton(
-                onClick = { /*TODO*/ },
+                onClick = { manageGoalNav(goal) },
                 modifier = Modifier
                     .fillMaxHeight(.6f)
                     .aspectRatio(1f),
@@ -114,6 +118,7 @@ fun GoalsManager(
     scaffoldPadding: PaddingValues,
     createGoalHandle: () -> Unit,
     calendarScreenNav: () -> Unit,
+    manageGoalNav: (goal: Goal) -> Unit,
     goals: List<Goal>
 ) {
     if(goals.isEmpty()) {
@@ -138,7 +143,7 @@ fun GoalsManager(
                 .fillMaxSize()
         ) {
             itemsIndexed(goals) { index, goal ->
-                GoalCard(goal, calendarScreenNav = calendarScreenNav)
+                GoalCard(goal, calendarScreenNav = calendarScreenNav, manageGoalNav = manageGoalNav)
             }
         }
     }

@@ -1,4 +1,4 @@
-package io.aasmart.goalpost.src.compose
+package io.aasmart.goalpost.src.compose.viewmodels
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
