@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun Dropdown(
     label: String,
+    supportingText: @Composable () -> Unit = {},
     expanded: Boolean,
     menuHeight: Dp,
     onExpandedChange: (Boolean) -> Unit,
@@ -50,6 +51,7 @@ fun Dropdown(
                 readOnly = true,
                 singleLine = true,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                supportingText = supportingText,
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth()
