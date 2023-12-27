@@ -27,6 +27,7 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerField(
+    label: String,
     currentTime: Instant,
     datePickerState: DatePickerState,
     expanded: Boolean,
@@ -73,7 +74,7 @@ fun DatePickerField(
         value = dateString,
         onValueChange = {},
         readOnly = true,
-        label = { Text("Goal End Date") },
+        label = { Text(text = label) },
         leadingIcon = {
             Icon(Icons.Default.DateRange, "Select date")
         },
