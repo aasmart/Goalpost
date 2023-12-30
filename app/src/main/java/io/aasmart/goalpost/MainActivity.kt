@@ -8,11 +8,17 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
-import io.aasmart.goalpost.src.compose.GoalpostApp
-import io.aasmart.goalpost.src.goals.notifications.createNotificationChannel
+import io.aasmart.goalpost.compose.GoalpostApp
+import io.aasmart.goalpost.goals.cancelReflectionAlarm
+import io.aasmart.goalpost.goals.notifications.createNotificationChannel
+import io.aasmart.goalpost.goals.scheduleReflectionAlarm
 import io.aasmart.goalpost.ui.theme.GoalpostTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +40,13 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
+
+            val context = LocalContext.current
+            LaunchedEffect(false) {
+                lifecycleScope.launch {
+                    scheduleReflectionAlarm(context)
+                }
+            }
 
             GoalpostTheme {
                 // A surface container using the 'background' color from the theme

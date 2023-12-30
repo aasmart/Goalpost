@@ -1,7 +1,10 @@
+import com.google.protobuf.gradle.id
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     kotlin("plugin.serialization")
+    id("com.google.protobuf")
 }
 
 android {
@@ -50,6 +53,21 @@ android {
     }
 }
 
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.23.4"
+    }
+
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                id("java") { option("lite") }
+            }
+        }
+    }
+}
+
+
 dependencies {
     implementation("com.google.accompanist:accompanist-permissions:0.32.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
@@ -71,4 +89,5 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("com.google.protobuf:protobuf-javalite:3.23.4")
 }
