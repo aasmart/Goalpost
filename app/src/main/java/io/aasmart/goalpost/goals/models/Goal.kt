@@ -15,4 +15,14 @@ data class Goal(
     val reflections: List<GoalReflection> = emptyList()
 ) {
     val id = UUID.randomUUID().toString()
+
+    /**
+     * Returns the most recent time, in milliseconds, the goal
+     * was reflected on
+     */
+    fun lastReflectionMillis(): Long {
+        return reflections
+            .maxBy { it.dateTimeMillis }
+            .dateTimeMillis
+    }
 }
