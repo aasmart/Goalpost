@@ -11,7 +11,8 @@ object AlarmHelper {
         context: Context,
         broadcastReceiverClass: Class<T>,
         intervalMillis: Long,
-        initialTriggerMillis: Long
+        initialTriggerMillis: Long,
+        requestCode: Int
     ) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val alarmIntent = Intent(context, broadcastReceiverClass)
@@ -23,7 +24,28 @@ object AlarmHelper {
             intervalMillis,
             PendingIntent.getBroadcast(
                 context,
-                0,
+                requestCode,
+                alarmIntent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        )
+    }
+
+    fun <T : BroadcastReceiver> scheduleInexactAlarm(
+        context: Context,
+        broadcastReceiverClass: Class<T>,
+        initialTriggerMillis: Long,
+        requestCode: Int
+    ) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmIntent = Intent(context, broadcastReceiverClass)
+
+        alarmManager.set(
+            AlarmManager.RTC_WAKEUP,
+            initialTriggerMillis,
+            PendingIntent.getBroadcast(
+                context,
+                requestCode,
                 alarmIntent,
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
@@ -32,21 +54,15 @@ object AlarmHelper {
 
     fun <T : BroadcastReceiver> cancelAlarm(
         context: Context,
-        broadcastReceiverClass: Class<T>
+        broadcastReceiverClass: Class<T>,
+        requestCode: Int
     ) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val alarmIntent = Intent(context, broadcastReceiverClass)
 
         alarmManager.cancel(PendingIntent.getBroadcast(
             context,
-            0,
-            alarmIntent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        ))
-
-        alarmManager.cancel(PendingIntent.getBroadcast(
-            context,
-            1,
+            requestCode,
             alarmIntent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         ))

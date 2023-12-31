@@ -29,11 +29,12 @@ suspend fun scheduleReflectionAlarm(
                 context,
                 GoalReflectionReceiver::class.java,
                 DAY_MS,
-                targetTime.toInstant().toEpochMilli()
+                targetTime.toInstant().toEpochMilli(),
+                0
             )
         }
 }
 
 fun cancelReflectionAlarm(context: Context) {
-    AlarmHelper.cancelAlarm(context, GoalReflectionReceiver::class.java)
+    AlarmHelper.cancelAlarm(context, GoalReflectionReceiver::class.java, 0)
 }
