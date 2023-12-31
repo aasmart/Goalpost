@@ -27,6 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.aasmart.goalpost.goals.models.Goal
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 @Composable
 private fun IncompleteGoalReflectionCard(
@@ -95,14 +97,23 @@ private fun CompleteGoalReflectionCard(
 fun GoalReflectionScreen(
     goals: List<Goal>
 ) {
-    val incompleteReflections = goals
-        .filter { goal ->
-            goal.reflections.isNotEmpty() && goal.reflections.maxBy { it.dateTimeMillis }.isMissing
-        }
-    val completeReflections = goals
-        .filter { goal ->
-            goal.reflections.isNotEmpty() && !goal.reflections.maxBy { it.dateTimeMillis }.isMissing
-        }
+    val dayBeginInstant = Instant.now()
+        .truncatedTo(ChronoUnit.DAYS)
+
+    // Retrieve goals that only require reflections today
+    val reflectionGoals = goals.map {
+        it to it.getCurrentReflection(dayBeginInstant)
+    }.filter {
+        it.second != null
+    }.toMap()
+
+    // Split the goals into incomplete and complete reflections
+    val incompleteReflections = reflectionGoals
+        .filter { it.value?.isCompleted == false }
+        .map { it.key }
+    val completeReflections = reflectionGoals
+        .filter { it.value?.isCompleted == true }
+        .map { it.key }
 
     Column(
         modifier = Modifier
@@ -115,7 +126,6 @@ fun GoalReflectionScreen(
                 Text("Finish Reflection")
             }
         } else {
-
             LazyColumn(
                 contentPadding = PaddingValues(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),

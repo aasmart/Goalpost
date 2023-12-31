@@ -26,23 +26,13 @@ private fun goalReflectionBroadcastHandler(context: Context) = GoalStorage
     .onEach { goals ->
         val now = Instant.now()
 
-        val reflectionGoals = goals.filter { goal ->
-            true
-        }
-
-        // Add missing reflection to target goals
-        reflectionGoals.forEach { goal ->
-            GoalStorage.getInstance(context).setGoal(
-                goal.apply { this.reflections.plus(
-                    GoalReflection(
-                        dateTimeMillis = now.toEpochMilli()
-                    )
-                ) }
-            )
+        val reflectionGoals = goals.filter {
+            it.getCurrentReflection(now) != null
         }
 
         if(reflectionGoals.isNotEmpty()) {
             SetGoalsNotification.GoalReflectionReminderNotification()
+            // Indicate that the user needs to update their goals
             context.settingsDataStore.updateData {
                 return@updateData it.toBuilder().setNeedsToReflect(true).build()
             }

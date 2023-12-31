@@ -57,7 +57,8 @@ private fun CreateGameButton(
             val goal = Goal(
                 title = goalName,
                 description = goalDescription,
-                timePeriod = GoalTimePeriod("", 0),
+                timePeriod = GoalTimePeriod("", 86400000L),
+                beginDate = System.currentTimeMillis(),
                 completionDate = goalCompletionDate
             )
 

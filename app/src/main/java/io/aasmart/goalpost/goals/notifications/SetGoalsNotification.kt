@@ -50,7 +50,7 @@ object SetGoalsNotification : GoalpostNotification() {
 
         val setGoalBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setContentTitle("Time to Reflect on your Goals!")
-            .setContentText("There are goals that you need to reflect on today.")
+            .setContentText("Reflecting on your goals is an important step in reaching them!")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setSmallIcon(R.drawable.ic_launcher_background)
             .setFullScreenIntent(fullscreenPendingIntent, true)
