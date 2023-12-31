@@ -8,22 +8,28 @@ import io.aasmart.goalpost.data.GoalStorage
 import io.aasmart.goalpost.data.settingsDataStore
 import io.aasmart.goalpost.goals.models.GoalReflection
 import io.aasmart.goalpost.goals.notifications.SetGoalsNotification
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import java.time.Instant
 
 class GoalReflectionReceiver : BroadcastReceiver() {
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.d("Reflection Alarm Received", "Running reflection")
         context?.let {
-            goalReflectionBroadcastHandler(context)
+            GlobalScope.launch {
+                goalReflectionBroadcastHandler(context)
+            }
         }
     }
 }
 
-private fun goalReflectionBroadcastHandler(context: Context) = GoalStorage
+private suspend fun goalReflectionBroadcastHandler(context: Context) = GoalStorage
     .getInstance(context)
     .getGoals()
-    .onEach { goals ->
+    .collect { goals ->
         val now = Instant.now()
 
         val reflectionGoals = goals.filter {
