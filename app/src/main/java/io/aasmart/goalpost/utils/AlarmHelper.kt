@@ -16,22 +16,10 @@ object AlarmHelper {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val alarmIntent = Intent(context, broadcastReceiverClass)
 
-        // Trigger first alarm
-        alarmManager.set(
-            AlarmManager.RTC_WAKEUP,
-            initialTriggerMillis,
-            PendingIntent.getBroadcast(
-                context,
-                1,
-                alarmIntent,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        )
-
         // Run the repeating alarm after that
         alarmManager.setInexactRepeating(
             AlarmManager.RTC_WAKEUP,
-            intervalMillis,
+            initialTriggerMillis,
             intervalMillis,
             PendingIntent.getBroadcast(
                 context,
