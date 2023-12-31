@@ -8,21 +8,12 @@ data class Goal(
     val title: String,
     val description: String,
     val timePeriod: GoalTimePeriod,
+    val beginDate: Long,
     /**
      * The time from epoch in milliseconds when the goal is scheduled to be completed
      */
     val completionDate: Long,
-    val reflections: List<GoalReflection> = emptyList()
+    val reflections: Map<Long, GoalReflection>
 ) {
     val id = UUID.randomUUID().toString()
-
-    /**
-     * Returns the most recent time, in milliseconds, the goal
-     * was reflected on
-     */
-    fun lastReflectionMillis(): Long {
-        return reflections
-            .maxBy { it.dateTimeMillis }
-            .dateTimeMillis
-    }
 }

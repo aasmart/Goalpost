@@ -14,7 +14,7 @@ object SetGoalsNotification : GoalpostNotification() {
     private const val ACTION_SNOOZE = "SNOOZE"
     private const val ACTION_SET_GOAL = "SET_GOAL"
 
-    class SetGoalsNotificationBroadcastReceiver : BroadcastReceiver() {
+    class GoalReflectionReminderNotification : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             Log.println(Log.ERROR, "ee", "HELLO WORLD")
             if(intent?.action == ACTION_SNOOZE)
@@ -24,7 +24,7 @@ object SetGoalsNotification : GoalpostNotification() {
         }
 
         private fun snooze(context: Context) {
-            LolNotification.pushNotification(context)
+
         }
 
         private fun setGoal() {
@@ -41,7 +41,7 @@ object SetGoalsNotification : GoalpostNotification() {
             PendingIntent.FLAG_IMMUTABLE.or(PendingIntent.FLAG_UPDATE_CURRENT)
         )
 
-        val snoozeIntent = Intent(context, SetGoalsNotificationBroadcastReceiver::class.java).apply {
+        val snoozeIntent = Intent(context, GoalReflectionReminderNotification::class.java).apply {
             action = ACTION_SNOOZE
             putExtra("snooze", 0)
         }
@@ -49,25 +49,12 @@ object SetGoalsNotification : GoalpostNotification() {
             PendingIntent.getBroadcast(context, 0, snoozeIntent, PendingIntent.FLAG_IMMUTABLE)
 
         val setGoalBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle("IMPORTANT!")
-            .setContentText("You've got LIGMA!!!")
+            .setContentTitle("Time to Reflect on your Goals!")
+            .setContentText("There are goals that you need to reflect on today.")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setSmallIcon(R.drawable.ic_launcher_background)
             .setFullScreenIntent(fullscreenPendingIntent, true)
-            .addAction(R.drawable.ic_launcher_background, "What's Ligma?", snoozePendingIntent)
-
-        showNotification(context, setGoalBuilder.build(), Random.nextInt())
-    }
-
-}
-
-object LolNotification : GoalpostNotification() {
-    override fun pushNotification(context: Context) {
-        val setGoalBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle("Lol get got")
-            .setContentText("Ligma balls")
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setSmallIcon(R.drawable.ic_launcher_background)
+            .addAction(R.drawable.ic_launcher_background, "Snooze", snoozePendingIntent)
 
         showNotification(context, setGoalBuilder.build(), Random.nextInt())
     }

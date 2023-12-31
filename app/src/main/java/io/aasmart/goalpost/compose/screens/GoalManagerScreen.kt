@@ -42,7 +42,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun GoalCard(
+private fun IncompleteGoalReflectionCard(
     goal: Goal,
     cardHeight: Dp = 80.dp,
     calendarScreenNav: () -> Unit,
@@ -143,7 +143,7 @@ fun GoalsManager(
                 .fillMaxSize()
         ) {
             itemsIndexed(goals) { index, goal ->
-                GoalCard(goal, calendarScreenNav = calendarScreenNav, manageGoalNav = manageGoalNav)
+                IncompleteGoalReflectionCard(goal, calendarScreenNav = calendarScreenNav, manageGoalNav = manageGoalNav)
             }
         }
     }

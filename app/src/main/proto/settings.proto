@@ -6,4 +6,5 @@ option java_multiple_files = true;
 message Settings {
   int64 goal_reflection_time_ms = 1;
   repeated int64 goal_reminder_times_ms = 2 [packed=true];
+  bool needs_to_reflect = 3;
 }

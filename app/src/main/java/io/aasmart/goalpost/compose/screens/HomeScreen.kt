@@ -34,7 +34,7 @@ fun Greeting(name: String = "Person") {
 }
 
 @Composable
-private fun GoalCard(goal: Goal) {
+private fun IncompleteGoalReflectionCard(goal: Goal) {
     Column(modifier = Modifier
         .background(Color.Black.copy(alpha = 0.075F), RoundedCornerShape(6.dp))
         .fillMaxWidth()
@@ -104,7 +104,7 @@ fun GoalsSnippetCard(
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 items(selectedGoals) {
-                    GoalCard(goal = it)
+                    IncompleteGoalReflectionCard(goal = it)
                 }
 
                 item {

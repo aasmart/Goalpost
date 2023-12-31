@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
 
             val context = LocalContext.current
-            LaunchedEffect(false) {
+            LaunchedEffect(Unit) {
                 lifecycleScope.launch {
                     scheduleReflectionAlarm(context)
                 }

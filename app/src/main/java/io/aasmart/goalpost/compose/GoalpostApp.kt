@@ -48,11 +48,13 @@ import io.aasmart.goalpost.R
 import io.aasmart.goalpost.compose.screens.CreateGoalScreen
 import io.aasmart.goalpost.compose.screens.GoalCalendarScreen
 import io.aasmart.goalpost.compose.screens.GoalDetailsScreen
+import io.aasmart.goalpost.compose.screens.GoalReflectionScreen
 import io.aasmart.goalpost.compose.screens.GoalsManager
 import io.aasmart.goalpost.compose.screens.HomeScreen
 import io.aasmart.goalpost.compose.screens.Screen
 import io.aasmart.goalpost.compose.screens.SettingsScreen
 import io.aasmart.goalpost.compose.viewmodels.GoalpostViewModel
+import io.aasmart.goalpost.data.settingsDataStore
 import io.aasmart.goalpost.goals.models.Goal
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -163,6 +165,12 @@ fun GoalpostApp(
     val goalCalendarHandle = { navController.navigate(Screen.GoalCalendar.route) }
 
     val goals = appViewModel.getGoals(context).collectAsState(initial = emptyList())
+    
+    val settings = context.settingsDataStore.data.collectAsState(initial = null)
+    if(settings.value?.needsToReflect == true) {
+        GoalReflectionScreen(goals = goals.value)
+        return
+    }
 
     Scaffold(
         bottomBar = {
