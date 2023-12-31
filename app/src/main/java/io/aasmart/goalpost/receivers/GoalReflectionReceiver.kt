@@ -6,11 +6,9 @@ import android.content.Intent
 import android.util.Log
 import io.aasmart.goalpost.data.GoalStorage
 import io.aasmart.goalpost.data.settingsDataStore
-import io.aasmart.goalpost.goals.models.GoalReflection
-import io.aasmart.goalpost.goals.notifications.SetGoalsNotification
+import io.aasmart.goalpost.goals.notifications.GoalReflectionNotification
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.time.Instant
 
@@ -37,7 +35,7 @@ private suspend fun goalReflectionBroadcastHandler(context: Context) = GoalStora
         }
 
         if(reflectionGoals.isNotEmpty()) {
-            SetGoalsNotification.GoalReflectionReminderNotification()
+            GoalReflectionNotification.pushNotification(context)
             // Indicate that the user needs to update their goals
             context.settingsDataStore.updateData {
                 return@updateData it.toBuilder().setNeedsToReflect(true).build()

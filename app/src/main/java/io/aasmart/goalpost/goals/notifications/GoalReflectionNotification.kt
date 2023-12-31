@@ -10,7 +10,7 @@ import io.aasmart.goalpost.MainActivity
 import io.aasmart.goalpost.R
 import kotlin.random.Random
 
-object SetGoalsNotification : GoalpostNotification() {
+object GoalReflectionNotification : GoalpostNotification() {
     private const val ACTION_SNOOZE = "SNOOZE"
     private const val ACTION_SET_GOAL = "SET_GOAL"
 
@@ -20,14 +20,10 @@ object SetGoalsNotification : GoalpostNotification() {
             if(intent?.action == ACTION_SNOOZE)
                 context?.let { snooze(it) }
             else if(intent?.action == ACTION_SET_GOAL)
-                setGoal()
+                TODO()
         }
 
         private fun snooze(context: Context) {
-
-        }
-
-        private fun setGoal() {
 
         }
     }
