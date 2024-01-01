@@ -22,4 +22,17 @@ sealed class Screen(
     ) {
         fun createRoute(goalId: String) = "goalDetails/$goalId"
     }
+
+    object GoalReflections: Screen(
+        "goalReflections"
+    ) {
+        object Goal : Screen(
+            "${GoalReflections.route}/goalId",
+            args = listOf(navArgument("goalId") {
+                type = NavType.StringType
+            })
+        ) {
+            fun createRoute(goalId: String) = "goalReflections/$goalId"
+        }
+    }
 }

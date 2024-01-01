@@ -4,18 +4,24 @@ import android.Manifest
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -24,23 +30,33 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogWindowProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -147,6 +163,62 @@ fun BottomNavBar(
     }
 }
 
+@Composable
+fun GoalReflectionDialog(
+    reflectionsNav: () -> Unit
+) {
+    Dialog(onDismissRequest = { }) {
+        (LocalView.current.parent as DialogWindowProvider).window.setDimAmount(0.9f)
+
+        Card(
+            shape = RoundedCornerShape(12.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(0.dp),
+                modifier = Modifier.padding(12.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.time_to_reflect),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(text = stringResource(id = R.string.reflection_dialog))
+
+                TextButton(
+                    onClick = reflectionsNav,
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Text(text = stringResource(id = R.string.reflections_dialog_button))
+                    Icon(
+                        Icons.Filled.ArrowForward,
+                        contentDescription = stringResource(id = R.string.reflections_dialog_button)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun GoalpostNavScaffold(
+    nav: GoalpostNav,
+    content: @Composable (padding: PaddingValues) -> Unit
+) {
+    Scaffold(
+        bottomBar = {
+            BottomNavBar(
+                homeHandle = nav.home,
+                goalManagerHandle = nav.goalManager,
+                settingsHandle = nav.settings,
+                goalCalendarHandle = nav.goalCalendar,
+                createGoalHandle = nav.createGoal
+            )
+        }
+    ) {
+        content(it)
+    }
+}
 
 @Composable
 fun GoalpostApp(
@@ -158,76 +230,76 @@ fun GoalpostApp(
     val context = LocalContext.current
     val activity = LocalContext.current as Activity
 
-    val homeHandle = { navController.navigate(Screen.Home.route) }
-    val settingsHandle = { navController.navigate(Screen.Settings.route) }
-    val goalManagerHandle = { navController.navigate(Screen.GoalManager.route) }
-    val createGoalHandle = { navController.navigate(Screen.CreateGoal.route) }
-    val goalCalendarHandle = { navController.navigate(Screen.GoalCalendar.route) }
-
     val goals = appViewModel.getGoals(context).collectAsState(initial = emptyList())
-    
-    val settings = context.settingsDataStore.data.collectAsState(initial = null)
-    if(settings.value?.needsToReflect == true) {
-        GoalReflectionScreen(goals = goals.value)
-        return
-    }
 
-    Scaffold(
-        bottomBar = {
-            BottomNavBar(
-                homeHandle = homeHandle,
-                goalManagerHandle = goalManagerHandle,
-                settingsHandle = settingsHandle,
-                goalCalendarHandle = goalCalendarHandle,
-                createGoalHandle = createGoalHandle
+    val goalpostNav = GoalpostNav(
+        home = { navController.navigate(Screen.Home.route) },
+        settings = { navController.navigate(Screen.Settings.route) },
+        goalManager = { navController.navigate(Screen.GoalManager.route) },
+        createGoal = { navController.navigate(Screen.CreateGoal.route) },
+        goalCalendar = { navController.navigate(Screen.GoalCalendar.route) }
+    )
+
+    // Reflection dialog stuff
+    val settings = context.settingsDataStore.data.collectAsState(initial = null)
+    val showReflectionDialog = settings.value?.needsToReflect == true
+    val navGoalReflection = { navController.navigate(Screen.GoalReflections.route) }
+
+    NavHost(navController = navController, startDestination = Screen.Home.route) {
+        composable(Screen.Home.route) {
+            if(showReflectionDialog)
+                GoalReflectionDialog { navGoalReflection() }
+
+            HomeScreen(
+                goalpostNav,
+                goals = goals.value.toTypedArray()
             )
         }
-    ) { padding ->
-        NavHost(navController = navController, startDestination = Screen.Home.route) {
-            composable(Screen.Home.route) {
-                HomeScreen(
-                    padding,
-                    goalManagerHandle = goalManagerHandle,
-                    createGoalHandle = createGoalHandle,
-                    goals = goals.value.toTypedArray()
-                )
-            }
-            composable(Screen.GoalManager.route, Screen.GoalManager.args) {
-                GoalsManager(
-                    padding,
-                    createGoalHandle = createGoalHandle,
-                    goals = goals.value,
-                    calendarScreenNav = goalCalendarHandle,
-                    manageGoalNav = {
-                        navController.navigate(
-                            Screen.GoalDetails.createRoute(it.id)
-                        )
-                    }
-                )
-            }
-            composable(Screen.CreateGoal.route) {
-                CreateGoalScreen(
-                    padding,
-                    { goal: Goal -> appViewModel.addGoal(context = context, goal) },
-                    goalManagerHandle = goalManagerHandle
-                )
-            }
-            composable(Screen.GoalCalendar.route) {
-                GoalCalendarScreen(scaffoldPadding = padding)
-            }
-            composable(Screen.Settings.route) {
-                SettingsScreen(
-                    padding
-                )
-            }
-            composable(Screen.GoalDetails.route, Screen.GoalDetails.args) {
-                GoalDetailsScreen(
-                    scaffoldPadding = padding,
-                    goalId = it.arguments?.getString("goalId") ?: "",
-                    getGoals = { context -> appViewModel.getGoals(context) },
-                    goalManagerNav = goalManagerHandle
-                )
-            }
+        composable(Screen.GoalManager.route, Screen.GoalManager.args) {
+            if(showReflectionDialog)
+                GoalReflectionDialog { navGoalReflection() }
+
+            GoalsManager(
+                goalpostNav,
+                goals = goals.value,
+                manageGoalNav = {
+                    navController.navigate(
+                        Screen.GoalDetails.createRoute(it.id)
+                    )
+                }
+            )
+        }
+        composable(Screen.CreateGoal.route) {
+            if(showReflectionDialog)
+                GoalReflectionDialog { navGoalReflection() }
+
+            CreateGoalScreen(
+                goalpostNav,
+                { goal: Goal -> appViewModel.addGoal(context = context, goal) },
+            )
+        }
+        composable(Screen.GoalCalendar.route) {
+            if(showReflectionDialog)
+                GoalReflectionDialog { navGoalReflection() }
+
+            GoalCalendarScreen(
+                goalpostNav
+            )
+        }
+        composable(Screen.Settings.route) {
+            SettingsScreen(
+                goalpostNav
+            )
+        }
+        composable(Screen.GoalDetails.route, Screen.GoalDetails.args) {
+            GoalDetailsScreen(
+                goalpostNav = goalpostNav,
+                goalId = it.arguments?.getString("goalId") ?: "",
+                getGoals = { context -> appViewModel.getGoals(context) },
+            )
+        }
+        composable(Screen.GoalReflections.route) {
+            GoalReflectionScreen(goals = goals.value)
         }
     }
 }

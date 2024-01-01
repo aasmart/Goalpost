@@ -24,8 +24,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import io.aasmart.goalpost.R
 import io.aasmart.goalpost.goals.models.Goal
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -44,7 +46,9 @@ private fun IncompleteGoalReflectionCard(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxSize().padding(4.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(4.dp)
         ) {
             Text(
                 text = goal.title,
@@ -54,7 +58,7 @@ private fun IncompleteGoalReflectionCard(
             )
 
             OutlinedButton(onClick = {}) {
-                Text("Reflect")
+                Text(text = stringResource(id = R.string.reflect))
             }
         }
     }
@@ -74,11 +78,15 @@ private fun CompleteGoalReflectionCard(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxSize().padding(4.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(4.dp)
         ) {
             Icon(
                 Icons.Filled.Check,
-                modifier = Modifier.weight(.1f).aspectRatio(1f),
+                modifier = Modifier
+                    .weight(.1f)
+                    .aspectRatio(1f),
                 contentDescription = "Goal reflection completed",
                 tint = MaterialTheme.colorScheme.primary
             )

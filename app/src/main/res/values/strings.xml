@@ -8,4 +8,8 @@
     <string name="set_goals_reminder">It looks like you haven\'t set any goals. Consider
                         pressing \"Set Goals\" to begin creating some goals.
     </string>
+    <string name="time_to_reflect">Time to Reflect!</string>
+    <string name="reflection_dialog">Goods news, you have goals to reflect on!</string>
+    <string name="reflections_dialog_button">Go to reflections</string>
+    <string name="reflect">Reflect</string>
 </resources>
