@@ -146,7 +146,24 @@ fun GoalReflectionScreen(
             )
         }
     ) {
-        Column(modifier = Modifier.padding(it).fillMaxSize()) {
+        if(goal == null) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxSize()
+            ) {
+                Text(text = stringResource(id = R.string.failed_goal_load))
+                Button(onClick = navBack) {
+                    Text(text = stringResource(id = R.string.return_to_reflections))
+                }
+            }
+            return@Scaffold
+        }
+        Column(modifier = Modifier
+            .padding(it)
+            .fillMaxSize()) {
 
         }
     }

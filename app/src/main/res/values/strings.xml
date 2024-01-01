@@ -13,4 +13,6 @@
     <string name="reflections_dialog_button">Go to reflections</string>
     <string name="reflect">Reflect</string>
     <string name="go_back">Go back</string>
+    <string name="failed_goal_load">Failed to load goal</string>
+    <string name="return_to_reflections">Return to goal reflections</string>
 </resources>
