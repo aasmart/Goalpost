@@ -36,10 +36,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -56,7 +52,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.dialog
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -65,6 +60,7 @@ import io.aasmart.goalpost.compose.screens.CreateGoalScreen
 import io.aasmart.goalpost.compose.screens.GoalCalendarScreen
 import io.aasmart.goalpost.compose.screens.GoalDetailsScreen
 import io.aasmart.goalpost.compose.screens.GoalReflectionScreen
+import io.aasmart.goalpost.compose.screens.GoalsReflectionScreen
 import io.aasmart.goalpost.compose.screens.GoalsManager
 import io.aasmart.goalpost.compose.screens.HomeScreen
 import io.aasmart.goalpost.compose.screens.Screen
@@ -299,7 +295,17 @@ fun GoalpostApp(
             )
         }
         composable(Screen.GoalReflections.route) {
-            GoalReflectionScreen(goals = goals.value)
+            GoalsReflectionScreen(
+                goals = goals.value,
+                { navController.navigate(Screen.GoalReflections.Goal.createRoute(it.id)) }
+            )
+        }
+        composable(Screen.GoalReflections.Goal.route, Screen.GoalReflections.Goal.args) {
+            GoalReflectionScreen(
+                goalId = it.arguments?.getString("goalId") ?: "",
+                getGoals = { context -> appViewModel.getGoals(context) },
+                { navController.navigateUp() }
+            )
         }
     }
 }

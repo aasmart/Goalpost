@@ -25,12 +25,12 @@ fun GoalDetailsScreen(
 ) {
     Scaffold(
 
-    ) {
+    ) { padding ->
         val goals = getGoals(LocalContext.current).collectAsState(initial = null).value
-        val goal = goals?.find { it.id == goalId }
+        val goal = goals?.find { goal -> goal.id == goalId }
         if(goal == null) {
             Box(
-                modifier = Modifier.fillMaxSize().padding(it),
+                modifier = Modifier.fillMaxSize().padding(padding),
                 contentAlignment = Alignment.Center
             ) {
                 Text(text = "Could not find goal")
@@ -42,7 +42,7 @@ fun GoalDetailsScreen(
         }
 
         Column(
-            modifier = Modifier.fillMaxSize().padding(it)
+            modifier = Modifier.fillMaxSize().padding(padding)
         ) {
             Text(text = goal.title)
 
