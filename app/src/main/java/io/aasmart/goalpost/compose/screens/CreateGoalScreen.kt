@@ -55,7 +55,7 @@ private fun CreateGameButton(
 
     Button(
         onClick = {
-            val goal = Goal(
+            val goal = Goal.createGoalWithReflections(
                 title = goalName,
                 description = goalDescription,
                 timePeriod = GoalTimePeriod("", 86400000L),

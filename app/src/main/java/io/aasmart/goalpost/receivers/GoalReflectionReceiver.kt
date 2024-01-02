@@ -31,7 +31,8 @@ private suspend fun goalReflectionBroadcastHandler(context: Context) = GoalStora
         val now = Instant.now()
 
         val reflectionGoals = goals.filter {
-            it.getCurrentReflection(now) != null
+            val reflection = it.getCurrentReflection(now)
+            return@filter reflection?.isCompleted == false
         }
 
         if(reflectionGoals.isNotEmpty()) {

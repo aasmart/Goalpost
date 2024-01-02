@@ -36,6 +36,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -48,6 +49,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogWindowProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -226,7 +228,9 @@ fun GoalpostApp(
     val context = LocalContext.current
     val activity = LocalContext.current as Activity
 
-    val goals = appViewModel.getGoals(context).collectAsState(initial = emptyList())
+    val goals by appViewModel
+        .getGoals(context)
+        .collectAsStateWithLifecycle(initialValue = emptyList())
 
     val goalpostNav = GoalpostNav(
         home = { navController.navigate(Screen.Home.route) },
@@ -237,8 +241,8 @@ fun GoalpostApp(
     )
 
     // Reflection dialog stuff
-    val settings = context.settingsDataStore.data.collectAsState(initial = null)
-    val showReflectionDialog = settings.value?.needsToReflect == true
+    val settings by context.settingsDataStore.data.collectAsStateWithLifecycle(initialValue = null)
+    val showReflectionDialog = settings?.needsToReflect == true
     val navGoalReflection = { navController.navigate(Screen.GoalReflections.route) }
 
     NavHost(navController = navController, startDestination = Screen.Home.route) {
@@ -248,7 +252,7 @@ fun GoalpostApp(
 
             HomeScreen(
                 goalpostNav,
-                goals = goals.value.toTypedArray()
+                goals = goals.toTypedArray()
             )
         }
         composable(Screen.GoalManager.route, Screen.GoalManager.args) {
@@ -257,7 +261,7 @@ fun GoalpostApp(
 
             GoalsManager(
                 goalpostNav,
-                goals = goals.value,
+                goals = goals,
                 manageGoalNav = {
                     navController.navigate(
                         Screen.GoalDetails.createRoute(it.id)
@@ -270,8 +274,8 @@ fun GoalpostApp(
                 GoalReflectionDialog { navGoalReflection() }
 
             CreateGoalScreen(
-                goalpostNav,
-                { goal: Goal -> appViewModel.addGoal(context = context, goal) },
+                goalpostNav = goalpostNav,
+                addGoal = { goal: Goal -> appViewModel.addGoal(context = context, goal) },
             )
         }
         composable(Screen.GoalCalendar.route) {
@@ -296,14 +300,19 @@ fun GoalpostApp(
         }
         composable(Screen.GoalReflections.route) {
             GoalsReflectionScreen(
-                goals = goals.value,
-                { navController.navigate(Screen.GoalReflections.Goal.createRoute(it.id)) }
+                goals = goals,
+                navGoalReflection = {
+                    navController.navigate(Screen.GoalReflections.Goal.createRoute(it.id))
+                },
+                backNav = { navController.navigateUp() },
+                homeNav = goalpostNav.home
             )
         }
         composable(Screen.GoalReflections.Goal.route, Screen.GoalReflections.Goal.args) {
             GoalReflectionScreen(
                 goalId = it.arguments?.getString("goalId") ?: "",
                 getGoals = { context -> appViewModel.getGoals(context) },
+                setGoal = { context, goal -> appViewModel.setGoal(context, goal) },
                 { navController.navigateUp() }
             )
         }

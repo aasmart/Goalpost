@@ -15,4 +15,6 @@
     <string name="go_back">Go back</string>
     <string name="failed_goal_load">Failed to load goal</string>
     <string name="return_to_reflections">Return to goal reflections</string>
+    <string name="complete_reflection">Complete Reflection</string>
+    <string name="no_goals_to_reflect">There are no goal to reflect on</string>
 </resources>
