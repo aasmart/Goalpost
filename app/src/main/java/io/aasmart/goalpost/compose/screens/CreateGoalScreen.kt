@@ -36,7 +36,7 @@ import io.aasmart.goalpost.compose.GoalpostNavScaffold
 import io.aasmart.goalpost.compose.components.DatePickerField
 import io.aasmart.goalpost.compose.components.Dropdown
 import io.aasmart.goalpost.goals.models.Goal
-import io.aasmart.goalpost.goals.models.GoalTimePeriod
+import io.aasmart.goalpost.goals.models.GoalInterval
 import io.aasmart.goalpost.utils.InputUtils
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -47,6 +47,7 @@ private fun CreateGameButton(
     goalName: String,
     goalDescription: String,
     goalCompletionDate: Long,
+    goalInterval: GoalInterval,
     addGoal : suspend (goal: Goal) -> Unit,
     goalManagerHandle: () -> Unit,
     inputsValid: Boolean
@@ -58,7 +59,7 @@ private fun CreateGameButton(
             val goal = Goal.createGoalWithReflections(
                 title = goalName,
                 description = goalDescription,
-                timePeriod = GoalTimePeriod("", 86400000L),
+                timePeriod = goalInterval,
                 beginDate = System.currentTimeMillis(),
                 completionDate = goalCompletionDate
             )
@@ -95,15 +96,13 @@ fun CreateGoalScreen(
     val isNameValid = InputUtils.isValidLength(goalName.trim(), goalNameMinLength, goalNameMaxLength)
     val isDescriptionValid = InputUtils.isValidLength(goalDescription.trim(), descriptionMinLength)
 
-    var timePeriodDialogVisible by remember { mutableStateOf(false) }
-
-    GoalpostNavScaffold(nav = goalpostNav) {
+    GoalpostNavScaffold(nav = goalpostNav) { padding ->
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .padding(8.dp)
-                .padding(it)
+                .padding(padding)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
@@ -202,17 +201,18 @@ fun CreateGoalScreen(
             var reflectionIntervalExpanded by remember {
                 mutableStateOf(false)
             }
-            var reflectionSelectedIndex by remember {
+            var selectedReflectionIntervalIndex by remember {
                 mutableIntStateOf(0)
             }
+            val reflectionIntervals = GoalInterval.defaultList
 
             Dropdown(
                 label = "Reflection Interval",
                 expanded = reflectionIntervalExpanded,
                 menuHeight = 150.dp,
-                selectedIndex = reflectionSelectedIndex,
-                items = listOf("Daily", "Weekly", "Bi-Weekly", "Monthly", "Custom"),
-                onItemClicked = { index -> reflectionSelectedIndex = index },
+                selectedIndex = selectedReflectionIntervalIndex,
+                items = reflectionIntervals.map { it.name },
+                onItemClicked = { index -> selectedReflectionIntervalIndex = index },
                 onExpandedChange = { reflectionIntervalExpanded = it },
                 supportingText = {
                     Row {
@@ -233,6 +233,7 @@ fun CreateGoalScreen(
                 goalName = goalName,
                 goalDescription = goalDescription,
                 goalCompletionDate = datePickerState.selectedDateMillis ?: now.toEpochMilli(),
+                goalInterval = reflectionIntervals[selectedReflectionIntervalIndex],
                 addGoal = addGoal,
                 goalManagerHandle = goalpostNav.goalManager,
                 inputsValid = isNameValid && isDescriptionValid

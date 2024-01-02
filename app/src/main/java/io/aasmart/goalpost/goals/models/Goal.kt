@@ -12,7 +12,7 @@ import java.util.UUID
 data class Goal(
     val title: String,
     val description: String,
-    val timePeriod: GoalTimePeriod,
+    val timePeriod: GoalInterval,
     val beginDate: Long,
     /**
      * The time from epoch in milliseconds when the goal is scheduled to be completed
@@ -30,12 +30,12 @@ data class Goal(
         fun createGoalWithReflections(
             title: String,
             description: String,
-            timePeriod: GoalTimePeriod,
+            timePeriod: GoalInterval,
             beginDate: Long,
             completionDate: Long,
         ): Goal {
             val tempReflections: MutableList<GoalReflection> = mutableListOf()
-            if(timePeriod.durationMs > 0) {
+            if(timePeriod.intervalMillis > 0) {
                 var reflectionDate = ZonedDateTime
                     .ofInstant(Instant.ofEpochMilli(beginDate), ZoneId.of("UTC"))
                     .with(ChronoField.MILLI_OF_DAY, 0)
@@ -43,7 +43,7 @@ data class Goal(
                 while (reflectionDate.toInstant().toEpochMilli() < completionDate) {
                     val ms = reflectionDate.toInstant().toEpochMilli()
                     tempReflections += GoalReflection(dateTimeMillis = ms)
-                    reflectionDate = reflectionDate.plus(timePeriod.durationMs, ChronoUnit.MILLIS)
+                    reflectionDate = reflectionDate.plus(timePeriod.intervalMillis, ChronoUnit.MILLIS)
                 }
             }
 
