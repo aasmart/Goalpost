@@ -6,8 +6,9 @@ import kotlinx.serialization.Serializable
 data class GoalReflection(
     val isCompleted: Boolean = false,
     val dateTimeMillis: Long,
-    val progression: String = "",
-    val mistakes: String = "",
-    val ideasToImprove: String = "",
-    val workedTowardsGoal: Int = 0,
+    val madeProgress: Float? = null,
+    val madeProgressReflection: String? = null,
+    val couldDoBetter: Float? = null,
+    val couldDoBetterReflection: String? = null,
+    val stepsToImprove: String? = null,
 )
