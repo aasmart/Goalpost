@@ -287,6 +287,33 @@ private fun GoalReflectionForm(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+private fun ReflectionTopAppBar(
+    goal: Goal?,
+    navBack: () -> Unit
+) {
+    TopAppBar(
+        title = {
+            Text(text = goal?.title ?: "")
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
+        ),
+        navigationIcon = {
+            IconButton(onClick = navBack) {
+                Icon(
+                    Icons.Filled.ArrowBack,
+                    contentDescription = stringResource(id = R.string.go_back),
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun GoalReflectionScreen(
     goalId: String,
     getGoals: (Context) -> Flow<List<Goal>>,
@@ -297,27 +324,7 @@ fun GoalReflectionScreen(
     val goal = goals?.find { goal -> goal.id == goalId }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = goal?.title ?: "")
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                navigationIcon = {
-                    IconButton(onClick = navBack) {
-                        Icon(
-                            Icons.Filled.ArrowBack,
-                            contentDescription = stringResource(id = R.string.go_back),
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
-                }
-            )
-        }
+        topBar = { ReflectionTopAppBar(goal = goal, navBack) }
     ) { padding ->
         val reflection = goal?.getCurrentReflection(Instant.now())
 

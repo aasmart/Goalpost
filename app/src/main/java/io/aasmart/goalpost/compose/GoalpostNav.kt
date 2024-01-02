@@ -6,4 +6,5 @@ data class GoalpostNav(
     val settings: () -> Unit,
     val goalCalendar: () -> Unit,
     val createGoal: () -> Unit,
+    val up: () -> Unit,
 )

@@ -35,7 +35,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,8 +61,8 @@ import io.aasmart.goalpost.compose.screens.CreateGoalScreen
 import io.aasmart.goalpost.compose.screens.GoalCalendarScreen
 import io.aasmart.goalpost.compose.screens.GoalDetailsScreen
 import io.aasmart.goalpost.compose.screens.GoalReflectionScreen
-import io.aasmart.goalpost.compose.screens.GoalsReflectionScreen
 import io.aasmart.goalpost.compose.screens.GoalsManager
+import io.aasmart.goalpost.compose.screens.GoalsReflectionScreen
 import io.aasmart.goalpost.compose.screens.HomeScreen
 import io.aasmart.goalpost.compose.screens.Screen
 import io.aasmart.goalpost.compose.screens.SettingsScreen
@@ -237,7 +236,8 @@ fun GoalpostApp(
         settings = { navController.navigate(Screen.Settings.route) },
         goalManager = { navController.navigate(Screen.GoalManager.route) },
         createGoal = { navController.navigate(Screen.CreateGoal.route) },
-        goalCalendar = { navController.navigate(Screen.GoalCalendar.route) }
+        goalCalendar = { navController.navigate(Screen.GoalCalendar.route) },
+        up = { navController.navigateUp() }
     )
 
     // Reflection dialog stuff
