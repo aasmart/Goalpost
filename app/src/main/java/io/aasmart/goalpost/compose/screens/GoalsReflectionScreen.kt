@@ -1,6 +1,5 @@
 package io.aasmart.goalpost.compose.screens
 
-import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,31 +11,26 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.ripple.LocalRippleTheme
+import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.node.Ref
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -44,9 +38,8 @@ import androidx.compose.ui.unit.dp
 import io.aasmart.goalpost.R
 import io.aasmart.goalpost.data.settingsDataStore
 import io.aasmart.goalpost.goals.models.Goal
-import kotlinx.coroutines.flow.Flow
+import io.aasmart.goalpost.ui.NoRippleTheme
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
@@ -134,19 +127,24 @@ private fun FinishReflectionFAB(
         .onPrimaryContainer
         .copy(alpha = if(enabled) 1f else 0.4f)
 
-    ExtendedFloatingActionButton(
-        onClick = { if(enabled) finishGoalReflection() else return@ExtendedFloatingActionButton },
-        elevation = FloatingActionButtonDefaults.elevation(
-            defaultElevation = 8.dp
-        ),
-        containerColor = containerColor,
-        contentColor = contentColor
-    ) {
-        Icon(
-            Icons.Filled.Check,
-            contentDescription = stringResource(id = R.string.complete_reflection)
-        )
-        Text(text = stringResource(id = R.string.complete_reflection))
+    val ripple: RippleTheme = if(enabled) LocalRippleTheme.current else NoRippleTheme
+    CompositionLocalProvider(LocalRippleTheme provides ripple) {
+        ExtendedFloatingActionButton(
+            onClick = {
+                if(enabled) finishGoalReflection() else return@ExtendedFloatingActionButton
+            },
+            elevation = FloatingActionButtonDefaults.elevation(
+                defaultElevation = 8.dp
+            ),
+            containerColor = containerColor,
+            contentColor = contentColor,
+        ) {
+            Icon(
+                Icons.Filled.Check,
+                contentDescription = stringResource(id = R.string.complete_reflection)
+            )
+            Text(text = stringResource(id = R.string.complete_reflection))
+        }
     }
 }
 
