@@ -47,6 +47,7 @@ object AlarmHelper {
     fun <T : BroadcastReceiver> scheduleInexactAlarm(
         context: Context,
         broadcastReceiverClass: Class<T>,
+        type: Int,
         initialTriggerMillis: Long,
         requestCode: Int
     ) {
@@ -54,7 +55,7 @@ object AlarmHelper {
         val alarmIntent = Intent(context, broadcastReceiverClass)
 
         alarmManager.set(
-            AlarmManager.RTC_WAKEUP,
+            type,
             initialTriggerMillis,
             PendingIntent.getBroadcast(
                 context,

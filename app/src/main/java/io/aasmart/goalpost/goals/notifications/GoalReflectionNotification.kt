@@ -1,32 +1,42 @@
 package io.aasmart.goalpost.goals.notifications
 
+import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
+import android.graphics.BitmapFactory
+import android.os.SystemClock
 import androidx.core.app.NotificationCompat
 import io.aasmart.goalpost.MainActivity
 import io.aasmart.goalpost.R
-import kotlin.random.Random
+import io.aasmart.goalpost.receivers.GoalReflectionReceiver
+import io.aasmart.goalpost.utils.AlarmHelper
 
 object GoalReflectionNotification : GoalpostNotification() {
     private const val ACTION_SNOOZE = "SNOOZE"
-    private const val ACTION_SET_GOAL = "SET_GOAL"
 
     class GoalReflectionReminderNotification : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            Log.println(Log.ERROR, "ee", "HELLO WORLD")
             if(intent?.action == ACTION_SNOOZE)
                 context?.let { snooze(it) }
-            else if(intent?.action == ACTION_SET_GOAL)
-                TODO()
         }
 
         private fun snooze(context: Context) {
+            AlarmHelper.scheduleInexactAlarm(
+                context,
+                GoalReflectionReceiver::class.java,
+                AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_FIFTEEN_MINUTES,
+                2
+            )
 
+            GoalReflectionNotification.cancelNotification(context, notificationId)
         }
     }
+
+    override val notificationId: Int
+        get() = 0
 
     override fun pushNotification(context: Context) {
         val fullscreenIntent = Intent(context, MainActivity::class.java)
@@ -41,18 +51,27 @@ object GoalReflectionNotification : GoalpostNotification() {
             action = ACTION_SNOOZE
             putExtra("snooze", 0)
         }
-        val snoozePendingIntent: PendingIntent =
-            PendingIntent.getBroadcast(context, 0, snoozeIntent, PendingIntent.FLAG_IMMUTABLE)
+        val snoozePendingIntent: PendingIntent = PendingIntent.getBroadcast(
+            context,
+            0,
+            snoozeIntent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
 
         val setGoalBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle("Time to Reflect on your Goals!")
-            .setContentText("Reflecting on your goals is an important step in reaching them!")
+            .setContentTitle(context.resources.getString(R.string.notification_reflect_title))
+            .setContentText(context.resources.getString(R.string.notification_reflect_desc))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setSmallIcon(R.mipmap.ic_launcher_round)
+            .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher))
             .setFullScreenIntent(fullscreenPendingIntent, true)
-            .addAction(R.drawable.ic_launcher_background, "Snooze", snoozePendingIntent)
+            .addAction(
+                R.mipmap.ic_launcher_round,
+                context.resources.getString(R.string.snooze),
+                snoozePendingIntent
+            )
 
-        showNotification(context, setGoalBuilder.build(), Random.nextInt())
+        showNotification(context, setGoalBuilder.build())
     }
 
 }

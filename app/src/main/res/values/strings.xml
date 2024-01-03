@@ -15,6 +15,12 @@
     <string name="go_back">Go back</string>
     <string name="failed_goal_load">Failed to load goal</string>
 
+    <string name="notification_reflect_title">Time to reflect on your goals!</string>
+    <string name="notification_reflect_desc">
+        Reflection on your goals is an important part of accomplishing them.
+    </string>
+    <string name="snooze">Snooze 15 Minutes</string>
+
     <string name="dismiss">Dismiss</string>
     <string name="confirm">Confirm</string>
     <string name="reflection_time_picker">Choose Reflection Time</string>

@@ -1,5 +1,6 @@
 package io.aasmart.goalpost.goals
 
+import android.app.AlarmManager
 import android.content.Context
 import io.aasmart.goalpost.data.settingsDataStore
 import io.aasmart.goalpost.receivers.GoalReflectionReceiver
@@ -35,6 +36,7 @@ suspend fun scheduleReflectionAlarm(
                     AlarmHelper.scheduleInexactAlarm(
                         context,
                         GoalReflectionReceiver::class.java,
+                        AlarmManager.RTC_WAKEUP,
                         0,
                         1
                     )
