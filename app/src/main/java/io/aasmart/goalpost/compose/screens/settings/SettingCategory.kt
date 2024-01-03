@@ -1,7 +1,7 @@
 package io.aasmart.goalpost.compose.screens.settings
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -14,7 +14,7 @@ enum class SettingCategory(
     Goals(
         "Goals",
         "goals",
-        Icons.Filled.Notifications,
+        Icons.Filled.CheckCircle,
         content = { GoalCategoryContent() }
     )
 }
