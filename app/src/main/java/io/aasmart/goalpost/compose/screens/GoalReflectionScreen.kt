@@ -265,6 +265,11 @@ private fun GoalReflectionForm(
                 .fillMaxWidth()
         )
 
+        FieldHeader(
+            title = stringResource(id = R.string.reflection_reached_end),
+            subTitle = stringResource(id = R.string.reflection_reached_end_subtitle)
+        )
+
         if(!readOnly) {
             /* ==========================
             * Finish reflection button
