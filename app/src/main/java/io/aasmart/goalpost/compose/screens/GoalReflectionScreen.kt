@@ -51,12 +51,11 @@ import java.time.Instant
  * @param goal The goal the goal reflection belongs to
  * @param updatedGoalReflection The updated version of the original
  *      goal reflection. This should have the same dateTimeMillis
- *      as the goal reflection being replaced. Should also have
- *      completed marked as true.
+ *      as the goal reflection being replaced.
  * @param context Th current context
  * @param setGoal A function to update a goal in the goals database
  * */
-private suspend fun completeReflection(
+private suspend fun updateReflection(
     goal: Goal,
     updatedGoalReflection: GoalReflection,
     context: Context,
@@ -276,7 +275,7 @@ private fun GoalReflectionForm(
                     )
 
                     coroutineScope.launch {
-                        completeReflection(
+                        updateReflection(
                             context = context,
                             goal = goal,
                             updatedGoalReflection = updatedGoal,
