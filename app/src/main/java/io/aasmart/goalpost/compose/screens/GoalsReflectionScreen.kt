@@ -1,5 +1,6 @@
 package io.aasmart.goalpost.compose.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -37,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import io.aasmart.goalpost.R
 import io.aasmart.goalpost.data.settingsDataStore
 import io.aasmart.goalpost.goals.models.Goal
-import io.aasmart.goalpost.ui.NoRippleTheme
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -126,6 +126,7 @@ private fun FinishReflectionFAB(
     enabled: Boolean,
     finishGoalReflection: () -> Unit
 ) {
+    val context = LocalContext.current
     val containerColor = MaterialTheme
         .colorScheme
         .primaryContainer
@@ -135,24 +136,29 @@ private fun FinishReflectionFAB(
         .onPrimaryContainer
         .copy(alpha = if(enabled) 1f else 0.4f)
 
-    val ripple: RippleTheme = if(enabled) LocalRippleTheme.current else NoRippleTheme
-    CompositionLocalProvider(LocalRippleTheme provides ripple) {
-        ExtendedFloatingActionButton(
-            onClick = {
-                if(enabled) finishGoalReflection() else return@ExtendedFloatingActionButton
-            },
-            elevation = FloatingActionButtonDefaults.elevation(
-                defaultElevation = 8.dp
-            ),
-            containerColor = containerColor,
-            contentColor = contentColor,
-        ) {
-            Icon(
-                Icons.Filled.Check,
-                contentDescription = stringResource(id = R.string.complete_reflection)
-            )
-            Text(text = stringResource(id = R.string.complete_reflection))
-        }
+    ExtendedFloatingActionButton(
+        onClick = {
+            if(enabled)
+                finishGoalReflection()
+            else {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.reflection_incomplete_toast),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        },
+        elevation = FloatingActionButtonDefaults.elevation(
+            defaultElevation = 8.dp
+        ),
+        containerColor = containerColor,
+        contentColor = contentColor,
+    ) {
+        Icon(
+            Icons.Filled.Check,
+            contentDescription = stringResource(id = R.string.complete_reflection)
+        )
+        Text(text = stringResource(id = R.string.complete_reflection))
     }
 }
 

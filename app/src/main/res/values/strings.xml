@@ -91,4 +91,7 @@
         You will NOT be able to edit your responses after completing the reflection
         - this is intentional.
     </string>
+    <string name="reflection_incomplete_toast">
+        You still have goal reflections to complete.
+    </string>
 </resources>
