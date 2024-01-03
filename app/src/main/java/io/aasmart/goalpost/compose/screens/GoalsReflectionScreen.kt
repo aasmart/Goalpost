@@ -16,7 +16,6 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material.ripple.RippleTheme
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -210,48 +209,44 @@ fun GoalsReflectionScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (goals.isEmpty()) {
+            if (goals.isEmpty())
                 Text(text = stringResource(id = R.string.no_goals_to_reflect))
-                Button(onClick = {}) {
-                    Text(stringResource(id = R.string.complete_reflection))
-                }
-                return@Column
-            }
+            else {
+                LazyColumn(
+                    contentPadding = PaddingValues(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    if (incompleteReflections.isNotEmpty()) {
+                        item {
+                            Text(
+                                text = stringResource(id = R.string.incomplete_reflections),
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        }
+                        items(incompleteReflections) { goal ->
+                            IncompleteGoalReflectionCard(
+                                goal = goal,
+                                navGoalReflection = navGoalReflection
+                            )
+                        }
+                    }
 
-            LazyColumn(
-                contentPadding = PaddingValues(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                if(incompleteReflections.isNotEmpty()) {
-                    item { 
-                        Text(
-                            text = stringResource(id = R.string.incomplete_reflections),
-                            style = MaterialTheme.typography.titleLarge
-                        ) 
-                    }
-                    items(incompleteReflections) { goal ->
-                        IncompleteGoalReflectionCard(
-                            goal = goal,
-                            navGoalReflection = navGoalReflection
-                        )
-                    }
-                }
-
-                if(completeReflections.isNotEmpty()) {
-                    item {
-                        Text(
-                            text = stringResource(id = R.string.complete_reflections),
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                    }
-                    items(completeReflections) { goal ->
-                        CompleteGoalReflectionCard(
-                            goal = goal,
-                            navGoalReflection = navGoalReflection
-                        )
+                    if (completeReflections.isNotEmpty()) {
+                        item {
+                            Text(
+                                text = stringResource(id = R.string.complete_reflections),
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        }
+                        items(completeReflections) { goal ->
+                            CompleteGoalReflectionCard(
+                                goal = goal,
+                                navGoalReflection = navGoalReflection
+                            )
+                        }
                     }
                 }
             }
