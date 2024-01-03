@@ -80,4 +80,7 @@
     <string name="reflections_changes_to_improve_placeholder">
         e.g. I will replace 10 more minutes of screen time with reading.
     </string>
+    <string name="reflection_exit_confirm">
+        Are you sure you want to exit this reflection? Any responses will not be saved.
+    </string>
 </resources>

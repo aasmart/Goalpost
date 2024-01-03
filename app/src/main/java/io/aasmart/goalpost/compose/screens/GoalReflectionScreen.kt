@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,7 +13,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,6 +32,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -36,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.aasmart.goalpost.R
 import io.aasmart.goalpost.compose.components.GoalpostSlider
@@ -297,7 +303,7 @@ private fun GoalReflectionForm(
 @Composable
 private fun ReflectionTopAppBar(
     goal: Goal?,
-    navBack: () -> Unit
+    setConfirmExitDialogVisible: () -> Unit
 ) {
     TopAppBar(
         title = {
@@ -309,7 +315,7 @@ private fun ReflectionTopAppBar(
             navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
         ),
         navigationIcon = {
-            IconButton(onClick = navBack) {
+            IconButton(onClick = setConfirmExitDialogVisible) {
                 Icon(
                     Icons.Filled.ArrowBack,
                     contentDescription = stringResource(id = R.string.go_back),
@@ -322,6 +328,50 @@ private fun ReflectionTopAppBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+private fun ConfirmExitDialog(
+    onVisibleChange: (Boolean) -> Unit,
+    navBack: () -> Unit
+) {
+    AlertDialog(onDismissRequest = { onVisibleChange(false) }) {
+        Card(
+            elevation = CardDefaults.cardElevation(4.dp)
+        ) {
+            Text(
+                text = stringResource(id = R.string.reflection_exit_confirm),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(12.dp)
+                    .fillMaxWidth()
+            )
+            Row(
+                modifier = Modifier
+                    .padding(12.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
+            ) {
+                Button(
+                    onClick = { onVisibleChange(false) },
+                    shape = RoundedCornerShape(4.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(text = stringResource(id = R.string.dismiss))
+                }
+                OutlinedButton(
+                    onClick = {
+                        onVisibleChange(false)
+                        navBack()
+                    },
+                    shape = RoundedCornerShape(4.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(text = stringResource(id = R.string.confirm))
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun GoalReflectionScreen(
     goalId: String,
     getGoals: (Context) -> Flow<List<Goal>>,
@@ -331,8 +381,20 @@ fun GoalReflectionScreen(
     val goals = getGoals(LocalContext.current).collectAsState(initial = null).value
     val goal = goals?.find { goal -> goal.id == goalId }
 
+    var showConfirmExitDialog by remember {
+        mutableStateOf(false)
+    }
+
+    if(showConfirmExitDialog)
+        ConfirmExitDialog(onVisibleChange = { showConfirmExitDialog = it }, navBack)
+
     Scaffold(
-        topBar = { ReflectionTopAppBar(goal = goal, navBack) }
+        topBar = {
+            ReflectionTopAppBar(
+                goal = goal,
+                setConfirmExitDialogVisible = { showConfirmExitDialog = true }
+            )
+        }
     ) { padding ->
         val reflection = goal?.getCurrentReflection(Instant.now())
 
