@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -27,7 +26,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -37,8 +35,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
@@ -79,7 +75,7 @@ fun BottomNavBar(
     createGoalHandle: () -> Unit
 ) {
     BottomAppBar(
-        containerColor = MaterialTheme.colorScheme.primary,
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
     ) {
         Row(
             modifier = Modifier.padding(4.dp),
@@ -93,7 +89,11 @@ fun BottomNavBar(
                     .weight(1f)
                     .fillMaxSize(.9f),
             ) {
-                Icon(Icons.Filled.Home, "Home", modifier = Modifier.fillMaxSize())
+                Icon(
+                    Icons.Filled.Home,
+                    "Home",
+                    modifier = Modifier.fillMaxSize()
+                )
             }
 
             // Goal manager button
@@ -103,21 +103,26 @@ fun BottomNavBar(
                     .weight(1f)
                     .fillMaxSize(.8f)
             ) {
-                Icon(Icons.Filled.CheckCircle, "Goal Manager", modifier = Modifier.fillMaxSize())
+                Icon(
+                    Icons.Filled.CheckCircle,
+                    "Goal Manager",
+                    modifier = Modifier.fillMaxSize()
+                )
             }
 
             // Create goal button
             FilledIconButton(
                 onClick = createGoalHandle,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = Color(0, 177, 224, 200)
-                ),
                 modifier = Modifier
-                    .shadow(4.dp, shape = CircleShape, ambientColor = Color(0, 177, 224))
                     .weight(.8f)
                     .aspectRatio(1f)
             ) {
-                Icon(Icons.Filled.Add, "Create Goal", modifier = Modifier.fillMaxSize())
+                Icon(
+                    Icons.Filled.Add,
+                    "Create Goal",
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
 
             // View goal schedule button
@@ -127,7 +132,11 @@ fun BottomNavBar(
                     .weight(1f)
                     .fillMaxSize(.8f)
             ) {
-                Icon(Icons.Filled.DateRange, "Goal Schedule", modifier = Modifier.fillMaxSize())
+                Icon(
+                    Icons.Filled.DateRange,
+                    "Goal Schedule",
+                    modifier = Modifier.fillMaxSize()
+                )
             }
 
             // Settings button
@@ -137,7 +146,11 @@ fun BottomNavBar(
                     .weight(1f)
                     .fillMaxSize(.8f)
             ) {
-                Icon(Icons.Filled.Settings, "Settings", modifier = Modifier.fillMaxSize())
+                Icon(
+                    Icons.Filled.Settings,
+                    "Settings",
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
     }
