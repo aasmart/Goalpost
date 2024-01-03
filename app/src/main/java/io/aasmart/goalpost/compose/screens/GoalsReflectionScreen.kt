@@ -11,9 +11,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.material3.Button
@@ -26,6 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.rememberCoroutineScope
@@ -69,8 +73,15 @@ private fun IncompleteGoalReflectionCard(
                     .padding(end = 4.dp)
             )
 
-            OutlinedButton(onClick = { navGoalReflection(goal) }) {
+            TextButton(
+                onClick = { navGoalReflection(goal) },
+            ) {
                 Text(text = stringResource(id = R.string.reflect))
+                Icon(
+                    Icons.Default.KeyboardArrowRight,
+                    contentDescription = stringResource(id = R.string.reflect),
+                    modifier = Modifier.padding(0.dp)
+                )
             }
         }
     }
@@ -80,6 +91,7 @@ private fun IncompleteGoalReflectionCard(
 private fun CompleteGoalReflectionCard(
     goal: Goal,
     cardHeight: Dp = 60.dp,
+    navGoalReflection: (goal: Goal) -> Unit
 ) {
     Card(
         elevation = CardDefaults.elevatedCardElevation(4.dp),
@@ -94,21 +106,22 @@ private fun CompleteGoalReflectionCard(
                 .fillMaxSize()
                 .padding(4.dp)
         ) {
-            Icon(
-                Icons.Filled.Check,
-                modifier = Modifier
-                    .weight(.1f)
-                    .aspectRatio(1f),
-                contentDescription = "Goal reflection completed",
-                tint = MaterialTheme.colorScheme.primary
-            )
-
             Text(
                 text = goal.title,
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 4.dp)
             )
+            TextButton(
+                onClick = { navGoalReflection(goal) },
+            ) {
+                Text(text = stringResource(id = R.string.view))
+                Icon(
+                    Icons.Default.KeyboardArrowRight,
+                    contentDescription = stringResource(id = R.string.reflect),
+                    modifier = Modifier.padding(0.dp)
+                )
+            }
         }
     }
 }
@@ -217,7 +230,12 @@ fun GoalsReflectionScreen(
                     .fillMaxSize()
             ) {
                 if(incompleteReflections.isNotEmpty()) {
-                    item { Text(text = "Incomplete Goal Reflections") }
+                    item { 
+                        Text(
+                            text = stringResource(id = R.string.incomplete_reflections),
+                            style = MaterialTheme.typography.titleLarge
+                        ) 
+                    }
                     items(incompleteReflections) { goal ->
                         IncompleteGoalReflectionCard(
                             goal = goal,
@@ -227,9 +245,17 @@ fun GoalsReflectionScreen(
                 }
 
                 if(completeReflections.isNotEmpty()) {
-                    item { Text(text = "Completed Goal Reflections") }
+                    item {
+                        Text(
+                            text = stringResource(id = R.string.complete_reflections),
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    }
                     items(completeReflections) { goal ->
-                        CompleteGoalReflectionCard(goal)
+                        CompleteGoalReflectionCard(
+                            goal = goal,
+                            navGoalReflection = navGoalReflection
+                        )
                     }
                 }
             }

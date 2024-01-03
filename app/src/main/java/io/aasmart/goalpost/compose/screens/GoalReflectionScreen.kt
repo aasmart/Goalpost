@@ -109,6 +109,8 @@ private fun GoalReflectionForm(
     val scrollState = rememberScrollState()
     val context = LocalContext.current
 
+    val readOnly = goalReflection.isCompleted
+
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
@@ -135,7 +137,7 @@ private fun GoalReflectionForm(
         * Made progress slider
         *  ==========================*/
         var workedTowardsGoalSliderValue by rememberSaveable {
-            mutableFloatStateOf(2f)
+            mutableFloatStateOf(goalReflection.madeProgress ?: 2f)
         }
 
         GoalpostSlider(
@@ -154,13 +156,14 @@ private fun GoalReflectionForm(
                 2 to stringResource(id = R.string.neutral),
                 4 to stringResource(id = R.string.agree)
             ),
+            enabled = !readOnly
         )
 
         /* ==========================
         * Reflection on progress made
         *  ==========================*/
         var progressTextAnswer by rememberSaveable {
-            mutableStateOf("")
+            mutableStateOf(goalReflection.madeProgressReflection ?: "")
         }
 
         FieldHeader(
@@ -176,6 +179,7 @@ private fun GoalReflectionForm(
                     text = stringResource(id = R.string.reflections_made_progress_placeholder)
                 )
             },
+            readOnly = readOnly,
             modifier = Modifier
                 .fillMaxWidth()
         )
@@ -184,7 +188,7 @@ private fun GoalReflectionForm(
         * "Can I do better?" slider
         *  ==========================*/
         var canDoBetterSlideValue by rememberSaveable {
-            mutableFloatStateOf(2f)
+            mutableFloatStateOf(goalReflection.couldDoBetter ?: 2f)
         }
 
         GoalpostSlider(
@@ -202,14 +206,15 @@ private fun GoalReflectionForm(
                 0 to stringResource(id = R.string.disagree),
                 2 to stringResource(id = R.string.neutral),
                 4 to stringResource(id = R.string.agree)
-            )
+            ),
+            enabled = !readOnly
         )
 
         /* ==========================
         * "Can I do better?" text reflection
         *  ==========================*/
         var moreToAccomplishText by rememberSaveable {
-            mutableStateOf("")
+            mutableStateOf(goalReflection.couldDoBetterReflection ?: "")
         }
 
         FieldHeader(
@@ -225,6 +230,7 @@ private fun GoalReflectionForm(
                     text = stringResource(id = R.string.reflections_can_do_better_placeholder)
                 )
             },
+            readOnly = readOnly,
             modifier = Modifier
                 .fillMaxWidth()
         )
@@ -233,7 +239,7 @@ private fun GoalReflectionForm(
         * "Can I do better?" text reflection
         *  ==========================*/
         var changesToImproveText by rememberSaveable {
-            mutableStateOf("")
+            mutableStateOf(goalReflection.stepsToImprove ?: "")
         }
 
         FieldHeader(
@@ -249,38 +255,41 @@ private fun GoalReflectionForm(
                     text = stringResource(id = R.string.reflections_changes_to_improve_placeholder)
                 )
             },
+            readOnly = readOnly,
             modifier = Modifier
                 .fillMaxWidth()
         )
 
-        /* ==========================
-        * Finish reflection button
-        *  ==========================*/
-        OutlinedButton(
-            onClick = {
-                val updatedGoal = goalReflection.copy(
-                    isCompleted = true,
-                    madeProgress = workedTowardsGoalSliderValue,
-                    madeProgressReflection = progressTextAnswer,
-                    couldDoBetter = canDoBetterSlideValue,
-                    couldDoBetterReflection = moreToAccomplishText,
-                    stepsToImprove = changesToImproveText
-                )
-
-                coroutineScope.launch {
-                    completeReflection(
-                        context = context,
-                        goal = goal,
-                        updatedGoalReflection = updatedGoal,
-                        setGoal = setGoal
+        if(!readOnly) {
+            /* ==========================
+            * Finish reflection button
+            *  ==========================*/
+            OutlinedButton(
+                onClick = {
+                    val updatedGoal = goalReflection.copy(
+                        isCompleted = true,
+                        madeProgress = workedTowardsGoalSliderValue,
+                        madeProgressReflection = progressTextAnswer,
+                        couldDoBetter = canDoBetterSlideValue,
+                        couldDoBetterReflection = moreToAccomplishText,
+                        stepsToImprove = changesToImproveText
                     )
-                    navBack()
-                }
-            },
-            shape = RoundedCornerShape(4.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = stringResource(id = R.string.complete_reflection))
+
+                    coroutineScope.launch {
+                        completeReflection(
+                            context = context,
+                            goal = goal,
+                            updatedGoalReflection = updatedGoal,
+                            setGoal = setGoal
+                        )
+                        navBack()
+                    }
+                },
+                shape = RoundedCornerShape(4.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = stringResource(id = R.string.complete_reflection))
+            }
         }
     }
 }

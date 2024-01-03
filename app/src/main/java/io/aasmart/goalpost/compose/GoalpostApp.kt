@@ -251,7 +251,7 @@ fun GoalpostApp(
         scheduleReflectionAlarm(context)
     }
 
-    NavHost(navController = navController, startDestination = Screen.Home.route) {
+    NavHost(navController = navController, startDestination = Screen.GoalReflections.route) {
         composable(Screen.Home.route) {
             if(showReflectionDialog)
                 GoalReflectionDialog { navGoalReflection() }

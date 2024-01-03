@@ -37,9 +37,9 @@ sealed class Screen(
     ) {
         object Goal : Screen(
             "${GoalReflections.route}/{goalId}",
-            args = listOf(navArgument("goalId") {
-                type = NavType.StringType
-            })
+            args = listOf(
+                navArgument("goalId") { type = NavType.StringType }
+            )
         ) {
             fun createRoute(goalId: String) = "${GoalReflections.route}/$goalId"
         }

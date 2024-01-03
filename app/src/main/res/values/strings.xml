@@ -31,6 +31,9 @@
     <string name="reminder_time_picker">Choose Reminder Time</string>
     <string name="reminder_time">Reminder Time</string>
 
+    <string name="view">View</string>
+    <string name="incomplete_reflections">Incomplete Goal Reflections</string>
+    <string name="complete_reflections">Completed Goal Reflections</string>
     <string name="return_to_reflections">Return to goal reflections</string>
     <string name="reflection_intro_title">Goal Reflection</string>
     <string name="complete_reflection">Complete Reflection</string>
