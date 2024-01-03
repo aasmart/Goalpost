@@ -4,7 +4,7 @@ import android.content.Context
 import io.aasmart.goalpost.data.settingsDataStore
 import io.aasmart.goalpost.receivers.GoalReflectionReceiver
 import io.aasmart.goalpost.utils.AlarmHelper
-import kotlinx.coroutines.flow.map
+import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
@@ -16,20 +16,37 @@ suspend fun scheduleReflectionAlarm(
 ) {
     context.settingsDataStore
         .data
-        .map { it.goalReflectionTimeMs }
         .collect {
             val targetTime = ZonedDateTime
                 .now(ZoneId.systemDefault())
                 .withSecond(0)
                 .withMinute(0)
                 .withHour(0)
-                .plus(it, ChronoUnit.MILLIS)
+                .plus(it.goalReflectionTimeMs, ChronoUnit.MILLIS)
+                .withZoneSameLocal(ZoneId.of("UTC"))
+
+            // Schedule an exact alarm if the reflection time has passed
+            // Doesn't schedule an alarm if a reflection is active
+            var targetMs = targetTime.toInstant().toEpochMilli()
+            if(!it.needsToReflect
+                && Instant.now().toEpochMilli() > targetMs
+            ) {
+                if(targetMs > it.lastCompletedReflection) {
+                    AlarmHelper.scheduleInexactAlarm(
+                        context,
+                        GoalReflectionReceiver::class.java,
+                        0,
+                        1
+                    )
+                }
+                targetMs += 24*60*60*1000 - (Instant.now().toEpochMilli() - targetMs)
+            }
 
             AlarmHelper.scheduleRepeatingAlarm(
                 context,
                 GoalReflectionReceiver::class.java,
                 DAY_MS,
-                targetTime.toInstant().toEpochMilli(),
+                targetMs,
                 0
             )
         }
