@@ -15,4 +15,8 @@ class GoalpostViewModel : ViewModel() {
     suspend fun addGoal(context: Context, goal: Goal) {
         GoalStorage.getInstance(context).addGoal(goal)
     }
+
+    suspend fun setGoal(context: Context, goal: Goal) {
+        GoalStorage.getInstance(context).setGoal(goal)
+    }
 }

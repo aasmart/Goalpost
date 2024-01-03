@@ -4,10 +4,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class GoalReflection(
-    val isMissing: Boolean,
+    val isCompleted: Boolean = false,
     val dateTimeMillis: Long,
-    val progression: String,
-    val mistakes: String,
-    val ideasToImprove: String,
-    val workedTowardsGoal: Int,
+    val madeProgress: Float? = null,
+    val madeProgressReflection: String? = null,
+    val couldDoBetter: Float? = null,
+    val couldDoBetterReflection: String? = null,
+    val stepsToImprove: String? = null,
 )

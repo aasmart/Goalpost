@@ -10,7 +10,16 @@ sealed class Screen(
 ) {
     object Home : Screen("home")
     object GoalManager : Screen("goalManager")
-    object Settings : Screen("settings")
+    object Settings : Screen("settings") {
+        object Category : Screen(
+            "${Settings.route}/{categoryId}",
+            args = listOf(navArgument("categoryId") {
+                type = NavType.StringType
+            })
+        ) {
+            fun createRoute(categoryId: String) = "${Settings.route}/${categoryId}"
+        }
+    }
     object GoalCalendar : Screen("goalCalendar")
     object CreateGoal : Screen("createGoal")
 
@@ -21,5 +30,18 @@ sealed class Screen(
         })
     ) {
         fun createRoute(goalId: String) = "goalDetails/$goalId"
+    }
+
+    object GoalReflections: Screen(
+        "goalReflections"
+    ) {
+        object Goal : Screen(
+            "${GoalReflections.route}/{goalId}",
+            args = listOf(
+                navArgument("goalId") { type = NavType.StringType }
+            )
+        ) {
+            fun createRoute(goalId: String) = "${GoalReflections.route}/$goalId"
+        }
     }
 }

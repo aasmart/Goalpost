@@ -26,6 +26,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.aasmart.goalpost.R
+import io.aasmart.goalpost.compose.GoalpostNav
+import io.aasmart.goalpost.compose.GoalpostNavScaffold
 import io.aasmart.goalpost.goals.models.Goal
 
 @Composable
@@ -34,7 +36,7 @@ fun Greeting(name: String = "Person") {
 }
 
 @Composable
-private fun GoalCard(goal: Goal) {
+private fun IncompleteGoalReflectionCard(goal: Goal) {
     Column(modifier = Modifier
         .background(Color.Black.copy(alpha = 0.075F), RoundedCornerShape(6.dp))
         .fillMaxWidth()
@@ -104,7 +106,7 @@ fun GoalsSnippetCard(
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 items(selectedGoals) {
-                    GoalCard(goal = it)
+                    IncompleteGoalReflectionCard(goal = it)
                 }
 
                 item {
@@ -128,18 +130,21 @@ fun GoalsSnippetCard(
 
 @Composable
 fun HomeScreen(
-    scaffoldPadding: PaddingValues,
-    createGoalHandle: () -> Unit,
-    goalManagerHandle: () -> Unit,
+    goalpostNav: GoalpostNav,
     goals: Array<Goal>
 ) {
-    Column(modifier = Modifier.padding(scaffoldPadding).fillMaxSize()) {
-        Greeting()
-        GoalsSnippetCard(
-            goals,
-            2,
-            goalManagerHandle,
-            createGoalHandle
-        )
+    GoalpostNavScaffold(nav = goalpostNav) {
+        Column(modifier = Modifier
+            .padding(it)
+            .fillMaxSize()
+        ) {
+            Greeting()
+            GoalsSnippetCard(
+                goals,
+                2,
+                goalpostNav.goalManager,
+                goalpostNav.createGoal
+            )
+        }
     }
 }
