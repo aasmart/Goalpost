@@ -33,6 +33,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import io.aasmart.goalpost.compose.GoalpostNav
+import io.aasmart.goalpost.compose.GoalpostNavScaffold
 import io.aasmart.goalpost.goals.models.Goal
 import java.time.Instant
 import java.time.ZoneId
@@ -42,7 +44,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun GoalCard(
+private fun IncompleteGoalReflectionCard(
     goal: Goal,
     cardHeight: Dp = 80.dp,
     calendarScreenNav: () -> Unit,
@@ -64,7 +66,9 @@ private fun GoalCard(
         ) {
             Text(
                 text = goal.title,
-                modifier = Modifier.weight(1f).padding(4.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(4.dp)
             )
 
             val dateTooltipState = remember { RichTooltipState() }
@@ -115,35 +119,39 @@ private fun GoalCard(
 
 @Composable
 fun GoalsManager(
-    scaffoldPadding: PaddingValues,
-    createGoalHandle: () -> Unit,
-    calendarScreenNav: () -> Unit,
-    manageGoalNav: (goal: Goal) -> Unit,
+    goalpostNav: GoalpostNav,
+    manageGoalNav: (Goal) -> Unit,
     goals: List<Goal>
 ) {
-    if(goals.isEmpty()) {
-        Column(
-            modifier = Modifier
-                .padding(scaffoldPadding)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text("You don't have any goals set.")
-            Button(onClick = createGoalHandle) {
-                Text("Set Goals")
+    GoalpostNavScaffold(nav = goalpostNav) {
+        if(goals.isEmpty()) {
+            Column(
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("You don't have any goals set.")
+                Button(onClick = goalpostNav.createGoal) {
+                    Text("Set Goals")
+                }
             }
-        }
-    } else {
-        LazyColumn(
-            contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier
-                .padding(scaffoldPadding)
-                .fillMaxSize()
-        ) {
-            itemsIndexed(goals) { index, goal ->
-                GoalCard(goal, calendarScreenNav = calendarScreenNav, manageGoalNav = manageGoalNav)
+        } else {
+            LazyColumn(
+                contentPadding = PaddingValues(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxSize()
+            ) {
+                itemsIndexed(goals) { index, goal ->
+                    IncompleteGoalReflectionCard(
+                        goal,
+                        calendarScreenNav = goalpostNav.goalCalendar,
+                        manageGoalNav = manageGoalNav
+                    )
+                }
             }
         }
     }

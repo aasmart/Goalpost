@@ -25,9 +25,10 @@ fun createNotificationChannel(context: Context) {
 }
 
 abstract class GoalpostNotification {
+    abstract val notificationId: Int
     abstract fun pushNotification(context: Context)
 
-    internal fun showNotification(context: Context, notification: Notification, notificationId: Int) {
+    internal fun showNotification(context: Context, notification: Notification) {
         with(NotificationManagerCompat.from(context)) {
             if (ActivityCompat.checkSelfPermission(
                     context,
@@ -44,6 +45,15 @@ abstract class GoalpostNotification {
             }
 
             notify(notificationId, notification)
+        }
+    }
+
+    internal fun cancelNotification(
+        context: Context,
+        notificationId: Int
+    ) {
+        with(NotificationManagerCompat.from(context)) {
+            cancel(notificationId)
         }
     }
 }

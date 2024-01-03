@@ -6,6 +6,92 @@
     <string name="salutation">Hello</string>
     <string name="set_goals">Set Goals</string>
     <string name="set_goals_reminder">It looks like you haven\'t set any goals. Consider
-                        pressing \"Set Goals\" to begin creating some goals.
+        pressing \"Set Goals\" to begin creating some goals.
+    </string>
+    <string name="time_to_reflect">Time to Reflect!</string>
+    <string name="reflection_dialog">Goods news, you have goals to reflect on!</string>
+    <string name="reflections_dialog_button">Go to reflections</string>
+    <string name="reflect">Reflect</string>
+    <string name="go_back">Go back</string>
+    <string name="failed_goal_load">Failed to load goal</string>
+
+    <string name="notification_reflect_title">Time to reflect on your goals!</string>
+    <string name="notification_reflect_desc">
+        Reflection on your goals is an important part of accomplishing them.
+    </string>
+    <string name="snooze">Snooze 15 Minutes</string>
+
+    <string name="dismiss">Dismiss</string>
+    <string name="confirm">Confirm</string>
+    <string name="reflection_time_picker">Choose Reflection Time</string>
+    <string name="reflection_time">Reflection Time</string>
+    <string name="reflection_time_description">The time of day that
+        you will be prompted to complete your goal reflections.
+    </string>
+    <string name="reminder_time_picker">Choose Reminder Time</string>
+    <string name="reminder_time">Reminder Time</string>
+
+    <string name="view">View</string>
+    <string name="incomplete_reflections">Incomplete Goal Reflections</string>
+    <string name="complete_reflections">Completed Goal Reflections</string>
+    <string name="return_to_reflections">Return to goal reflections</string>
+    <string name="reflection_intro_title">Goal Reflection</string>
+    <string name="complete_reflection">Complete Reflection</string>
+    <string name="reflection_insight">Answer the following questions to reflect on this goal.
+        \n\nWhen answering, try to reflect on your day as a whole to have more valuable responses.
+        More valuable answers will help you reach your goal!
+        If you\'re struggling, take some time to think without any distractions."
+    </string>
+    <string name="no_goals_to_reflect">There are no goals to reflect on</string>
+    <string name="agree">Agree</string>
+    <string name="neutral">Neutral</string>
+    <string name="disagree">Disagree</string>
+    <string name="reflection_made_goal_progress">I made progress on this goal</string>
+    <string name="reflection_made_progress_text">Why
+        did you agree/disagree with that statement?
+        What may have prevented you from making progress? Or, what
+        helped you make progress? Think about what you
+        may have done correctly or any mistakes you may have made.
+    </string>
+    <string name="reflections_made_progress_placeholder">
+        e.g. I agree because my goal is to read more, so I started out by
+        replacing 15 minutes of my screen time with reading.
+    </string>
+    <string name="reflection_can_do_better">I could do more to accomplish this goal</string>
+    <string name="reflections_can_do_better_text">Why did you agree/disagree
+        with that statement? Is there something in your life preventing
+        you from making progress on this goal? Are you already putting your
+        best foot forward to reach this goal?
+    </string>
+    <string name="reflections_can_do_better_placeholder">
+        e.g. I agree because I could replace more screen time
+        with reading.
+    </string>
+    <string name="reflection_previous_answer">Reflect on your previous answer</string>
+    <string name="reflections_changes_to_improve_title">
+        Think about all of your previous answers
+    </string>
+    <string name="reflections_changes_to_improve_text">
+        What actions will you take, change, or continue to reach this goal.
+        What are you currently doing right? What mistakes could you fix, if any?
+        If you\'re struggling, consider if this goal has a reasonable time frame,
+        is not too broad, and is currently realistic.
+    </string>
+    <string name="reflections_changes_to_improve_placeholder">
+        e.g. I will replace 10 more minutes of screen time with reading.
+    </string>
+    <string name="reflection_exit_confirm">
+        Are you sure you want to exit this reflection? Any responses will not be saved.
+    </string>
+    <string name="reflection_reached_end">
+        You have reached the end of the reflection!
+    </string>
+    <string name="reflection_reached_end_subtitle">
+        Once you have answered all the questions, you may finish the reflection.
+        You will NOT be able to edit your responses after completing the reflection
+        - this is intentional.
+    </string>
+    <string name="reflection_incomplete_toast">
+        You still have goal reflections to complete.
     </string>
 </resources>
