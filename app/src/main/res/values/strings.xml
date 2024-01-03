@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">Goalpost</string>
     <string name="channel_name">Goalpost</string>
+
+    <string name="home">Home</string>
+    <string name="goal_manager">Goal Manager</string>
+    <string name="create_goal">Create Goal</string>
+    <string name="goal_calendar">Goal Calendar</string>
+    <string name="settings">Settings</string>
+
+
     <string name="view_goals">Manage Goals</string>
     <string name="current_goal_snippet">Here are some of your goals,</string>
     <string name="salutation">Hello</string>

@@ -91,7 +91,7 @@ fun BottomNavBar(
             ) {
                 Icon(
                     Icons.Filled.Home,
-                    "Home",
+                    stringResource(id = R.string.home),
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -105,7 +105,7 @@ fun BottomNavBar(
             ) {
                 Icon(
                     Icons.Filled.CheckCircle,
-                    "Goal Manager",
+                    stringResource(id = R.string.goal_manager),
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -119,7 +119,7 @@ fun BottomNavBar(
             ) {
                 Icon(
                     Icons.Filled.Add,
-                    "Create Goal",
+                    stringResource(id = R.string.create_goal),
                     tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.fillMaxSize()
                 )
@@ -134,7 +134,7 @@ fun BottomNavBar(
             ) {
                 Icon(
                     Icons.Filled.DateRange,
-                    "Goal Schedule",
+                    stringResource(id = R.string.goal_calendar),
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -148,7 +148,7 @@ fun BottomNavBar(
             ) {
                 Icon(
                     Icons.Filled.Settings,
-                    "Settings",
+                    stringResource(id = R.string.settings),
                     modifier = Modifier.fillMaxSize()
                 )
             }
