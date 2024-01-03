@@ -184,7 +184,10 @@ fun GoalsReflectionScreen(
             ) {
                 coroutineScope.launch {
                     context.settingsDataStore.updateData {
-                        return@updateData it.toBuilder().setNeedsToReflect(false).build()
+                        return@updateData it.toBuilder()
+                            .setNeedsToReflect(false)
+                            .setLastCompletedReflection(Instant.now().toEpochMilli())
+                            .build()
                     }
                     try { backNav() } catch (_: Exception) { homeNav() }
                 }

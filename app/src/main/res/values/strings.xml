@@ -15,6 +15,16 @@
     <string name="go_back">Go back</string>
     <string name="failed_goal_load">Failed to load goal</string>
 
+    <string name="dismiss">Dismiss</string>
+    <string name="confirm">Confirm</string>
+    <string name="reflection_time_picker">Choose Reflection Time</string>
+    <string name="reflection_time">Reflection Time</string>
+    <string name="reflection_time_description">The time of day that
+        you will be prompted to complete your goal reflections.
+    </string>
+    <string name="reminder_time_picker">Choose Reminder Time</string>
+    <string name="reminder_time">Reminder Time</string>
+
     <string name="return_to_reflections">Return to goal reflections</string>
     <string name="reflection_intro_title">Goal Reflection</string>
     <string name="complete_reflection">Complete Reflection</string>

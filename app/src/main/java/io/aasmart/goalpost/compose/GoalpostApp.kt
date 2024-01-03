@@ -1,15 +1,16 @@
 package io.aasmart.goalpost.compose
 
 import android.Manifest
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -22,7 +23,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,8 +32,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -44,7 +43,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogWindowProvider
@@ -65,27 +63,12 @@ import io.aasmart.goalpost.compose.screens.GoalsManager
 import io.aasmart.goalpost.compose.screens.GoalsReflectionScreen
 import io.aasmart.goalpost.compose.screens.HomeScreen
 import io.aasmart.goalpost.compose.screens.Screen
-import io.aasmart.goalpost.compose.screens.SettingsScreen
+import io.aasmart.goalpost.compose.screens.settings.SettingsCategoryScreen
+import io.aasmart.goalpost.compose.screens.settings.SettingsScreen
 import io.aasmart.goalpost.compose.viewmodels.GoalpostViewModel
 import io.aasmart.goalpost.data.settingsDataStore
 import io.aasmart.goalpost.goals.models.Goal
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun TopBar() {
-    TopAppBar(
-        colors = TopAppBarDefaults.mediumTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary
-        ),
-        title = {
-            Text(
-                text = stringResource(R.string.app_name),
-                color = MaterialTheme.colorScheme.onPrimary,
-                textAlign = TextAlign.Center
-            )
-        }
-    )
-}
+import io.aasmart.goalpost.goals.scheduleReflectionAlarm
 
 @Composable
 fun BottomNavBar(
@@ -218,6 +201,20 @@ fun GoalpostNavScaffold(
 }
 
 @Composable
+fun LoadingWheel() {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.width(48.dp),
+            color = MaterialTheme.colorScheme.secondary,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+        )
+    }
+}
+
+@Composable
 fun GoalpostApp(
     navController: NavHostController,
     appViewModel: GoalpostViewModel = viewModel()
@@ -225,15 +222,15 @@ fun GoalpostApp(
     CheckPermissions()
 
     val context = LocalContext.current
-    val activity = LocalContext.current as Activity
 
     val goals by appViewModel
         .getGoals(context)
-        .collectAsStateWithLifecycle(initialValue = emptyList())
+        .collectAsStateWithLifecycle(initialValue = null)
 
     val goalpostNav = GoalpostNav(
         home = { navController.navigate(Screen.Home.route) },
         settings = { navController.navigate(Screen.Settings.route) },
+        settingCategory = { navController.navigate(Screen.Settings.Category.createRoute(it)) },
         goalManager = { navController.navigate(Screen.GoalManager.route) },
         createGoal = { navController.navigate(Screen.CreateGoal.route) },
         goalCalendar = { navController.navigate(Screen.GoalCalendar.route) },
@@ -245,6 +242,15 @@ fun GoalpostApp(
     val showReflectionDialog = settings?.needsToReflect == true
     val navGoalReflection = { navController.navigate(Screen.GoalReflections.route) }
 
+    if(settings == null || goals == null) {
+        LoadingWheel()
+        return
+    }
+
+    LaunchedEffect(key1 = settings?.goalReflectionTimeMs) {
+        scheduleReflectionAlarm(context)
+    }
+
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(Screen.Home.route) {
             if(showReflectionDialog)
@@ -252,7 +258,7 @@ fun GoalpostApp(
 
             HomeScreen(
                 goalpostNav,
-                goals = goals.toTypedArray()
+                goals = goals?.toTypedArray() ?: emptyArray()
             )
         }
         composable(Screen.GoalManager.route, Screen.GoalManager.args) {
@@ -261,7 +267,7 @@ fun GoalpostApp(
 
             GoalsManager(
                 goalpostNav,
-                goals = goals,
+                goals = goals ?: emptyList(),
                 manageGoalNav = {
                     navController.navigate(
                         Screen.GoalDetails.createRoute(it.id)
@@ -291,6 +297,12 @@ fun GoalpostApp(
                 goalpostNav
             )
         }
+        composable(Screen.Settings.Category.route, Screen.Settings.Category.args) {
+            SettingsCategoryScreen(
+                goalpostNav = goalpostNav,
+                categoryId = it.arguments?.getString("categoryId") ?: ""
+            )
+        }
         composable(Screen.GoalDetails.route, Screen.GoalDetails.args) {
             GoalDetailsScreen(
                 goalpostNav = goalpostNav,
@@ -300,7 +312,7 @@ fun GoalpostApp(
         }
         composable(Screen.GoalReflections.route) {
             GoalsReflectionScreen(
-                goals = goals,
+                goals = goals ?: emptyList(),
                 navGoalReflection = {
                     navController.navigate(Screen.GoalReflections.Goal.createRoute(it.id))
                 },
