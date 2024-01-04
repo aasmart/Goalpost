@@ -28,13 +28,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import io.aasmart.goalpost.R
 import io.aasmart.goalpost.compose.GoalpostNav
 import io.aasmart.goalpost.compose.GoalpostNavScaffold
-import io.aasmart.goalpost.compose.components.DatePickerField
-import io.aasmart.goalpost.compose.components.Dropdown
+import io.aasmart.goalpost.compose.components.TextFieldDatePicker
+import io.aasmart.goalpost.compose.components.TextFieldDropdown
 import io.aasmart.goalpost.goals.models.Goal
 import io.aasmart.goalpost.goals.models.GoalInterval
 import io.aasmart.goalpost.utils.InputUtils
@@ -73,7 +74,7 @@ private fun CreateGameButton(
         shape = RoundedCornerShape(4.dp),
         enabled = inputsValid
     ) {
-        Text(text = "Create Goal")
+        Text(text = stringResource(id = R.string.create_goal))
     }
 }
 
@@ -83,18 +84,18 @@ fun CreateGoalScreen(
     goalpostNav: GoalpostNav,
     addGoal: suspend (goal: Goal) -> Unit,
 ) {
-    val context = LocalContext.current
-
-    val goalNameMinLength = 1
-    val goalNameMaxLength = 32
-
-    val descriptionMinLength = 1
-
     var goalName by remember { mutableStateOf("") }
     var goalDescription by remember { mutableStateOf("") }
 
-    val isNameValid = InputUtils.isValidLength(goalName.trim(), goalNameMinLength, goalNameMaxLength)
-    val isDescriptionValid = InputUtils.isValidLength(goalDescription.trim(), descriptionMinLength)
+    val isNameValid = InputUtils.isValidLength(
+        goalName.trim(),
+        Goal.NAME_MIN_LENGTH,
+        Goal.NAME_MAX_LENGTH
+    )
+    val isDescriptionValid = InputUtils.isValidLength(
+        goalDescription.trim(),
+        Goal.DESCRIPTION_MIN_LENGTH
+    )
 
     GoalpostNavScaffold(nav = goalpostNav) { padding ->
         Column(
@@ -119,16 +120,36 @@ fun CreateGoalScreen(
                 value = goalName,
                 onValueChange = { goalName = it },
                 label = {
-                    Text(text = "Goal Name")
+                    Text(text = stringResource(id = R.string.goal_name))
                 },
                 modifier = Modifier.fillMaxWidth(),
                 maxLines = 1,
                 isError = !isNameValid,
                 supportingText = {
                     if(!isNameValid)
-                        Text(text = "Name must be between $goalNameMinLength and $goalNameMaxLength characters")
+                        Text(
+                            text = stringResource(id = R.string.between_num_characters)
+                                .replace(
+                                    "{LABEL}",
+                                    stringResource(id = R.string.goal_name)
+                                )
+                                .replace(
+                                    "{MIN}",
+                                    Goal.NAME_MIN_LENGTH.toString()
+                                )
+                                .replace(
+                                    "{MAX}",
+                                    Goal.NAME_MAX_LENGTH.toString()
+                                )
+                        )
                     else
-                        Text(text = "${goalName.trim().length}/${goalNameMaxLength} characters")
+                        Text(
+                            text = stringResource(id = R.string.num_characters)
+                                .replace(
+                                    "{NUM_CHARACTERS}",
+                                    "${goalName.trim().length}/${Goal.NAME_MAX_LENGTH}"
+                                )
+                        )
                 }
             )
 
@@ -137,14 +158,30 @@ fun CreateGoalScreen(
                 value = goalDescription,
                 onValueChange = { goalDescription = it },
                 label = {
-                    Text(text = "Goal Description")
+                    Text(text = stringResource(id = R.string.goal_description))
                 },
                 isError = !isDescriptionValid,
                 supportingText = {
                     if(!isDescriptionValid)
-                        Text(text = "Description must be at least $descriptionMinLength character(s) in length")
+                        Text(
+                            text = stringResource(id = R.string.at_least_num_characters)
+                                .replace(
+                                    "{LABEL}",
+                                    stringResource(id = R.string.goal_description)
+                                )
+                                .replace(
+                                    "{MIN}",
+                                    Goal.DESCRIPTION_MIN_LENGTH.toString()
+                                )
+                        )
                     else
-                        Text(text = "${goalDescription.trim().length} character(s)")
+                        Text(
+                            text = stringResource(id = R.string.num_characters)
+                                .replace(
+                                    "{NUM_CHARACTERS}",
+                                    goalDescription.trim().length.toString()
+                                )
+                        )
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -159,8 +196,8 @@ fun CreateGoalScreen(
             var datePickerExpanded by remember { mutableStateOf(false) }
             val datePickerState = rememberDatePickerState()
 
-            DatePickerField(
-                label = "Goal Completion Date",
+            TextFieldDatePicker(
+                label = stringResource(id = R.string.goal_completion_date),
                 currentTime = now,
                 datePickerState,
                 datePickerExpanded,
@@ -175,7 +212,7 @@ fun CreateGoalScreen(
                 mutableIntStateOf(0)
             }
 
-            Dropdown(
+            TextFieldDropdown(
                 label = "Remind Interval",
                 expanded = remindIntervalExpanded,
                 menuHeight = 150.dp,
@@ -206,8 +243,8 @@ fun CreateGoalScreen(
             }
             val reflectionIntervals = GoalInterval.defaultList
 
-            Dropdown(
-                label = "Reflection Interval",
+            TextFieldDropdown(
+                label = stringResource(id = R.string.create_reflection_frequency),
                 expanded = reflectionIntervalExpanded,
                 menuHeight = 150.dp,
                 selectedIndex = selectedReflectionIntervalIndex,
@@ -218,11 +255,10 @@ fun CreateGoalScreen(
                     Row {
                         Icon(
                             Icons.Default.Info,
-                            contentDescription = "Remind interval info"
+                            contentDescription = stringResource(id = R.string.create_reflection_frequency_info_desc)
                         )
                         Text(
-                            text = "When it's time to reflect on goals, this will determine how frequently this goal needs reflections. " +
-                                    "This interval begins the day this goal is created."
+                            text = stringResource(id = R.string.create_reflection_frequency_info)
                         )
                     }
                 },

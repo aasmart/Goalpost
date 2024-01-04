@@ -23,6 +23,10 @@ data class Goal(
 ) {
 
     companion object {
+        const val NAME_MIN_LENGTH = 1
+        const val NAME_MAX_LENGTH = 32
+        const val DESCRIPTION_MIN_LENGTH = 1
+
         /**
          * Creates a goal with the reflections automatically generated based on
          * the time period, the begin date, and the end date
