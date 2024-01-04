@@ -12,12 +12,15 @@ import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import io.aasmart.goalpost.R
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -26,13 +29,13 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DatePickerField(
-    label: String,
+private fun DatePickerField(
     currentTime: Instant,
     datePickerState: DatePickerState,
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
-    dateValidator: (Long) -> Boolean
+    dateValidator: (Long) -> Boolean,
+    anchorContent: @Composable (String) -> Unit
 ) {
     val selectedTime = datePickerState.selectedDateMillis?.let { Instant.ofEpochMilli(it) } ?: currentTime
     val zonedSelectedTime = LocalDateTime.ofInstant(selectedTime, ZoneOffset.UTC)
@@ -46,7 +49,7 @@ fun DatePickerField(
                         onExpandedChange(false)
                     }
                 ) {
-                    Text("Confirm")
+                    Text(stringResource(id = R.string.confirm))
                 }
             },
             dismissButton = {
@@ -55,7 +58,7 @@ fun DatePickerField(
                         onExpandedChange(false)
                     }
                 ) {
-                    Text("Cancel")
+                    Text(stringResource(id = R.string.cancel))
                 }
             }
         ) {
@@ -70,25 +73,87 @@ fun DatePickerField(
         "${zonedSelectedTime.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} " +
         "${zonedSelectedTime.dayOfMonth}, ${zonedSelectedTime.year}"
 
-    TextField(
-        value = dateString,
-        onValueChange = {},
-        readOnly = true,
-        label = { Text(text = label) },
-        leadingIcon = {
-            Icon(Icons.Default.DateRange, "Select date")
-        },
-        interactionSource = remember { MutableInteractionSource() }
-            .also { interactionSource ->
-                LaunchedEffect(interactionSource) {
-                    interactionSource.interactions.collect {
-                        if (it !is PressInteraction.Release)
-                            return@collect
-                        onExpandedChange(true)
-                    }
-                }
+    anchorContent(dateString)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TextFieldDatePicker(
+    label: String,
+    currentTime: Instant,
+    datePickerState: DatePickerState,
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    dateValidator: (Long) -> Boolean
+) {
+    DatePickerField(
+        currentTime = currentTime,
+        datePickerState = datePickerState,
+        expanded = expanded,
+        onExpandedChange = onExpandedChange,
+        dateValidator = dateValidator
+    ) {
+        TextField(
+            value = it,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(text = label) },
+            leadingIcon = {
+                Icon(Icons.Default.DateRange, stringResource(id = R.string.select_date))
             },
-        modifier = Modifier
-            .fillMaxWidth()
-    )
+            interactionSource = remember { MutableInteractionSource() }
+                .also { interactionSource ->
+                    LaunchedEffect(interactionSource) {
+                        interactionSource.interactions.collect {
+                            if (it !is PressInteraction.Release)
+                                return@collect
+                            onExpandedChange(true)
+                        }
+                    }
+                },
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun OutlinedTextFieldDatePicker(
+    label: String,
+    currentTime: Instant,
+    datePickerState: DatePickerState,
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    dateValidator: (Long) -> Boolean
+) {
+    DatePickerField(
+        currentTime = currentTime,
+        datePickerState = datePickerState,
+        expanded = expanded,
+        onExpandedChange = onExpandedChange,
+        dateValidator = dateValidator
+    ) { text ->
+        OutlinedTextField(
+            value = text,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(text = label) },
+            leadingIcon = {
+                Icon(Icons.Default.DateRange, stringResource(id = R.string.select_date))
+            },
+            interactionSource = remember { MutableInteractionSource() }
+                .also { interactionSource ->
+                    LaunchedEffect(interactionSource) {
+                        interactionSource.interactions.collect {
+                            if (it !is PressInteraction.Release)
+                                return@collect
+                            onExpandedChange(true)
+                        }
+                    }
+                },
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+    }
 }
