@@ -321,6 +321,7 @@ fun GoalpostApp(
                 goalpostNav = goalpostNav,
                 goalId = it.arguments?.getString("goalId") ?: "",
                 getGoals = { context -> appViewModel.getGoals(context) },
+                setGoals = { context, goal -> appViewModel.setGoal(context, goal) }
             )
         }
         composable(Screen.GoalReflections.route) {

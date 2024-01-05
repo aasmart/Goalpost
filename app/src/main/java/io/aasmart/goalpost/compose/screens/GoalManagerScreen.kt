@@ -15,8 +15,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -46,7 +46,7 @@ import java.util.Locale
 @Composable
 private fun IncompleteGoalReflectionCard(
     goal: Goal,
-    cardHeight: Dp = 80.dp,
+    cardHeight: Dp = 70.dp,
     calendarScreenNav: () -> Unit,
     manageGoalNav: (Goal) -> Unit,
 ) {
@@ -107,7 +107,7 @@ private fun IncompleteGoalReflectionCard(
                     .aspectRatio(1f),
             ) {
                 Icon(
-                    Icons.Default.ArrowForward,
+                    Icons.Default.KeyboardArrowRight,
                     contentDescription = "View goal",
                     modifier = Modifier.fillMaxSize(),
                     tint = MaterialTheme.colorScheme.primary

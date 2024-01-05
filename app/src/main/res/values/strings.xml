@@ -7,6 +7,7 @@
     <string name="create_goal">Create Goal</string>
     <string name="goal_calendar">Goal Calendar</string>
     <string name="settings">Settings</string>
+    <string name="reflections_calendar">Goal Reflection Calendar</string>
 
     <string name="create_reflection_frequency">Reflection Frequency</string>
     <string name="create_reflection_frequency_info">
