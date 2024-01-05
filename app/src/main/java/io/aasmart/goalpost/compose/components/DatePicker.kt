@@ -37,7 +37,8 @@ private fun DatePickerField(
     dateValidator: (Long) -> Boolean,
     anchorContent: @Composable (String) -> Unit
 ) {
-    val selectedTime = datePickerState.selectedDateMillis?.let { Instant.ofEpochMilli(it) } ?: currentTime
+    val selectedTime = datePickerState.selectedDateMillis
+        ?.let { Instant.ofEpochMilli(it) } ?: currentTime
     val zonedSelectedTime = LocalDateTime.ofInstant(selectedTime, ZoneOffset.UTC)
 
     if(expanded) {

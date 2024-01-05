@@ -41,6 +41,8 @@ import io.aasmart.goalpost.goals.models.GoalInterval
 import io.aasmart.goalpost.utils.InputUtils
 import kotlinx.coroutines.launch
 import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
 @Composable
@@ -199,10 +201,24 @@ fun CreateGoalScreen(
             TextFieldDatePicker(
                 label = stringResource(id = R.string.goal_completion_date),
                 currentTime = now,
-                datePickerState,
-                datePickerExpanded,
-                { datePickerExpanded = it },
-                { it >= now.truncatedTo(ChronoUnit.DAYS).toEpochMilli() }
+                datePickerState = datePickerState,
+                expanded = datePickerExpanded,
+                onExpandedChange = { datePickerExpanded = it },
+                dateValidator = { time ->
+                    /* This drove me insane. Since time picker is in UTC, the min time
+                    * is inaccurate in the current time zone. If we treat the current instant
+                    * as local time, we offset it to UTC time and it works*/
+
+                    val offsetMilli = OffsetDateTime
+                        .ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault())
+                        .offset.totalSeconds * 1000L
+                    val currentMilli = Instant.now()
+                        .plusMillis(offsetMilli)
+                        .truncatedTo(ChronoUnit.DAYS)
+                        .toEpochMilli()
+
+                    time >= currentMilli
+                }
             )
 
             var remindIntervalExpanded by remember {
