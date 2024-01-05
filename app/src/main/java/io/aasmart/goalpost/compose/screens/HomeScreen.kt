@@ -57,15 +57,13 @@ private fun IncompleteGoalReflectionCard(goal: Goal) {
 @Composable
 fun GoalsSnippetCard(
     goals: Array<Goal>,
-    displayNumGoals: Int = 2,
+    displayNumGoals: Int = 3,
     goalManagerHandle: () -> Unit,
     createGoalHandle: () -> Unit
 ) {
     val selectedGoals = goals
-        .asSequence()
-        .shuffled()
+        .sortedBy { it.completionDate }
         .take(displayNumGoals)
-        .toList()
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -141,7 +139,7 @@ fun HomeScreen(
             Greeting()
             GoalsSnippetCard(
                 goals,
-                2,
+                3,
                 goalpostNav.goalManager,
                 goalpostNav.createGoal
             )
