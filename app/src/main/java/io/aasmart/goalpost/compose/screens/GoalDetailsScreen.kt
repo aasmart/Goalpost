@@ -52,6 +52,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -65,6 +66,7 @@ import io.aasmart.goalpost.compose.components.OutlinedTextFieldDropdown
 import io.aasmart.goalpost.goals.models.Goal
 import io.aasmart.goalpost.goals.models.GoalInterval
 import io.aasmart.goalpost.goals.models.GoalReflection
+import io.aasmart.goalpost.utils.ColorUtils
 import io.aasmart.goalpost.utils.InputUtils
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -88,7 +90,16 @@ private fun GoalReflectionCalendarDay(
                 !goalReflection.isCompleted
                 && Instant.now().toEpochMilli() > goalReflection.dateTimeMillis
             )
-                MaterialTheme.colorScheme.error
+                MaterialTheme.colorScheme.errorContainer
+            else if(goalReflection.isCompleted) {
+                ColorUtils.lerp(
+                    start = MaterialTheme.colorScheme.error,
+                    stop = colorResource(id = R.color.light_green),
+                    amount = goalReflection.madeProgress
+                        ?.div((GoalReflection.SLIDER_MIN_VAL + GoalReflection.SLIDER_MAX_VAL))
+                        ?: 0f
+                )
+            }
             else
                 MaterialTheme.colorScheme.primary
         } else

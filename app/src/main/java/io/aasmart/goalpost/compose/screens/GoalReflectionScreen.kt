@@ -154,7 +154,7 @@ private fun GoalReflectionForm(
             },
             value = workedTowardsGoalSliderValue,
             onValueChange = { workedTowardsGoalSliderValue = it },
-            valueRange = 0f..4f,
+            valueRange = GoalReflection.SLIDER_MIN_VAL..GoalReflection.SLIDER_MAX_VAL,
             steps = 3,
             stepLabels = mapOf(
                 0 to stringResource(id = R.string.disagree),
@@ -205,7 +205,7 @@ private fun GoalReflectionForm(
             },
             value = canDoBetterSlideValue,
             onValueChange = { canDoBetterSlideValue = it },
-            valueRange = 0f..4f,
+            valueRange = GoalReflection.SLIDER_MIN_VAL..GoalReflection.SLIDER_MAX_VAL,
             steps = 3,
             stepLabels = mapOf(
                 0 to stringResource(id = R.string.disagree),
