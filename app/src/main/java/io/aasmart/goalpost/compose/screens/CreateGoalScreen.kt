@@ -25,6 +25,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -86,8 +87,8 @@ fun CreateGoalScreen(
     goalpostNav: GoalpostNav,
     addGoal: suspend (goal: Goal) -> Unit,
 ) {
-    var goalName by remember { mutableStateOf("") }
-    var goalDescription by remember { mutableStateOf("") }
+    var goalName by rememberSaveable { mutableStateOf("") }
+    var goalDescription by rememberSaveable { mutableStateOf("") }
 
     val isNameValid = InputUtils.isValidLength(
         goalName.trim(),
@@ -224,7 +225,7 @@ fun CreateGoalScreen(
             var remindIntervalExpanded by remember {
                 mutableStateOf(false)
             }
-            var remindSelectedIndex by remember {
+            var remindSelectedIndex by rememberSaveable {
                 mutableIntStateOf(0)
             }
 
@@ -254,7 +255,7 @@ fun CreateGoalScreen(
             var reflectionIntervalExpanded by remember {
                 mutableStateOf(false)
             }
-            var selectedReflectionIntervalIndex by remember {
+            var selectedReflectionIntervalIndex by rememberSaveable {
                 mutableIntStateOf(0)
             }
             val reflectionIntervals = GoalInterval.defaultList

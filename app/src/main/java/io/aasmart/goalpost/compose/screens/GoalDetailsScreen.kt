@@ -356,7 +356,7 @@ private fun GoalDisplay(
         // GOAL COMPLETION DATE PICKER
         val now = Instant.now()
         if(isEditing) {
-            var goalCompletionDatePickerExpanded by rememberSaveable {
+            var goalCompletionDatePickerExpanded by remember {
                 mutableStateOf(false)
             }
             OutlinedTextFieldDatePicker(
