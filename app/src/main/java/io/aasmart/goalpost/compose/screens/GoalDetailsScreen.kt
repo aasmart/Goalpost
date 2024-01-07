@@ -208,8 +208,6 @@ private fun GoalReflectionCalendar(
                     .plusMillis((it) * 24 * 60 * 60 * 1000L)
                     .toEpochMilli()
 
-                println(dayMillis)
-
                 GoalReflectionCalendarDay(
                     dateTimeGoalReflectionMap[dayMillis],
                     day = (it + 1)
