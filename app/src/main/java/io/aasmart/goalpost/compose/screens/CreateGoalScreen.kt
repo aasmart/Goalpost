@@ -39,6 +39,9 @@ import io.aasmart.goalpost.compose.components.TextFieldDatePicker
 import io.aasmart.goalpost.compose.components.TextFieldDropdown
 import io.aasmart.goalpost.goals.models.Goal
 import io.aasmart.goalpost.goals.models.GoalInterval
+import io.aasmart.goalpost.utils.GoalpostUtils
+import io.aasmart.goalpost.utils.GoalpostUtils.DAY_MS
+import io.aasmart.goalpost.utils.GoalpostUtils.reflectionAsDateTime
 import io.aasmart.goalpost.utils.InputUtils
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -54,9 +57,14 @@ private fun CreateGoalButton(
     goalInterval: GoalInterval,
     addGoal : suspend (goal: Goal) -> Unit,
     goalManagerHandle: () -> Unit,
-    inputsValid: Boolean
+    inputsValid: Boolean,
+    reflectionTime: Long
 ) {
     val scope = rememberCoroutineScope()
+
+    val beginDate = System.currentTimeMillis().plus(
+        if(Instant.now() > reflectionAsDateTime(reflectionTime)) DAY_MS else 0
+    )
 
     Button(
         onClick = {
@@ -64,8 +72,8 @@ private fun CreateGoalButton(
                 title = goalName,
                 description = goalDescription,
                 timePeriod = goalInterval,
-                beginDate = System.currentTimeMillis(),
-                completionDate = goalCompletionDate
+                beginDate = beginDate,
+                completionDate = goalCompletionDate + (DAY_MS - 1)
             )
 
             scope.launch {
@@ -86,6 +94,7 @@ private fun CreateGoalButton(
 fun CreateGoalScreen(
     goalpostNav: GoalpostNav,
     addGoal: suspend (goal: Goal) -> Unit,
+    reflectionTime: Long,
 ) {
     var goalName by rememberSaveable { mutableStateOf("") }
     var goalDescription by rememberSaveable { mutableStateOf("") }
@@ -210,11 +219,16 @@ fun CreateGoalScreen(
                     * is inaccurate in the current time zone. If we treat the current instant
                     * as local time, we offset it to UTC time and it works*/
 
+                    // Get the current reflection time to prevent scheduling goals on the same day
+                    // if a reflection occurred
+                    val reflectionInstant = reflectionAsDateTime(reflectionTime)
+
                     val offsetMilli = OffsetDateTime
                         .ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault())
                         .offset.totalSeconds * 1000L
                     val currentMilli = Instant.now()
                         .plusMillis(offsetMilli)
+                        .plusMillis(if(Instant.now() > reflectionInstant) DAY_MS else 0)
                         .truncatedTo(ChronoUnit.DAYS)
                         .toEpochMilli()
 
@@ -289,7 +303,8 @@ fun CreateGoalScreen(
                 goalInterval = reflectionIntervals[selectedReflectionIntervalIndex],
                 addGoal = addGoal,
                 goalManagerHandle = goalpostNav.goalManager,
-                inputsValid = isNameValid && isDescriptionValid
+                inputsValid = isNameValid && isDescriptionValid,
+                reflectionTime = reflectionTime
             )
         }
     }

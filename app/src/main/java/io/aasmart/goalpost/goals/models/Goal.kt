@@ -69,7 +69,9 @@ data class Goal(
                 }
 
                 // Add reflection for final day regardless of the reflection interval
-                tempReflections.add(GoalReflection(dateTimeMillis = completionDate))
+                tempReflections.add(
+                    GoalReflection(dateTimeMillis = completionDate)
+                )
             }
 
             return tempReflections
