@@ -67,6 +67,7 @@ import io.aasmart.goalpost.goals.models.Goal
 import io.aasmart.goalpost.goals.models.GoalInterval
 import io.aasmart.goalpost.goals.models.GoalReflection
 import io.aasmart.goalpost.utils.ColorUtils
+import io.aasmart.goalpost.utils.GoalpostUtils
 import io.aasmart.goalpost.utils.InputUtils
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -590,13 +591,21 @@ fun GoalDetailsScreen(
                             )
 
                         // Update the goal
+                        val completionDateTime = goalCompletionDatePickerState
+                            .selectedDateMillis
+                            ?.let {
+                                Instant
+                                    .ofEpochMilli(it)
+                                    .truncatedTo(ChronoUnit.DAYS)
+                                    .plusMillis(GoalpostUtils.DAY_MS - 1)
+                        }
+
                         setGoals(
                             context, goal.copy(
                                 title = goalName,
                                 description = goalDescription,
                                 timePeriod = timePeriod,
-                                completionDate =
-                                goalCompletionDatePickerState.selectedDateMillis ?: 0,
+                                completionDate = completionDateTime?.toEpochMilli() ?: 0,
                                 id = goal.id,
                                 reflections = reflections
                             )

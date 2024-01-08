@@ -39,7 +39,6 @@ import io.aasmart.goalpost.compose.components.TextFieldDatePicker
 import io.aasmart.goalpost.compose.components.TextFieldDropdown
 import io.aasmart.goalpost.goals.models.Goal
 import io.aasmart.goalpost.goals.models.GoalInterval
-import io.aasmart.goalpost.utils.GoalpostUtils
 import io.aasmart.goalpost.utils.GoalpostUtils.DAY_MS
 import io.aasmart.goalpost.utils.GoalpostUtils.reflectionAsDateTime
 import io.aasmart.goalpost.utils.InputUtils
@@ -65,6 +64,9 @@ private fun CreateGoalButton(
     val beginDate = System.currentTimeMillis().plus(
         if(Instant.now() > reflectionAsDateTime(reflectionTime)) DAY_MS else 0
     )
+    val completionDateTime = Instant.ofEpochMilli(goalCompletionDate)
+        .truncatedTo(ChronoUnit.DAYS)
+        .plusMillis(DAY_MS - 1)
 
     Button(
         onClick = {
@@ -73,7 +75,7 @@ private fun CreateGoalButton(
                 description = goalDescription,
                 timePeriod = goalInterval,
                 beginDate = beginDate,
-                completionDate = goalCompletionDate + (DAY_MS - 1)
+                completionDate = completionDateTime.toEpochMilli()
             )
 
             scope.launch {
