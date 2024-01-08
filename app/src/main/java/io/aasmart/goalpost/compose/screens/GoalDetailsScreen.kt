@@ -148,7 +148,6 @@ private fun GoalReflectionCalendar(
     goalReflectionTimeMillis: Long,
     goalReflectionNav: (Goal, GoalReflection) -> Unit,
 ) {
-    println(goal)
     var zonedNow by rememberSaveable {
         mutableStateOf(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()))
     }
@@ -607,8 +606,7 @@ fun GoalDetailsScreen(
                         val completionDateTime = goalCompletionDatePickerState
                             .selectedDateMillis
                             ?.let {
-                                Instant
-                                    .ofEpochMilli(it)
+                                Instant.ofEpochMilli(it)
                                     .atZone(ZoneId.of("UTC"))
                                     .with(ChronoField.MILLI_OF_DAY, GoalpostUtils.DAY_MS - 1)
                                     .toInstant()
@@ -620,24 +618,21 @@ fun GoalDetailsScreen(
                         * This is why Goal#createReflectionFromDate has an additional time
                         * period added to it
                         */
+                        val zonedNow = ZonedDateTime
+                            .ofInstant(
+                                Instant.now(),
+                                ZoneId.systemDefault()
+                            ).with(ChronoField.MILLI_OF_DAY, GoalpostUtils.DAY_MS - 1)
                         val reflections = goal.reflections
                             .filter {
-                                val zonedNow = ZonedDateTime
-                                    .ofInstant(
-                                        Instant.now(),
-                                        ZoneId.systemDefault()
-                                    ).with(
-                                        ChronoField.MILLI_OF_DAY, GoalpostUtils.DAY_MS - 1
-                                    )
-
                                 val zonedReflectionDateTime = Instant
                                     .ofEpochMilli(it.dateTimeMillis)
                                     .atZone(ZoneId.systemDefault())
 
-                                return@filter zonedReflectionDateTime <= zonedNow
+                                return@filter zonedReflectionDateTime <= zonedNow || it.isCompleted
                             }.plus(
                                 Goal.createReflectionsFromDate(
-                                    System.currentTimeMillis() + timePeriod.intervalMillis,
+                                    System.currentTimeMillis() + GoalpostUtils.DAY_MS,
                                     timePeriod,
                                     completionDateTime?.toEpochMilli() ?: 0
                                 )

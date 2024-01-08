@@ -1,5 +1,6 @@
 package io.aasmart.goalpost.goals.models
 
+import io.aasmart.goalpost.utils.GoalpostUtils
 import kotlinx.serialization.Serializable
 import java.time.Instant
 import java.time.ZoneId
@@ -61,8 +62,9 @@ data class Goal(
                 var reflectionDate = ZonedDateTime
                     .ofInstant(Instant.ofEpochMilli(beginDate), ZoneId.of("UTC"))
 
-                // Add all reflections up until the completion date
-                while (reflectionDate.toInstant().toEpochMilli() < completionDate) {
+                // Add all reflections until within less than 24hrs of the completion date
+                // This ensures a reflection can be added on the final day, regardless of interval
+                while (completionDate - reflectionDate.toInstant().toEpochMilli() >= GoalpostUtils.DAY_MS) {
                     val ms = reflectionDate.toInstant().toEpochMilli()
                     tempReflections += GoalReflection(dateTimeMillis = ms)
                     reflectionDate = reflectionDate.plus(timePeriod.intervalMillis, ChronoUnit.MILLIS)
