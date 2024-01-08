@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,7 +29,11 @@ import androidx.compose.material3.RichTooltipBox
 import androidx.compose.material3.RichTooltipState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
@@ -123,11 +128,15 @@ fun GoalsManager(
     manageGoalNav: (Goal) -> Unit,
     goals: List<Goal>
 ) {
-    GoalpostNavScaffold(nav = goalpostNav) {
+    var completeGoalScreen by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    GoalpostNavScaffold(nav = goalpostNav) { padding ->
         if(goals.isEmpty()) {
             Column(
                 modifier = Modifier
-                    .padding(it)
+                    .padding(padding)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -138,19 +147,61 @@ fun GoalsManager(
                 }
             }
         } else {
-            LazyColumn(
-                contentPadding = PaddingValues(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+            Column(
                 modifier = Modifier
-                    .padding(it)
+                    .padding(padding)
                     .fillMaxSize()
             ) {
-                itemsIndexed(goals) { index, goal ->
-                    IncompleteGoalReflectionCard(
-                        goal,
-                        calendarScreenNav = goalpostNav.goalCalendar,
-                        manageGoalNav = manageGoalNav
-                    )
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = { completeGoalScreen = false },
+                        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = (
+                                if(!completeGoalScreen)
+                                    MaterialTheme.colorScheme.background
+                                else
+                                    MaterialTheme.colorScheme.secondaryContainer
+                            ),
+                            contentColor = MaterialTheme.colorScheme.onBackground
+                        ),
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(text = "In Progress Goals")
+                    }
+                    Button(
+                        onClick = { completeGoalScreen = true },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = (
+                                if(completeGoalScreen)
+                                    MaterialTheme.colorScheme.background
+                                else
+                                    MaterialTheme.colorScheme.secondaryContainer
+                            ),
+                            contentColor = MaterialTheme.colorScheme.onBackground
+                        ),
+                        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(text = "Completed Goals")
+                    }
+                }
+                LazyColumn(
+                    contentPadding = PaddingValues(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    itemsIndexed(
+                        goals.filter { it.isCompleted() == completeGoalScreen }
+                    ) { _, goal ->
+                        IncompleteGoalReflectionCard(
+                            goal,
+                            calendarScreenNav = goalpostNav.goalCalendar,
+                            manageGoalNav = manageGoalNav
+                        )
+                    }
                 }
             }
         }

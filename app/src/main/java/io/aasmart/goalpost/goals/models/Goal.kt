@@ -100,4 +100,9 @@ data class Goal(
             it.dateTimeMillis
         }
     }
+
+    fun isCompleted(): Boolean {
+        return reflections.none{ !it.isCompleted }
+                && System.currentTimeMillis() > completionDate
+    }
 }
