@@ -69,6 +69,22 @@
     <string name="reminder_time_picker">Choose Reminder Time</string>
     <string name="reminder_time">Reminder Time</string>
 
+    <string name="morning_reminder_time">Morning Reminder Time</string>
+    <string name="choose_morning_reminder_time">Choose Morning Reminder Time</string>
+    <string name="morning_reminder_description">A time, ideally in a morning
+        that you\'ll receive a reminder about your goals.
+    </string>
+    <string name="midday_reminder_time">Mid-Day Reminder Time</string>
+    <string name="choose_midday_reminder_time">Choose Mid-Day Reminder Time</string>
+    <string name="midday_reminder_description">A time, ideally during the middle of the day
+        that you\'ll receive a reminder about your goals.
+    </string>
+    <string name="evening_reminder_time">Evening Reminder Time</string>
+    <string name="choose_evening_reminder_time">Choose Evening Reminder Time</string>
+    <string name="evening_reminder_description">A time, ideally during the evening
+        that you\'ll receive a reminder about your goals.
+    </string>
+
     <string name="view">View</string>
     <string name="incomplete_reflections">Incomplete Goal Reflections</string>
     <string name="complete_reflections">Completed Goal Reflections</string>

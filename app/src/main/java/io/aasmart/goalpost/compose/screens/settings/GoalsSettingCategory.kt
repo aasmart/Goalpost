@@ -136,4 +136,205 @@ fun GoalCategoryContent() {
         },
         modifier = Modifier.fillMaxWidth()
     )
+
+    var morningReminderTimePickerDialogVisible by remember {
+        mutableStateOf(false)
+    }
+    val selectedMorningReminderTime = settingsState?.morningReminderTimeMs?.let {
+        millisToHoursAndMinutes(it)
+    } ?: (0 to 0)
+
+    var selectedMorningReminderHours by remember {
+        mutableIntStateOf(selectedMorningReminderTime.first)
+    }
+    var selectedMorningReminderMinutes by remember {
+        mutableIntStateOf(selectedMorningReminderTime.second)
+    }
+
+    // Create the label displayed in the text field
+
+    val morningReminderTimePickerState = rememberTimePickerState(
+        selectedMorningReminderHours,
+        selectedMorningReminderMinutes,
+        false
+    )
+
+    TextFieldTimePicker(
+        timePickerState = morningReminderTimePickerState,
+        selectedHours = selectedMorningReminderHours,
+        selectedMinutes = selectedMorningReminderMinutes,
+        onTimePickerSubmit = { hour, minute ->
+            selectedMorningReminderHours = hour
+            selectedMorningReminderMinutes = minute
+
+            val selectedMillis =
+                (selectedMorningReminderHours * 3600 + selectedMorningReminderMinutes * 60) * 1000L
+
+            coroutineScope.launch {
+                context.settingsDataStore.updateData {
+                    return@updateData it.toBuilder()
+                        .setMorningReminderTimeMs(selectedMillis)
+                        .build()
+                }
+            }
+
+            morningReminderTimePickerDialogVisible = false
+        },
+        timePickerDialogVisible = morningReminderTimePickerDialogVisible,
+        onVisibilityChanged = { morningReminderTimePickerDialogVisible = it },
+        label = {
+            Text(text = stringResource(id = R.string.morning_reminder_time))
+        },
+        leadingIcon = {
+            Icon(Icons.Filled.DateRange, contentDescription = null)
+        },
+        supportingText = {
+            Text(
+                text = stringResource(id = R.string.morning_reminder_description),
+                fontWeight = FontWeight.Light
+            )
+        },
+        timePickerDialogLabel = {
+            Text(
+                text = stringResource(id = R.string.choose_morning_reminder_time),
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.padding(8.dp)
+            )
+        },
+        modifier = Modifier.fillMaxWidth()
+    )
+
+    // The field for the mid-day reminder time
+
+    var middayReminderTimePickerDialogVisible by remember {
+        mutableStateOf(false)
+    }
+    val selectedMiddayReminderTime = settingsState?.midDayReminderTimeMs?.let {
+        millisToHoursAndMinutes(it)
+    } ?: (0 to 0)
+
+    var selectedMiddayReminderHours by remember {
+        mutableIntStateOf(selectedMiddayReminderTime.first)
+    }
+    var selectedMiddayReminderMinutes by remember {
+        mutableIntStateOf(selectedMiddayReminderTime.second)
+    }
+
+    val middayReminderTimePickerState = rememberTimePickerState(
+        selectedMiddayReminderHours,
+        selectedMiddayReminderMinutes,
+        false
+    )
+
+    TextFieldTimePicker(
+        timePickerState = middayReminderTimePickerState,
+        selectedHours = selectedMiddayReminderHours,
+        selectedMinutes = selectedMiddayReminderMinutes,
+        onTimePickerSubmit = { hour, minute ->
+            selectedMiddayReminderHours = hour
+            selectedMiddayReminderMinutes = minute
+
+            val selectedMillis =
+                (selectedMiddayReminderHours * 3600 + selectedMiddayReminderMinutes * 60) * 1000L
+
+            coroutineScope.launch {
+                context.settingsDataStore.updateData {
+                    return@updateData it.toBuilder()
+                        .setMidDayReminderTimeMs(selectedMillis)
+                        .build()
+                }
+            }
+
+            middayReminderTimePickerDialogVisible = false
+        },
+        timePickerDialogVisible = middayReminderTimePickerDialogVisible,
+        onVisibilityChanged = { middayReminderTimePickerDialogVisible = it },
+        label = {
+            Text(text = stringResource(id = R.string.midday_reminder_time))
+        },
+        leadingIcon = {
+            Icon(Icons.Filled.DateRange, contentDescription = null)
+        },
+        supportingText = {
+            Text(
+                text = stringResource(id = R.string.midday_reminder_description),
+                fontWeight = FontWeight.Light
+            )
+        },
+        timePickerDialogLabel = {
+            Text(
+                text = stringResource(id = R.string.choose_midday_reminder_time),
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.padding(8.dp)
+            )
+        },
+        modifier = Modifier.fillMaxWidth()
+    )
+
+    // The field for the mid-day reminder time
+
+    var eveningReminderTimePickerDialogVisible by remember {
+        mutableStateOf(false)
+    }
+    val selectedEveningReminderTime = settingsState?.midDayReminderTimeMs?.let {
+        millisToHoursAndMinutes(it)
+    } ?: (0 to 0)
+
+    var selectedEveningReminderHours by remember {
+        mutableIntStateOf(selectedEveningReminderTime.first)
+    }
+    var selectedEveningReminderMinutes by remember {
+        mutableIntStateOf(selectedEveningReminderTime.second)
+    }
+
+    val eveningReminderTimePickerState = rememberTimePickerState(
+        selectedEveningReminderHours,
+        selectedEveningReminderMinutes,
+        false
+    )
+
+    TextFieldTimePicker(
+        timePickerState = eveningReminderTimePickerState,
+        selectedHours = selectedEveningReminderHours,
+        selectedMinutes = selectedEveningReminderMinutes,
+        onTimePickerSubmit = { hour, minute ->
+            selectedEveningReminderHours = hour
+            selectedEveningReminderMinutes = minute
+
+            val selectedMillis =
+                (selectedEveningReminderHours * 3600 + selectedEveningReminderMinutes * 60) * 1000L
+
+            coroutineScope.launch {
+                context.settingsDataStore.updateData {
+                    return@updateData it.toBuilder()
+                        .setMidDayReminderTimeMs(selectedMillis)
+                        .build()
+                }
+            }
+
+            eveningReminderTimePickerDialogVisible = false
+        },
+        timePickerDialogVisible = eveningReminderTimePickerDialogVisible,
+        onVisibilityChanged = { eveningReminderTimePickerDialogVisible = it },
+        label = {
+            Text(text = stringResource(id = R.string.evening_reminder_time))
+        },
+        leadingIcon = {
+            Icon(Icons.Filled.DateRange, contentDescription = null)
+        },
+        supportingText = {
+            Text(
+                text = stringResource(id = R.string.evening_reminder_description),
+                fontWeight = FontWeight.Light
+            )
+        },
+        timePickerDialogLabel = {
+            Text(
+                text = stringResource(id = R.string.choose_evening_reminder_time),
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.padding(8.dp)
+            )
+        },
+        modifier = Modifier.fillMaxWidth()
+    )
 }
