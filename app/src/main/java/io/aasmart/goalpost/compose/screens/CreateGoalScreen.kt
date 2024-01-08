@@ -244,36 +244,6 @@ fun CreateGoalScreen(
                 dateValidator = { goalCompleteDateTimeValidator(it, reflectionTime) }
             )
 
-            var remindIntervalExpanded by remember {
-                mutableStateOf(false)
-            }
-            var remindSelectedIndex by rememberSaveable {
-                mutableIntStateOf(0)
-            }
-
-            TextFieldDropdown(
-                label = "Remind Interval",
-                expanded = remindIntervalExpanded,
-                menuHeight = 150.dp,
-                selectedIndex = remindSelectedIndex,
-                items = listOf("Daily", "Weekly", "Bi-Weekly", "Monthly", "Custom"),
-                onItemClicked = { index -> remindSelectedIndex = index },
-                onExpandedChange = { remindIntervalExpanded = it },
-                supportingText = {
-                    Row {
-                        Icon(
-                            Icons.Default.Info,
-                            contentDescription = "Remind interval info"
-                        )
-                        Text(
-                            text = "When reminded of goals, this will determine how frequently this goal is reminded. " +
-                                    "This interval begins the day this goal is created."
-                        )
-                    }
-                },
-                modifier = Modifier.fillMaxSize(),
-            )
-
             var reflectionIntervalExpanded by remember {
                 mutableStateOf(false)
             }
