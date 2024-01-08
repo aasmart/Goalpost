@@ -5,8 +5,10 @@ option java_multiple_files = true;
 
 message Settings {
   int64 goal_reflection_time_ms = 1;
-  repeated int64 goal_reminder_times_ms = 2 [packed=true];
+  int64 morning_reminder_time_ms = 2;
   bool needs_to_reflect = 3;
   int64 last_completed_reflection = 4;
   string preferred_name = 5;
+  int64 mid_day_reminder_time_ms = 6;
+  int64 evening_reminder_time_ms = 7;
 }

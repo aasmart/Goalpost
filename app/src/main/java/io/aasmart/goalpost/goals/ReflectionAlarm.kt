@@ -17,7 +17,7 @@ suspend fun scheduleReflectionAlarm(
     context.settingsDataStore
         .data
         .collect {
-            val reflectionInstant = GoalpostUtils.reflectionAsDateTime(it.goalReflectionTimeMs)
+            val reflectionInstant = GoalpostUtils.timeAsTodayDateTime(it.goalReflectionTimeMs)
             val targetMs = reflectionInstant.toEpochMilli()
 
             if(Instant.now().toEpochMilli() < targetMs) {

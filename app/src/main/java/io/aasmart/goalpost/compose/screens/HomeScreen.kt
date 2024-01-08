@@ -35,7 +35,7 @@ import io.aasmart.goalpost.goals.models.Goal
 fun Greeting(name: String = "Person") {
     Column {
         Text(
-            text = "${stringResource(id = R.string.salutation)}, ${name}",
+            text = "${stringResource(id = R.string.salutation)}, $name",
             fontSize = 36.sp
         )
     }
