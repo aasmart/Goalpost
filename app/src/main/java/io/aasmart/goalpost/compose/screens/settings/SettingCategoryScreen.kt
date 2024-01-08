@@ -1,5 +1,6 @@
 package io.aasmart.goalpost.compose.screens.settings
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -61,6 +62,7 @@ fun SettingsCategoryScreen(
         }
     ) { padding ->
         Column(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.padding(padding).padding(8.dp).fillMaxSize()
         ) {
             category.content()

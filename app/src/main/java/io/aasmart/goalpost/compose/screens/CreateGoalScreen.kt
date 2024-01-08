@@ -40,7 +40,7 @@ import io.aasmart.goalpost.compose.components.TextFieldDropdown
 import io.aasmart.goalpost.goals.models.Goal
 import io.aasmart.goalpost.goals.models.GoalInterval
 import io.aasmart.goalpost.utils.GoalpostUtils.DAY_MS
-import io.aasmart.goalpost.utils.GoalpostUtils.reflectionAsDateTime
+import io.aasmart.goalpost.utils.GoalpostUtils.timeAsTodayDateTime
 import io.aasmart.goalpost.utils.InputUtils
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -57,7 +57,7 @@ import java.time.temporal.ChronoUnit
  * @param reflectionTimeMillis The time of day that the reflection occurs
  */
 fun goalCompleteDateTimeValidator(time: Long, reflectionTimeMillis: Long): Boolean {
-    val reflectionInstant = reflectionAsDateTime(reflectionTimeMillis)
+    val reflectionInstant = timeAsTodayDateTime(reflectionTimeMillis)
 
     val offsetMilli = OffsetDateTime
         .ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault())
@@ -85,7 +85,7 @@ private fun CreateGoalButton(
     val scope = rememberCoroutineScope()
 
     val beginDate = System.currentTimeMillis().plus(
-        if(Instant.now() > reflectionAsDateTime(reflectionTime)) DAY_MS else 0
+        if(Instant.now() > timeAsTodayDateTime(reflectionTime)) DAY_MS else 0
     )
 
     // Set completion time to start of day to remove time zone issues
@@ -242,36 +242,6 @@ fun CreateGoalScreen(
                 expanded = datePickerExpanded,
                 onExpandedChange = { datePickerExpanded = it },
                 dateValidator = { goalCompleteDateTimeValidator(it, reflectionTime) }
-            )
-
-            var remindIntervalExpanded by remember {
-                mutableStateOf(false)
-            }
-            var remindSelectedIndex by rememberSaveable {
-                mutableIntStateOf(0)
-            }
-
-            TextFieldDropdown(
-                label = "Remind Interval",
-                expanded = remindIntervalExpanded,
-                menuHeight = 150.dp,
-                selectedIndex = remindSelectedIndex,
-                items = listOf("Daily", "Weekly", "Bi-Weekly", "Monthly", "Custom"),
-                onItemClicked = { index -> remindSelectedIndex = index },
-                onExpandedChange = { remindIntervalExpanded = it },
-                supportingText = {
-                    Row {
-                        Icon(
-                            Icons.Default.Info,
-                            contentDescription = "Remind interval info"
-                        )
-                        Text(
-                            text = "When reminded of goals, this will determine how frequently this goal is reminded. " +
-                                    "This interval begins the day this goal is created."
-                        )
-                    }
-                },
-                modifier = Modifier.fillMaxSize(),
             )
 
             var reflectionIntervalExpanded by remember {

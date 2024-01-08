@@ -51,5 +51,7 @@
             android:exported="false">
         </receiver>
 
+        <receiver android:name=".receivers.GoalReminderReceiver" />
+
     </application>
 </manifest>

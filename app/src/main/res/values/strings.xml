@@ -57,6 +57,21 @@
         Reflection on your goals is an important part of accomplishing them.
     </string>
     <string name="snooze">Snooze 15 Minutes</string>
+    <string name="notification_reminder_title">
+        Time to review goals!
+    </string>
+    <string name="notification_reminder_morning_desc">Good morning! It\s time to review your
+        goals for the day. Reviewing your goals and setting new ones is one of the
+        best ways to begin your day!
+    </string>
+    <string name="notification_reminder_midday_desc">Hope you\'re had a good day so far.
+        Even if you\'re not, reviewing your goals is one way to make today, and
+        you\'re future, even better.
+    </string>
+    <string name="notification_reminder_evening_desc">Evening! As the day winds down,
+        take a deep breath and think of what you accomplished today. Then, take some time
+        reviewing some of your goals or setting some new ones to prepare for tomorrow.
+    </string>
 
     <string name="dismiss">Dismiss</string>
     <string name="cancel">Cancel</string>
@@ -68,6 +83,22 @@
     </string>
     <string name="reminder_time_picker">Choose Reminder Time</string>
     <string name="reminder_time">Reminder Time</string>
+
+    <string name="morning_reminder_time">Morning Reminder Time</string>
+    <string name="choose_morning_reminder_time">Choose Morning Reminder Time</string>
+    <string name="morning_reminder_description">A time, ideally in a morning
+        that you\'ll receive a reminder about your goals.
+    </string>
+    <string name="midday_reminder_time">Mid-Day Reminder Time</string>
+    <string name="choose_midday_reminder_time">Choose Mid-Day Reminder Time</string>
+    <string name="midday_reminder_description">A time, ideally during the middle of the day
+        that you\'ll receive a reminder about your goals.
+    </string>
+    <string name="evening_reminder_time">Evening Reminder Time</string>
+    <string name="choose_evening_reminder_time">Choose Evening Reminder Time</string>
+    <string name="evening_reminder_description">A time, ideally during the evening
+        that you\'ll receive a reminder about your goals.
+    </string>
 
     <string name="view">View</string>
     <string name="incomplete_reflections">Incomplete Goal Reflections</string>
