@@ -7,16 +7,24 @@ import android.util.Log
 import io.aasmart.goalpost.data.GoalStorage
 import io.aasmart.goalpost.data.settingsDataStore
 import io.aasmart.goalpost.goals.notifications.GoalReflectionNotification
+import io.aasmart.goalpost.goals.scheduleReflectionAlarm
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 import java.time.Instant
 
 class GoalReflectionReceiver : BroadcastReceiver() {
-    override fun onReceive(context: Context?, intent: Intent?): Unit = runBlocking {
+    @OptIn(DelicateCoroutinesApi::class)
+    override fun onReceive(context: Context?, intent: Intent?) {
         Log.d("Reflection Alarm Received", "Running reflection")
-        context?.let {
-            goalReflectionBroadcastHandler(context)
+
+        GlobalScope.launch {
+            context?.let {
+                goalReflectionBroadcastHandler(context)
+                scheduleReflectionAlarm(context)
+            }
         }
     }
 }

@@ -47,7 +47,7 @@ import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
 @Composable
-private fun CreateGameButton(
+private fun CreateGoalButton(
     goalName: String,
     goalDescription: String,
     goalCompletionDate: Long,
@@ -282,7 +282,7 @@ fun CreateGoalScreen(
                 modifier = Modifier.fillMaxSize(),
             )
 
-            CreateGameButton(
+            CreateGoalButton(
                 goalName = goalName,
                 goalDescription = goalDescription,
                 goalCompletionDate = datePickerState.selectedDateMillis ?: now.toEpochMilli(),

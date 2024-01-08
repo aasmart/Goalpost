@@ -65,6 +65,11 @@ import io.aasmart.goalpost.compose.viewmodels.GoalpostViewModel
 import io.aasmart.goalpost.data.settingsDataStore
 import io.aasmart.goalpost.goals.models.Goal
 import io.aasmart.goalpost.goals.scheduleReflectionAlarm
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.temporal.ChronoField
+import java.time.temporal.ChronoUnit
 
 @Composable
 fun BottomNavBar(
@@ -260,7 +265,23 @@ fun GoalpostApp(
         return
     }
 
-    LaunchedEffect(key1 = settings?.goalReflectionTimeMs) {
+    LaunchedEffect(settings?.goalReflectionTimeMs, goals) {
+        val targetTime = ZonedDateTime
+            .now(ZoneId.systemDefault())
+            .with(ChronoField.MILLI_OF_DAY, 0)
+            .plus(settings?.goalReflectionTimeMs ?: 0, ChronoUnit.MILLIS)
+
+        val incompleteGoals =
+            goals?.filter { it.getCurrentReflection(Instant.now())?.isCompleted == false }
+                ?: emptyList()
+        if(Instant.now().toEpochMilli() > targetTime.toInstant().toEpochMilli()
+            && incompleteGoals.isNotEmpty()
+        ) {
+            context.settingsDataStore.updateData {
+                it.toBuilder().setNeedsToReflect(true).build()
+            }
+        }
+
         scheduleReflectionAlarm(context)
     }
 

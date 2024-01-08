@@ -46,7 +46,7 @@
         </receiver>
 
         <receiver
-            android:name="io.aasmart.goalpost.receivers.GoalReflectionReceiver"
+            android:name=".receivers.GoalReflectionReceiver"
             android:enabled="true"
             android:exported="false">
         </receiver>

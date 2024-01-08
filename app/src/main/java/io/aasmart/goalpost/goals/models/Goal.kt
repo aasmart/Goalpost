@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
 import java.util.UUID
 
@@ -61,7 +60,6 @@ data class Goal(
             if(timePeriod.intervalMillis > 0) {
                 var reflectionDate = ZonedDateTime
                     .ofInstant(Instant.ofEpochMilli(beginDate), ZoneId.of("UTC"))
-                    .with(ChronoField.MILLI_OF_DAY, 0)
 
                 // Add all reflections up until the completion date
                 while (reflectionDate.toInstant().toEpochMilli() < completionDate) {
@@ -79,14 +77,21 @@ data class Goal(
     }
 
     /**
-     * Gets the Goal's current reflection based on the given day.
+     * Gets the Goal's current reflection based on the given day in local time.
      * Will also return goals that are marked as completed
      */
     fun getCurrentReflection(day: Instant): GoalReflection? {
-        val ms = day.truncatedTo(ChronoUnit.DAYS).toEpochMilli()
+        val currentZonedDateTime = day
+            .atZone(ZoneId.systemDefault())
+            .truncatedTo(ChronoUnit.DAYS)
 
         return reflections.filter {
-            ms >= it.dateTimeMillis
+            val goalZonedDateTime = Instant
+                .ofEpochMilli(it.dateTimeMillis)
+                .atZone(ZoneId.systemDefault())
+                .truncatedTo(ChronoUnit.DAYS)
+
+            currentZonedDateTime >= goalZonedDateTime
         }.maxByOrNull {
             it.dateTimeMillis
         }

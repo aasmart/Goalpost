@@ -127,7 +127,7 @@ private fun GoalReflectionCalendar(
     goal: Goal,
 ) {
     var zonedNow by rememberSaveable {
-        mutableStateOf(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of("UTC")))
+        mutableStateOf(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()))
     }
     val firstDayDateTime = zonedNow
         .withDayOfMonth(1)
@@ -181,7 +181,13 @@ private fun GoalReflectionCalendar(
             .map { it[0].toString() }
 
         val dateTimeGoalReflectionMap = goal.reflections
-            .associateBy { it.dateTimeMillis }
+            .associateBy {
+                ZonedDateTime.ofInstant(
+                    Instant.ofEpochMilli(it.dateTimeMillis), ZoneId.systemDefault()
+                ).truncatedTo(ChronoUnit.DAYS)
+                .toInstant()
+                .toEpochMilli()
+            }
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(count = 7),

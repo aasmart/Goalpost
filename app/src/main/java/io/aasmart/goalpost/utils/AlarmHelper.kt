@@ -64,6 +64,10 @@ object AlarmHelper {
                 PendingIntent.FLAG_IMMUTABLE
             )
         )
+
+        Log.d("Alarm Scheduled", "Scheduled an inexact alarm with " +
+                "initial trigger $initialTriggerMillis"
+        )
     }
 
     fun <T : BroadcastReceiver> cancelAlarm(
