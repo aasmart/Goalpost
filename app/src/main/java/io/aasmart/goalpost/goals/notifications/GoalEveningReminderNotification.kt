@@ -13,11 +13,11 @@ object GoalEveningReminderNotification : GoalpostNotification() {
         get() = 9843632
 
     override fun pushNotification(context: Context) {
-        val fullscreenIntent = Intent(context, MainActivity::class.java)
-        val fullscreenPendingIntent = PendingIntent.getActivity(
+        val activityIntent = Intent(context, MainActivity::class.java)
+        val activityPendingIntent = PendingIntent.getActivity(
             context,
             0,
-            fullscreenIntent,
+            activityIntent,
             PendingIntent.FLAG_IMMUTABLE.or(PendingIntent.FLAG_UPDATE_CURRENT)
         )
 
@@ -27,7 +27,7 @@ object GoalEveningReminderNotification : GoalpostNotification() {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher))
-            .setFullScreenIntent(fullscreenPendingIntent, true)
+            .setContentIntent(activityPendingIntent)
 
         showNotification(context, notificationBuilder.build())
     }
