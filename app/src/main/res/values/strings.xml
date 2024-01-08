@@ -11,6 +11,8 @@
     <string name="like_to_call_you">"What would you like us to call you?"</string>
     <string name="name">Name</string>
     <string name="submit">Submit</string>
+    <string name="completed_goals">Completed Goals</string>
+    <string name="in_progress_goals">In-Progress Goals</string>
 
     <string name="create_reflection_frequency">Reflection Frequency</string>
     <string name="create_reflection_frequency_info">

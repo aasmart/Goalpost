@@ -36,8 +36,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import io.aasmart.goalpost.R
 import io.aasmart.goalpost.compose.GoalpostNav
 import io.aasmart.goalpost.compose.GoalpostNavScaffold
 import io.aasmart.goalpost.goals.models.Goal
@@ -152,6 +154,7 @@ fun GoalsManager(
                     .padding(padding)
                     .fillMaxSize()
             ) {
+                // Tab buttons for complete/incomplete goals
                 Row(
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -169,7 +172,7 @@ fun GoalsManager(
                         ),
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text(text = "In Progress Goals")
+                        Text(text = stringResource(id = R.string.in_progress_goals))
                     }
                     Button(
                         onClick = { completeGoalScreen = true },
@@ -185,7 +188,7 @@ fun GoalsManager(
                         shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text(text = "Completed Goals")
+                        Text(text = stringResource(id = R.string.completed_goals))
                     }
                 }
                 LazyColumn(
