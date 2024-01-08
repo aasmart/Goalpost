@@ -98,6 +98,7 @@ private fun GoalReflectionCalendarDay(
 ) {
     val context = LocalContext.current
 
+    /*Displays different colors based on the reflection's completion status*/
     val buttonContainerColor = (
         if(goalReflection != null) {
             val goalReflectionInstant = Instant
@@ -106,7 +107,7 @@ private fun GoalReflectionCalendarDay(
                 .with(ChronoField.MILLI_OF_DAY, goalReflectionTimeMillis)
                 .toInstant()
 
-            if(!goalReflection.isCompleted && Instant.now()> goalReflectionInstant)
+            if(!goalReflection.isCompleted && Instant.now() > goalReflectionInstant)
                 MaterialTheme.colorScheme.errorContainer
             else if(goalReflection.isCompleted) {
                 ColorUtils.lerp(
@@ -164,8 +165,13 @@ private fun GoalReflectionCalendar(
     goalReflectionTimeMillis: Long,
     goalReflectionNav: (Goal, GoalReflection) -> Unit,
 ) {
+    // Creates a view at the current time, or about the completion time if it has been exceeded
     var zonedNow by rememberSaveable {
-        mutableStateOf(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()))
+        mutableStateOf(
+            Instant.ofEpochMilli(
+                System.currentTimeMillis().coerceAtMost(goal.completionDate)
+            ).atZone(ZoneId.systemDefault())
+        )
     }
     val firstDayDateTime = zonedNow
         .withDayOfMonth(1)
@@ -213,11 +219,14 @@ private fun GoalReflectionCalendar(
             }
         }
 
+        // Localized first letters of the days of the week
         val weekLetters = DateFormatSymbols(Locale.getDefault())
             .weekdays
             .filter { it.isNotEmpty() }
             .map { it[0].toString() }
 
+        /*Maps a goal reflection's date time, which is changed to the beginning of the local day,
+        * to the goal reflection itself*/
         val dateTimeGoalReflectionMap = goal.reflections
             .associateBy {
                 ZonedDateTime.ofInstant(
@@ -243,6 +252,7 @@ private fun GoalReflectionCalendar(
                     fontSize = 20.sp
                 )
             }
+            // Add empty days depending on when the first day of the month is
             items(firstDayOfWeek) {
                 Box {}
             }
