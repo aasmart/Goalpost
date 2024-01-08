@@ -28,6 +28,7 @@ object GoalEveningReminderNotification : GoalpostNotification() {
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher))
             .setContentIntent(activityPendingIntent)
+            .setAutoCancel(true)
 
         showNotification(context, notificationBuilder.build())
     }
