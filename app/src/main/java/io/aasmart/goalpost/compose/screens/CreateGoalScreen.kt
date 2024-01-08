@@ -46,7 +46,30 @@ import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneId
+import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
+
+/**
+ * Validates that a time is greater than the current day's reflection time if
+ * the current time is past the reflection time
+ *
+ * @param time The time to validate, in milliseconds
+ * @param reflectionTimeMillis The time of day that the reflection occurs
+ */
+fun goalCompleteDateTimeValidator(time: Long, reflectionTimeMillis: Long): Boolean {
+    val reflectionInstant = reflectionAsDateTime(reflectionTimeMillis)
+
+    val offsetMilli = OffsetDateTime
+        .ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault())
+        .offset.totalSeconds * 1000L
+    val currentMilli = Instant.now()
+        .plusMillis(offsetMilli)
+        .plusMillis(if(Instant.now() > reflectionInstant) DAY_MS else 0)
+        .truncatedTo(ChronoUnit.DAYS)
+        .toEpochMilli()
+
+    return time >= currentMilli
+}
 
 @Composable
 private fun CreateGoalButton(
@@ -64,9 +87,13 @@ private fun CreateGoalButton(
     val beginDate = System.currentTimeMillis().plus(
         if(Instant.now() > reflectionAsDateTime(reflectionTime)) DAY_MS else 0
     )
-    val completionDateTime = Instant.ofEpochMilli(goalCompletionDate)
-        .truncatedTo(ChronoUnit.DAYS)
-        .plusMillis(DAY_MS - 1)
+
+    // Set completion time to start of day to remove time zone issues
+    val completionDateTime = Instant
+        .ofEpochMilli(goalCompletionDate)
+        .atZone(ZoneId.of("UTC"))
+        .with(ChronoField.MILLI_OF_DAY, DAY_MS - 1)
+        .toInstant()
 
     Button(
         onClick = {
@@ -78,9 +105,7 @@ private fun CreateGoalButton(
                 completionDate = completionDateTime.toEpochMilli()
             )
 
-            scope.launch {
-                addGoal(goal)
-            }
+            scope.launch { addGoal(goal) }
             goalManagerHandle()
         },
         modifier = Modifier.fillMaxWidth(),
@@ -216,26 +241,7 @@ fun CreateGoalScreen(
                 datePickerState = datePickerState,
                 expanded = datePickerExpanded,
                 onExpandedChange = { datePickerExpanded = it },
-                dateValidator = { time ->
-                    /* This drove me insane. Since time picker is in UTC, the min time
-                    * is inaccurate in the current time zone. If we treat the current instant
-                    * as local time, we offset it to UTC time and it works*/
-
-                    // Get the current reflection time to prevent scheduling goals on the same day
-                    // if a reflection occurred
-                    val reflectionInstant = reflectionAsDateTime(reflectionTime)
-
-                    val offsetMilli = OffsetDateTime
-                        .ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault())
-                        .offset.totalSeconds * 1000L
-                    val currentMilli = Instant.now()
-                        .plusMillis(offsetMilli)
-                        .plusMillis(if(Instant.now() > reflectionInstant) DAY_MS else 0)
-                        .truncatedTo(ChronoUnit.DAYS)
-                        .toEpochMilli()
-
-                    time >= currentMilli
-                }
+                dateValidator = { goalCompleteDateTimeValidator(it, reflectionTime) }
             )
 
             var remindIntervalExpanded by remember {

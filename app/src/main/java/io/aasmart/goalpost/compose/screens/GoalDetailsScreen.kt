@@ -276,7 +276,8 @@ private fun GoalDisplay(
     goalCompletionPickerState: DatePickerState,
     selectedReflectionFrequencyIndex: Int,
     updateSelectedReflectionFrequencyIndex: (Int) -> Unit,
-    isEditing: Boolean
+    isEditing: Boolean,
+    reflectionTimeMillis: Long
 ) {
     val scroll = rememberScrollState()
 
@@ -370,7 +371,7 @@ private fun GoalDisplay(
                 goalCompletionPickerState,
                 expanded = goalCompletionDatePickerExpanded,
                 onExpandedChange = { goalCompletionDatePickerExpanded = it },
-                dateValidator = { it >= now.truncatedTo(ChronoUnit.DAYS).toEpochMilli() }
+                dateValidator = { goalCompleteDateTimeValidator(it, reflectionTimeMillis) }
             )
         } else {
             OutlinedTextFieldDatePicker(
@@ -379,7 +380,7 @@ private fun GoalDisplay(
                 goalCompletionPickerState,
                 expanded = false,
                 onExpandedChange = {},
-                dateValidator = { it >= now.truncatedTo(ChronoUnit.DAYS).toEpochMilli() }
+                dateValidator = { goalCompleteDateTimeValidator(it, reflectionTimeMillis) }
             )
         }
 
@@ -453,6 +454,7 @@ private fun GoalDisplay(
 fun GoalDetailsScreen(
     goalpostNav: GoalpostNav,
     goalId: String,
+    reflectionTimeMillis: Long,
     getGoals: (Context) -> Flow<List<Goal>>,
     setGoals: suspend (Context, Goal) -> Unit
 ) {
@@ -552,7 +554,8 @@ fun GoalDetailsScreen(
                 goalCompletionPickerState = goalCompletionDatePickerState,
                 selectedReflectionFrequencyIndex = selectedReflectionIntervalIndex,
                 updateSelectedReflectionFrequencyIndex = { selectedReflectionIntervalIndex = it },
-                isEditing = isEditing
+                isEditing = isEditing,
+                reflectionTimeMillis = reflectionTimeMillis
             )
 
             if(isEditing) {
@@ -565,6 +568,17 @@ fun GoalDetailsScreen(
                             selectedReflectionIntervalIndex
                         ]
 
+                        // Set completion time to start of day to remove time zone issues
+                        val completionDateTime = goalCompletionDatePickerState
+                            .selectedDateMillis
+                            ?.let {
+                                Instant
+                                    .ofEpochMilli(it)
+                                    .atZone(ZoneId.of("UTC"))
+                                    .with(ChronoField.MILLI_OF_DAY, GoalpostUtils.DAY_MS - 1)
+                                    .toInstant()
+                            }
+
                         /*
                         * Regenerates the reflections based on the new parameters.
                         * Preserves older reflections (including the one of the current day).
@@ -573,35 +587,31 @@ fun GoalDetailsScreen(
                         */
                         val reflections = goal.reflections
                             .filter {
-                                val now = ZonedDateTime
+                                val zonedNow = ZonedDateTime
                                     .ofInstant(
-                                        Instant.ofEpochMilli(goal.beginDate),
-                                        ZoneId.of("UTC")
-                                    ).with(ChronoField.MILLI_OF_DAY, 0)
-                                    .toInstant()
-                                    .toEpochMilli()
+                                        Instant.now(),
+                                        ZoneId.systemDefault()
+                                    ).with(
+                                        ChronoField.MILLI_OF_DAY, GoalpostUtils.DAY_MS - 1
+                                    )
 
-                                return@filter it.dateTimeMillis <= now
+                                val zonedReflectionDateTime = Instant
+                                    .ofEpochMilli(it.dateTimeMillis)
+                                    .atZone(ZoneId.systemDefault())
+
+                                return@filter zonedReflectionDateTime <= zonedNow
                             }.plus(
                                 Goal.createReflectionsFromDate(
-                                    Instant.now().toEpochMilli() + timePeriod.intervalMillis,
+                                    System.currentTimeMillis() + timePeriod.intervalMillis,
                                     timePeriod,
-                                    goalCompletionDatePickerState.selectedDateMillis ?: 0
+                                    completionDateTime?.toEpochMilli() ?: 0
                                 )
                             )
 
                         // Update the goal
-                        val completionDateTime = goalCompletionDatePickerState
-                            .selectedDateMillis
-                            ?.let {
-                                Instant
-                                    .ofEpochMilli(it)
-                                    .truncatedTo(ChronoUnit.DAYS)
-                                    .plusMillis(GoalpostUtils.DAY_MS - 1)
-                        }
-
                         setGoals(
-                            context, goal.copy(
+                            context,
+                            goal.copy(
                                 title = goalName,
                                 description = goalDescription,
                                 timePeriod = timePeriod,

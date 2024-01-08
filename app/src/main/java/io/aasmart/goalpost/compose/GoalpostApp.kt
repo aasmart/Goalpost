@@ -339,6 +339,7 @@ fun GoalpostApp(
             GoalDetailsScreen(
                 goalpostNav = goalpostNav,
                 goalId = it.arguments?.getString("goalId") ?: "",
+                reflectionTimeMillis = settings?.goalReflectionTimeMs ?: 0,
                 getGoals = { context -> appViewModel.getGoals(context) },
                 setGoals = { context, goal -> appViewModel.setGoal(context, goal) }
             )
