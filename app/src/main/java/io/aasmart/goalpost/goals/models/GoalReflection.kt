@@ -1,6 +1,7 @@
 package io.aasmart.goalpost.goals.models
 
 import kotlinx.serialization.Serializable
+import java.util.UUID
 
 @Serializable
 data class GoalReflection(
@@ -11,6 +12,7 @@ data class GoalReflection(
     val couldDoBetter: Float? = null,
     val couldDoBetterReflection: String? = null,
     val stepsToImprove: String? = null,
+    val id: String = UUID.randomUUID().toString()
 ) {
     companion object {
         /** b

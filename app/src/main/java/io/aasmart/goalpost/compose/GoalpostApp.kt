@@ -341,14 +341,27 @@ fun GoalpostApp(
                 goalId = it.arguments?.getString("goalId") ?: "",
                 reflectionTimeMillis = settings?.goalReflectionTimeMs ?: 0,
                 getGoals = { context -> appViewModel.getGoals(context) },
-                setGoals = { context, goal -> appViewModel.setGoal(context, goal) }
+                setGoals = { context, goal -> appViewModel.setGoal(context, goal) },
+                goalReflectionNav = { goal, reflection ->
+                    navController.navigate(
+                        Screen.GoalReflections.Goal.createRoute(
+                            goal.id,
+                            reflection.id
+                        )
+                    )
+                }
             )
         }
         composable(Screen.GoalReflections.route) {
             GoalsReflectionScreen(
                 goals = goals ?: emptyList(),
                 navGoalReflection = {
-                    navController.navigate(Screen.GoalReflections.Goal.createRoute(it.id))
+                    navController.navigate(
+                        Screen.GoalReflections.Goal.createRoute(
+                            it.id,
+                            it.getCurrentReflection(Instant.now())?.id ?: ""
+                        )
+                    )
                 },
                 backNav = { navController.navigateUp() },
                 homeNav = goalpostNav.home

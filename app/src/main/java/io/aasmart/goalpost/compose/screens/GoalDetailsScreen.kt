@@ -80,17 +80,30 @@ import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
 import java.util.Locale
 
+/**
+ * A component for the goal calendar that displays a goal reflection
+ * as a day
+ *
+ * @param goalReflection The goal reflection
+ * @param goalReflectionTimeMillis The time the user has to reflect on goals
+ * @param day The day integer (1-31) to display in the day
+ */
 @Composable
 private fun GoalReflectionCalendarDay(
     goalReflection: GoalReflection?,
+    goalReflectionTimeMillis: Long,
+    goalReflectionNav: () -> Unit,
     day: Int
 ) {
-    val color =
+    val color = (
         if(goalReflection != null) {
-            if(
-                !goalReflection.isCompleted
-                && Instant.now().toEpochMilli() > goalReflection.dateTimeMillis
-            )
+            val goalReflectionInstant = Instant
+                .ofEpochMilli(goalReflection.dateTimeMillis)
+                .atZone(ZoneId.systemDefault())
+                .with(ChronoField.MILLI_OF_DAY, goalReflectionTimeMillis)
+                .toInstant()
+
+            if(!goalReflection.isCompleted && Instant.now()> goalReflectionInstant)
                 MaterialTheme.colorScheme.errorContainer
             else if(goalReflection.isCompleted) {
                 ColorUtils.lerp(
@@ -105,12 +118,18 @@ private fun GoalReflectionCalendarDay(
                 MaterialTheme.colorScheme.primary
         } else
             MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.2f)
+    )
 
     Button(
-        onClick = {},
+        onClick = {
+            if(goalReflection?.isCompleted == true) {
+                goalReflectionNav()
+            }
+        },
         colors = ButtonDefaults.buttonColors(containerColor = color),
         shape = RoundedCornerShape(12.dp),
         contentPadding = PaddingValues(0.dp),
+        enabled = goalReflection != null,
         modifier = Modifier
             .aspectRatio(1f)
     ) {
@@ -126,7 +145,10 @@ private fun GoalReflectionCalendarDay(
 @Composable
 private fun GoalReflectionCalendar(
     goal: Goal,
+    goalReflectionTimeMillis: Long,
+    goalReflectionNav: (Goal, GoalReflection) -> Unit,
 ) {
+    println(goal)
     var zonedNow by rememberSaveable {
         mutableStateOf(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()))
     }
@@ -215,9 +237,15 @@ private fun GoalReflectionCalendar(
                     .plusMillis((it) * 24 * 60 * 60 * 1000L)
                     .toEpochMilli()
 
+                val reflection = dateTimeGoalReflectionMap[dayMillis]
                 GoalReflectionCalendarDay(
-                    dateTimeGoalReflectionMap[dayMillis],
-                    day = (it + 1)
+                    reflection,
+                    day = (it + 1),
+                    goalReflectionTimeMillis = goalReflectionTimeMillis,
+                    goalReflectionNav = {
+                        if (reflection != null)
+                            goalReflectionNav(goal, reflection)
+                    }
                 )
             }
         }
@@ -277,7 +305,8 @@ private fun GoalDisplay(
     selectedReflectionFrequencyIndex: Int,
     updateSelectedReflectionFrequencyIndex: (Int) -> Unit,
     isEditing: Boolean,
-    reflectionTimeMillis: Long
+    reflectionTimeMillis: Long,
+    goalReflectionNav: (Goal, GoalReflection) -> Unit
 ) {
     val scroll = rememberScrollState()
 
@@ -445,7 +474,11 @@ private fun GoalDisplay(
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
-        GoalReflectionCalendar(goal = goal)
+        GoalReflectionCalendar(
+            goal = goal,
+            goalReflectionTimeMillis = reflectionTimeMillis,
+            goalReflectionNav = goalReflectionNav
+        )
     }
 }
 
@@ -456,7 +489,8 @@ fun GoalDetailsScreen(
     goalId: String,
     reflectionTimeMillis: Long,
     getGoals: (Context) -> Flow<List<Goal>>,
-    setGoals: suspend (Context, Goal) -> Unit
+    setGoals: suspend (Context, Goal) -> Unit,
+    goalReflectionNav: (Goal, GoalReflection) -> Unit
 ) {
     /* IMPORTANT
     *
@@ -555,7 +589,8 @@ fun GoalDetailsScreen(
                 selectedReflectionFrequencyIndex = selectedReflectionIntervalIndex,
                 updateSelectedReflectionFrequencyIndex = { selectedReflectionIntervalIndex = it },
                 isEditing = isEditing,
-                reflectionTimeMillis = reflectionTimeMillis
+                reflectionTimeMillis = reflectionTimeMillis,
+                goalReflectionNav = goalReflectionNav
             )
 
             if(isEditing) {

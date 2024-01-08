@@ -36,12 +36,16 @@ sealed class Screen(
         "goalReflections"
     ) {
         object Goal : Screen(
-            "${GoalReflections.route}/{goalId}",
+            "${GoalReflections.route}/{goalId}/{reflectionId}",
             args = listOf(
-                navArgument("goalId") { type = NavType.StringType }
+                navArgument("goalId") { type = NavType.StringType },
+                navArgument("reflectionId") { type = NavType.StringType }
             )
         ) {
-            fun createRoute(goalId: String) = "${GoalReflections.route}/$goalId"
+            fun createRoute(
+                goalId: String,
+                reflectionId: String
+            ) = "${GoalReflections.route}/$goalId/$reflectionId"
         }
     }
 }

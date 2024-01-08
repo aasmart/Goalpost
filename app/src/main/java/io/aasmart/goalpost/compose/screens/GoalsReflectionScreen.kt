@@ -169,9 +169,7 @@ fun GoalsReflectionScreen(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    // Get the beginning of the current day
     val dayBeginInstant = Instant.now()
-        .truncatedTo(ChronoUnit.DAYS)
 
     // Retrieve goals that only require reflections today
     val reflectionGoals = goals.map {
