@@ -150,6 +150,14 @@ private fun GoalReflectionCalendarDay(
     }
 }
 
+/**
+ * A component that displays a calendar where each day indicates any goal reflection
+ * that is on that day
+ *
+ * @param goal The goal to display the reflections of
+ * @param goalReflectionTimeMillis The time that the user performs goal reflections
+ * @param goalReflectionNav Takes a goal and a reflection and navigates to the reflection page
+ */
 @Composable
 private fun GoalReflectionCalendar(
     goal: Goal,
@@ -259,6 +267,12 @@ private fun GoalReflectionCalendar(
     }
 }
 
+/**
+ * A top app bar that contains the nav back arrow and the goal name
+ *
+ * @param goal The goal to display in the title
+ * @param navBack A function to navigate to the previous screen
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DetailsTopAppBar(
@@ -286,6 +300,11 @@ private fun DetailsTopAppBar(
     )
 }
 
+/**
+ * A floating action button that enabled editing
+ *
+ * @param onClicked A callback that should enable editing when clicked
+ */
 @Composable
 private fun EditFloatingActionButton(
     onClicked: () -> Unit
@@ -298,6 +317,26 @@ private fun EditFloatingActionButton(
     }
 }
 
+
+/**
+ * A component that displays the details of a goal and also allows for the goal
+ * to be edited
+ *
+ * @param goal The goal object
+ * @param goalName A mutable field that contains the current goal name
+ * @param isGoalNameValid A callback that returns the validity of a given name
+ * @param updateGoalName A callback to modify the goal name
+ * @param goalDescription A mutable field that contains the current goal description
+ * @param isGoalDescriptionValid A function that returns the validity of a given description
+ * @param updateGoalDescription A callback to modify the goal name
+ * @param goalCompletionPickerState A state for the goal completion date picker
+ * @param selectedReflectionFrequencyIndex The index of the selected goal reflection interval
+ * @param updateSelectedReflectionFrequencyIndex A callback to update the selected goal reflection
+ *        interval
+ * @param isEditing True if the user is editing. If editing is enabled, all values can be changed
+ * @param reflectionTimeMillis The time, in milliseconds that the user completes reflections
+ * @param goalReflectionNav A function that navigates to a goal reflection's screen
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun GoalDisplay(
@@ -489,6 +528,17 @@ private fun GoalDisplay(
     }
 }
 
+/**
+ * Creates a screen that allows a user to view information about a goal. The screen also allows
+ * editing, if enabled
+ *
+ * @param goalpostNav The goalpost nav object
+ * @param goalId The ID of the goal to view
+ * @param reflectionTimeMillis The time of day, in milliseconds, that the user completes reflections
+ * @param getGoals A function to retrieve all the set goals
+ * @param setGoals A function to update a goal
+ * @param goalReflectionNav A function to navigate to a goal reflection screen
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GoalDetailsScreen(
