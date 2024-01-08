@@ -308,7 +308,9 @@ private fun GoalReflectionForm(
 @Composable
 private fun ReflectionTopAppBar(
     goal: Goal?,
-    setConfirmExitDialogVisible: () -> Unit
+    reflectionCompleted: Boolean,
+    setConfirmExitDialogVisible: () -> Unit,
+    navBack: () -> Unit
 ) {
     TopAppBar(
         title = {
@@ -320,7 +322,14 @@ private fun ReflectionTopAppBar(
             navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
         ),
         navigationIcon = {
-            IconButton(onClick = setConfirmExitDialogVisible) {
+            IconButton(
+                onClick = {
+                    if(reflectionCompleted)
+                        navBack()
+                    else
+                        setConfirmExitDialogVisible()
+                }
+            ) {
                 Icon(
                     Icons.Filled.ArrowBack,
                     contentDescription = stringResource(id = R.string.go_back),
@@ -385,6 +394,7 @@ fun GoalReflectionScreen(
 ) {
     val goals = getGoals(LocalContext.current).collectAsState(initial = null).value
     val goal = goals?.find { goal -> goal.id == goalId }
+    val reflection = goal?.getCurrentReflection(Instant.now())
 
     var showConfirmExitDialog by remember {
         mutableStateOf(false)
@@ -397,11 +407,12 @@ fun GoalReflectionScreen(
         topBar = {
             ReflectionTopAppBar(
                 goal = goal,
-                setConfirmExitDialogVisible = { showConfirmExitDialog = true }
+                reflectionCompleted = reflection?.isCompleted == true,
+                setConfirmExitDialogVisible = { showConfirmExitDialog = true },
+                navBack = navBack
             )
         }
     ) { padding ->
-        val reflection = goal?.getCurrentReflection(Instant.now())
 
         if(reflection == null) {
             Column(
