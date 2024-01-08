@@ -44,6 +44,9 @@
     <string name="at_least_num_characters">
         Length of {LABEL} must be at least {MIN} characters(s)
     </string>
+    <string name="need_completed_reflection_to_view">
+        This reflection needs to be completed in order to view it
+    </string>
 
     <string name="notification_reflect_title">Time to reflect on your goals!</string>
     <string name="notification_reflect_desc">

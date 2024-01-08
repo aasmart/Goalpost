@@ -1,6 +1,7 @@
 package io.aasmart.goalpost.compose.screens
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -95,7 +96,9 @@ private fun GoalReflectionCalendarDay(
     goalReflectionNav: () -> Unit,
     day: Int
 ) {
-    val color = (
+    val context = LocalContext.current
+
+    val buttonContainerColor = (
         if(goalReflection != null) {
             val goalReflectionInstant = Instant
                 .ofEpochMilli(goalReflection.dateTimeMillis)
@@ -122,11 +125,16 @@ private fun GoalReflectionCalendarDay(
 
     Button(
         onClick = {
-            if(goalReflection?.isCompleted == true) {
+            if(goalReflection?.isCompleted == true)
                 goalReflectionNav()
-            }
+            else
+                Toast.makeText(
+                    context,
+                    context.resources.getString(R.string.need_completed_reflection_to_view),
+                    Toast.LENGTH_SHORT
+                ).show()
         },
-        colors = ButtonDefaults.buttonColors(containerColor = color),
+        colors = ButtonDefaults.buttonColors(containerColor = buttonContainerColor),
         shape = RoundedCornerShape(12.dp),
         contentPadding = PaddingValues(0.dp),
         enabled = goalReflection != null,
