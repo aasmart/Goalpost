@@ -276,7 +276,7 @@ fun GoalCategoryContent() {
     var eveningReminderTimePickerDialogVisible by remember {
         mutableStateOf(false)
     }
-    val selectedEveningReminderTime = settingsState?.midDayReminderTimeMs?.let {
+    val selectedEveningReminderTime = settingsState?.eveningReminderTimeMs?.let {
         millisToHoursAndMinutes(it)
     } ?: (0 to 0)
 
@@ -307,7 +307,7 @@ fun GoalCategoryContent() {
             coroutineScope.launch {
                 context.settingsDataStore.updateData {
                     return@updateData it.toBuilder()
-                        .setMidDayReminderTimeMs(selectedMillis)
+                        .setEveningReminderTimeMs(selectedMillis)
                         .build()
                 }
             }

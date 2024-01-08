@@ -58,7 +58,7 @@ object GoalReflectionNotification : GoalpostNotification() {
             PendingIntent.FLAG_IMMUTABLE
         )
 
-        val setGoalBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
+        val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setContentTitle(context.resources.getString(R.string.notification_reflect_title))
             .setContentText(context.resources.getString(R.string.notification_reflect_desc))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -71,7 +71,7 @@ object GoalReflectionNotification : GoalpostNotification() {
                 snoozePendingIntent
             )
 
-        showNotification(context, setGoalBuilder.build())
+        showNotification(context, notificationBuilder.build())
     }
 
 }

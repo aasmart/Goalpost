@@ -21,10 +21,13 @@ object AlarmHelper {
         broadcastReceiverClass: Class<T>,
         intervalMillis: Long,
         initialTriggerMillis: Long,
-        requestCode: Int
+        requestCode: Int,
+        extras: Map<String, String> = emptyMap()
     ) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val alarmIntent = Intent(context, broadcastReceiverClass)
+        val alarmIntent = Intent(context, broadcastReceiverClass).apply {
+            extras.forEach { this.putExtra(it.key, it.value) }
+        }
 
         // Run the repeating alarm after that
         alarmManager.setInexactRepeating(
@@ -49,10 +52,13 @@ object AlarmHelper {
         broadcastReceiverClass: Class<T>,
         type: Int,
         initialTriggerMillis: Long,
-        requestCode: Int
+        requestCode: Int,
+        extras: Map<String, String> = emptyMap()
     ) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val alarmIntent = Intent(context, broadcastReceiverClass)
+        val alarmIntent = Intent(context, broadcastReceiverClass).apply {
+            extras.forEach { this.putExtra(it.key, it.value) }
+        }
 
         alarmManager.set(
             type,

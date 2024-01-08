@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import io.aasmart.goalpost.goals.scheduleReflectionAlarm
+import io.aasmart.goalpost.goals.scheduleRemindersAlarm
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -20,9 +21,8 @@ class BootReceiver : BroadcastReceiver() {
         Log.d("Phone Booted", "Running boot methods")
 
         GlobalScope.launch {
-            scheduleReflectionAlarm(
-                context
-            )
+            scheduleReflectionAlarm(context)
+            scheduleRemindersAlarm(context)
         }
     }
 }

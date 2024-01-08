@@ -57,6 +57,21 @@
         Reflection on your goals is an important part of accomplishing them.
     </string>
     <string name="snooze">Snooze 15 Minutes</string>
+    <string name="notification_reminder_title">
+        Time to review goals!
+    </string>
+    <string name="notification_reminder_morning_desc">Good morning! It\s time to review your
+        goals for the day. Reviewing your goals and setting new ones is one of the
+        best ways to begin your day!
+    </string>
+    <string name="notification_reminder_midday_desc">Hope you\'re had a good day so far.
+        Even if you\'re not, reviewing your goals is one way to make today, and
+        you\'re future, even better.
+    </string>
+    <string name="notification_reminder_evening_desc">Evening! As the day winds down,
+        take a deep breath and think of what you accomplished today. Then, take some time
+        reviewing some of your goals or setting some new ones to prepare for tomorrow.
+    </string>
 
     <string name="dismiss">Dismiss</string>
     <string name="cancel">Cancel</string>

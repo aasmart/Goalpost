@@ -21,7 +21,6 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,7 +33,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -74,6 +72,7 @@ import io.aasmart.goalpost.compose.viewmodels.GoalpostViewModel
 import io.aasmart.goalpost.data.settingsDataStore
 import io.aasmart.goalpost.goals.models.Goal
 import io.aasmart.goalpost.goals.scheduleReflectionAlarm
+import io.aasmart.goalpost.goals.scheduleRemindersAlarm
 import io.aasmart.goalpost.utils.GoalpostUtils
 import io.aasmart.goalpost.utils.InputUtils
 import kotlinx.coroutines.launch
@@ -359,7 +358,7 @@ fun GoalpostApp(
 
     LaunchedEffect(settings?.goalReflectionTimeMs, goals) {
         val reflectionDateTime = settings?.let {
-            GoalpostUtils.reflectionAsDateTime(it.goalReflectionTimeMs)
+            GoalpostUtils.timeAsTodayDateTime(it.goalReflectionTimeMs)
         } ?: Instant.now()
 
         val incompleteGoals = goals?.filter {
@@ -375,6 +374,14 @@ fun GoalpostApp(
         }
 
         scheduleReflectionAlarm(context)
+    }
+
+    LaunchedEffect(
+        settings?.morningReminderTimeMs,
+        settings?.midDayReminderTimeMs,
+        settings?.eveningReminderTimeMs
+    ) {
+        scheduleRemindersAlarm(context)
     }
 
     NavHost(navController = navController, startDestination = Screen.Home.route) {

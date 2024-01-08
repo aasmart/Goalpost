@@ -40,7 +40,7 @@ import io.aasmart.goalpost.compose.components.TextFieldDropdown
 import io.aasmart.goalpost.goals.models.Goal
 import io.aasmart.goalpost.goals.models.GoalInterval
 import io.aasmart.goalpost.utils.GoalpostUtils.DAY_MS
-import io.aasmart.goalpost.utils.GoalpostUtils.reflectionAsDateTime
+import io.aasmart.goalpost.utils.GoalpostUtils.timeAsTodayDateTime
 import io.aasmart.goalpost.utils.InputUtils
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -57,7 +57,7 @@ import java.time.temporal.ChronoUnit
  * @param reflectionTimeMillis The time of day that the reflection occurs
  */
 fun goalCompleteDateTimeValidator(time: Long, reflectionTimeMillis: Long): Boolean {
-    val reflectionInstant = reflectionAsDateTime(reflectionTimeMillis)
+    val reflectionInstant = timeAsTodayDateTime(reflectionTimeMillis)
 
     val offsetMilli = OffsetDateTime
         .ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault())
@@ -85,7 +85,7 @@ private fun CreateGoalButton(
     val scope = rememberCoroutineScope()
 
     val beginDate = System.currentTimeMillis().plus(
-        if(Instant.now() > reflectionAsDateTime(reflectionTime)) DAY_MS else 0
+        if(Instant.now() > timeAsTodayDateTime(reflectionTime)) DAY_MS else 0
     )
 
     // Set completion time to start of day to remove time zone issues

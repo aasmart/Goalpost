@@ -8,10 +8,10 @@ import java.time.temporal.ChronoUnit
 object GoalpostUtils {
     const val DAY_MS = 24 * 60 * 60 * 1000L
 
-    fun reflectionAsDateTime(reflectionTime: Long): Instant =
+    fun timeAsTodayDateTime(time: Long): Instant =
         Instant.now()
             .atZone(ZoneId.systemDefault())
             .with(ChronoField.MILLI_OF_DAY, 0)
-            .plus(reflectionTime, ChronoUnit.MILLIS)
+            .plus(time, ChronoUnit.MILLIS)
             .toInstant()
 }
