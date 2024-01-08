@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,6 +21,7 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -27,12 +29,19 @@ import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -66,7 +75,88 @@ import io.aasmart.goalpost.data.settingsDataStore
 import io.aasmart.goalpost.goals.models.Goal
 import io.aasmart.goalpost.goals.scheduleReflectionAlarm
 import io.aasmart.goalpost.utils.GoalpostUtils
+import io.aasmart.goalpost.utils.InputUtils
+import kotlinx.coroutines.launch
 import java.time.Instant
+
+@Composable
+fun PreferredNamePrompt() {
+    val minNameLength = 1
+    val maxNameLength = 32
+
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    
+    var preferredName by rememberSaveable {
+        mutableStateOf("")
+    }
+    val isNameValid = InputUtils.isValidLength(
+        preferredName.trim(), 
+        minNameLength, 
+        maxNameLength
+    )
+    
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Text(
+            text = stringResource(id = R.string.like_to_call_you)
+        )
+        OutlinedTextField(
+            value = preferredName,
+            onValueChange = { preferredName = it },
+            isError = !isNameValid,
+            label = { Text(text = stringResource(id = R.string.name)) },
+            supportingText = {
+                if(!isNameValid)
+                    Text(
+                        text = stringResource(id = R.string.between_num_characters)
+                            .replace(
+                                "{LABEL}",
+                                stringResource(id = R.string.name)
+                            )
+                            .replace(
+                                "{MIN}",
+                                Goal.NAME_MIN_LENGTH.toString()
+                            )
+                            .replace(
+                                "{MAX}",
+                                Goal.NAME_MAX_LENGTH.toString()
+                            )
+                    )
+                else
+                    Text(
+                        text = stringResource(id = R.string.num_characters)
+                            .replace(
+                                "{NUM_CHARACTERS}",
+                                "${preferredName.trim().length}/${Goal.NAME_MAX_LENGTH}"
+                            )
+                    )
+            },
+            modifier = Modifier.fillMaxWidth(.95f)
+        )
+
+        val updateName = suspend {
+             context.settingsDataStore.updateData {
+                 it.toBuilder().setPreferredName(preferredName).build()
+             }
+        }
+
+        OutlinedButton(
+            onClick = {
+                coroutineScope.launch { updateName() }
+            },
+            enabled = isNameValid,
+            shape = RoundedCornerShape(4.dp)
+        ) {
+            Text(
+                text = "${stringResource(id = R.string.submit)} ${stringResource(id = R.string.name)}"
+            )
+        }
+    }
+}
 
 @Composable
 fun BottomNavBar(
@@ -262,6 +352,11 @@ fun GoalpostApp(
         return
     }
 
+    if(settings?.preferredName?.isEmpty() == true) {
+        PreferredNamePrompt()
+        return
+    }
+
     LaunchedEffect(settings?.goalReflectionTimeMs, goals) {
         val reflectionDateTime = settings?.let {
             GoalpostUtils.reflectionAsDateTime(it.goalReflectionTimeMs)
@@ -289,7 +384,8 @@ fun GoalpostApp(
 
             HomeScreen(
                 goalpostNav,
-                goals = goals?.toTypedArray() ?: emptyArray()
+                goals = goals?.toTypedArray() ?: emptyArray(),
+                preferredName = settings?.preferredName ?: ""
             )
         }
         composable(Screen.GoalManager.route, Screen.GoalManager.args) {

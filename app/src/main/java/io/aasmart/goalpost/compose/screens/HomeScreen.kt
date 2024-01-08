@@ -2,6 +2,7 @@ package io.aasmart.goalpost.compose.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,7 +33,12 @@ import io.aasmart.goalpost.goals.models.Goal
 
 @Composable
 fun Greeting(name: String = "Person") {
-    Text(text = "${stringResource(id = R.string.salutation)}, $name", fontSize = 48.sp)
+    Column {
+        Text(
+            text = "${stringResource(id = R.string.salutation)}, ${name}",
+            fontSize = 36.sp
+        )
+    }
 }
 
 @Composable
@@ -71,7 +77,7 @@ fun GoalsSnippetCard(
     ) {
         ElevatedCard(
             modifier = Modifier
-                .fillMaxWidth(.95f),
+                .fillMaxWidth(),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             if(selectedGoals.isEmpty()) {
@@ -96,7 +102,8 @@ fun GoalsSnippetCard(
             Text(
                 text = stringResource(id = R.string.current_goal_snippet),
                 color = MaterialTheme.colorScheme.onBackground,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(4.dp)
             )
 
             LazyColumn(
@@ -129,20 +136,28 @@ fun GoalsSnippetCard(
 @Composable
 fun HomeScreen(
     goalpostNav: GoalpostNav,
-    goals: Array<Goal>
+    goals: Array<Goal>,
+    preferredName: String
 ) {
     GoalpostNavScaffold(nav = goalpostNav) {
-        Column(modifier = Modifier
+        Box(modifier = Modifier
             .padding(it)
             .fillMaxSize()
         ) {
-            Greeting()
-            GoalsSnippetCard(
-                goals,
-                3,
-                goalpostNav.goalManager,
-                goalpostNav.createGoal
-            )
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxSize()
+            ) {
+                Greeting(preferredName)
+                GoalsSnippetCard(
+                    goals,
+                    3,
+                    goalpostNav.goalManager,
+                    goalpostNav.createGoal
+                )
+            }
         }
     }
 }
