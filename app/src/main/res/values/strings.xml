@@ -47,6 +47,7 @@
     <string name="need_completed_reflection_to_view">
         This reflection needs to be completed in order to view it
     </string>
+    <string name="return_to_goal_manager">Return to Goal Manager</string>
 
     <string name="notification_reflect_title">Time to reflect on your goals!</string>
     <string name="notification_reflect_desc">

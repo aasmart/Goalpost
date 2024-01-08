@@ -537,9 +537,9 @@ fun GoalDetailsScreen(
                     .padding(padding),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "Could not find goal")
+                Text(text = stringResource(R.string.failed_goal_load))
                 Button(onClick = goalpostNav.goalManager) {
-                    Text(text = "Return to Goal Manager")
+                    Text(text = stringResource(id = R.string.return_to_goal_manager))
                 }
             }
             return@Scaffold
