@@ -323,6 +323,7 @@ private fun GoalReflectionForm(
                     )
 
                     coroutineScope.launch {
+                        navBack()
                         updateGoal(
                             context = context,
                             goal = goal,
@@ -330,7 +331,6 @@ private fun GoalReflectionForm(
                             setGoal = setGoal,
                             completedGoal = completedGoal
                         )
-                        navBack()
                     }
                 },
                 shape = RoundedCornerShape(4.dp),
