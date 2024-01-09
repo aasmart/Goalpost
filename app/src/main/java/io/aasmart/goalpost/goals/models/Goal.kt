@@ -1,10 +1,10 @@
 package io.aasmart.goalpost.goals.models
 
-import io.aasmart.goalpost.utils.GoalpostUtils
 import kotlinx.serialization.Serializable
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
 import java.util.UUID
 
@@ -62,19 +62,35 @@ data class Goal(
             if(timePeriod.intervalMillis > 0) {
                 var reflectionDate = ZonedDateTime
                     .ofInstant(Instant.ofEpochMilli(beginDate), ZoneId.of("UTC"))
+                val completionDateTime = Instant.ofEpochMilli(completionDate)
+                    .atZone(ZoneId.of("UTC"))
 
                 // Add all reflections until within less than 24hrs of the completion date
                 // This ensures a reflection can be added on the final day, regardless of interval
-                while (completionDate - reflectionDate.toInstant().toEpochMilli() >= GoalpostUtils.DAY_MS) {
+                while (reflectionDate < completionDateTime) {
                     val ms = reflectionDate.toInstant().toEpochMilli()
                     tempReflections += GoalReflection(dateTimeMillis = ms)
                     reflectionDate = reflectionDate.plus(timePeriod.intervalMillis, ChronoUnit.MILLIS)
                 }
 
-                // Add reflection for final day regardless of the reflection interval
-                tempReflections.add(
-                    GoalReflection(dateTimeMillis = completionDate)
-                )
+                // Add reflection for final day if it is missing
+                if(tempReflections.isEmpty())
+                    tempReflections.add(GoalReflection(dateTimeMillis = completionDate))
+                else {
+                    val lastReflectionDateTime = Instant
+                        .ofEpochMilli(
+                            tempReflections.last().dateTimeMillis
+                        )
+                        .atZone(ZoneId.systemDefault())
+                        .with(ChronoField.MILLI_OF_DAY, 0)
+                    val completionDateLocale = completionDateTime
+                        .withZoneSameInstant(ZoneId.systemDefault())
+                        .with(ChronoField.MILLI_OF_DAY, 0)
+
+                    println("$lastReflectionDateTime $completionDateTime")
+                    if (lastReflectionDateTime != completionDateLocale)
+                        tempReflections.add(GoalReflection(dateTimeMillis = completionDate))
+                }
             }
 
             return tempReflections
@@ -104,6 +120,5 @@ data class Goal(
 
     fun isCompleted(): Boolean {
         return reflections.none{ !it.isCompleted }
-                && System.currentTimeMillis() > completionDate
     }
 }
