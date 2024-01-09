@@ -675,14 +675,16 @@ fun GoalDetailsScreen(
         topBar = { DetailsTopAppBar(goal = goal, navBack = goalpostNav.up) },
         floatingActionButton = {
             if(!isEditing && checkEditingEnabled())
-                EditFloatingActionButton { isEditing = checkEditingEnabled() }
-            else {
-                Toast.makeText(
-                    context,
-                    stringResource(id = R.string.editing_is_disabled),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+                EditFloatingActionButton {
+                    if(!checkEditingEnabled()) {
+                        Toast.makeText(
+                            context,
+                            context.resources.getString(R.string.editing_is_disabled),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else
+                        isEditing = true
+                }
         }
     ) { padding ->
         if(goal == null) {
