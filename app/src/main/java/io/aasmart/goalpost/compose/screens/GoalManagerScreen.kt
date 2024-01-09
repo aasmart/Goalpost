@@ -54,7 +54,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun IncompleteGoalReflectionCard(
+private fun GoalCardItem(
     goal: Goal,
     cardHeight: Dp = 70.dp,
     calendarScreenNav: () -> Unit,
@@ -229,7 +229,7 @@ fun GoalsManager(
                     itemsIndexed(
                         goals.filter { it.isCompleted() == completeGoalScreen }
                     ) { _, goal ->
-                        IncompleteGoalReflectionCard(
+                        GoalCardItem(
                             goal,
                             calendarScreenNav = goalpostNav.goalCalendar,
                             manageGoalNav = manageGoalNav

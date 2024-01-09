@@ -15,12 +15,12 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -42,11 +42,14 @@ fun Greeting(name: String = "Person") {
 }
 
 @Composable
-private fun IncompleteGoalReflectionCard(goal: Goal) {
+private fun GoalCardItem(goal: Goal) {
     Column(modifier = Modifier
-        .background(Color.Black.copy(alpha = 0.075F), RoundedCornerShape(6.dp))
+        .background(
+            MaterialTheme.colorScheme.primaryContainer,
+            RoundedCornerShape(4.dp)
+        )
         .fillMaxWidth()
-        .padding(2.dp)
+        .padding(4.dp)
     ) {
         Text(
             text = goal.title,
@@ -111,17 +114,13 @@ fun GoalsSnippetCard(
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 items(selectedGoals) {
-                    IncompleteGoalReflectionCard(goal = it)
+                    GoalCardItem(goal = it)
                 }
 
                 item {
-                    TextButton(
+                    OutlinedButton(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        colors = ButtonDefaults.textButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
-                        ),
                         shape = MaterialTheme.shapes.small,
                         onClick = { goalManagerHandle() }
                     ) {
