@@ -1,9 +1,7 @@
 package io.aasmart.goalpost.compose
 
 import android.Manifest
-import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -73,7 +71,6 @@ import io.aasmart.goalpost.compose.screens.settings.SettingsScreen
 import io.aasmart.goalpost.compose.viewmodels.GoalpostViewModel
 import io.aasmart.goalpost.data.settingsDataStore
 import io.aasmart.goalpost.goals.models.Goal
-import io.aasmart.goalpost.goals.notifications.GoalReflectionNotification
 import io.aasmart.goalpost.goals.scheduleReflectionAlarm
 import io.aasmart.goalpost.goals.scheduleRemindersAlarm
 import io.aasmart.goalpost.utils.GoalpostUtils

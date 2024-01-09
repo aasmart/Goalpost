@@ -6,7 +6,6 @@ import io.aasmart.goalpost.data.settingsDataStore
 import io.aasmart.goalpost.receivers.GoalReflectionReceiver
 import io.aasmart.goalpost.utils.AlarmHelper
 import io.aasmart.goalpost.utils.GoalpostUtils
-import io.aasmart.goalpost.utils.GoalpostUtils.DAY_MS
 import java.time.Instant
 
 private const val requestCode = 10

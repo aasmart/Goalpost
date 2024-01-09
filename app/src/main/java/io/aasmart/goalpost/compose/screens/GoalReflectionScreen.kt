@@ -334,6 +334,7 @@ private fun GoalReflectionForm(
                     }
                 },
                 shape = RoundedCornerShape(4.dp),
+                enabled = !(isFinalReflection && completedGoal == null),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = stringResource(id = R.string.complete_reflection))
