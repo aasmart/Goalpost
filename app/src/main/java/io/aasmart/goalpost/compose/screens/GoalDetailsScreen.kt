@@ -21,7 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
@@ -62,7 +61,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.aasmart.goalpost.IS_GOAL_EDITING_ENABLED
 import io.aasmart.goalpost.R
 import io.aasmart.goalpost.compose.GoalpostNav
 import io.aasmart.goalpost.compose.LoadingWheel
@@ -74,7 +72,6 @@ import io.aasmart.goalpost.goals.models.GoalReflection
 import io.aasmart.goalpost.utils.ColorUtils
 import io.aasmart.goalpost.utils.GoalpostUtils
 import io.aasmart.goalpost.utils.InputUtils
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.text.DateFormatSymbols
@@ -85,6 +82,8 @@ import java.time.format.TextStyle
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
 import java.util.Locale
+
+const val REMINDER_EDITING_GRACE_PERIOD_MILLIS = 2 * 60 * 60 * 1000L
 
 /**
  * A component for the goal calendar that displays a goal reflection
@@ -653,16 +652,6 @@ fun GoalDetailsScreen(
     removeGoal: suspend (Context, goalId: String) -> Unit,
     goalReflectionNav: (Goal, GoalReflection) -> Unit
 ) {
-    /* IMPORTANT
-    *
-    * Editing goals is fully implemented and working (probably has some bugs),
-    * but is disabled by default. I decided that editing goals goes against what I think
-    * is a good idea. To enable goal editing, there is a global IS_GOAL_EDITING_ENABLED
-    * field that can be changed to 'true'. This will allow a FAB to appear that will launch
-    * editing for the user.
-    *
-    */
-
     val goals by getGoals(LocalContext.current).collectAsState(initial = null)
     val goal = goals?.find { goal -> goal.id == goalId }
 
@@ -676,11 +665,23 @@ fun GoalDetailsScreen(
         mutableStateOf(false)
     }
 
+    val editingEnabledUntilMillis = goal
+        ?.beginDate
+        ?.plus(REMINDER_EDITING_GRACE_PERIOD_MILLIS)
+        ?: 0
+    fun checkEditingEnabled() = System.currentTimeMillis() < editingEnabledUntilMillis
+
     Scaffold(
         topBar = { DetailsTopAppBar(goal = goal, navBack = goalpostNav.up) },
         floatingActionButton = {
-            if(!isEditing && IS_GOAL_EDITING_ENABLED) {
-                EditFloatingActionButton { isEditing = IS_GOAL_EDITING_ENABLED }
+            if(!isEditing && checkEditingEnabled())
+                EditFloatingActionButton { isEditing = checkEditingEnabled() }
+            else {
+                Toast.makeText(
+                    context,
+                    stringResource(id = R.string.editing_is_disabled),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     ) { padding ->

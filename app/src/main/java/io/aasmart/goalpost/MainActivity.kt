@@ -14,8 +14,6 @@ import io.aasmart.goalpost.compose.GoalpostApp
 import io.aasmart.goalpost.goals.notifications.createNotificationChannel
 import io.aasmart.goalpost.ui.theme.GoalpostTheme
 
-const val IS_GOAL_EDITING_ENABLED = false
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
