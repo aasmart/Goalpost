@@ -69,6 +69,10 @@
         This reflection needs to be completed in order to view it
     </string>
     <string name="return_to_goal_manager">Return to Goal Manager</string>
+    <string name="delete_goal">Delete Goal</string>
+    <string name="confirm_delete_dialog">
+        Are you sure you want to delete this goal? This action cannot be undone.
+    </string>
 
     <string name="notification_reflect_title">Time to reflect on your goals!</string>
     <string name="notification_reflect_desc">

@@ -445,6 +445,7 @@ fun GoalpostApp(
                 reflectionTimeMillis = settings?.goalReflectionTimeMs ?: 0,
                 getGoals = { context -> appViewModel.getGoals(context) },
                 setGoals = { context, goal -> appViewModel.setGoal(context, goal) },
+                removeGoal = { context, goalId -> appViewModel.removeGoal(context, goalId) },
                 goalReflectionNav = { goal, reflection ->
                     navController.navigate(
                         Screen.GoalReflections.Goal.createRoute(

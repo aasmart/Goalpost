@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,10 +21,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -70,6 +74,7 @@ import io.aasmart.goalpost.goals.models.GoalReflection
 import io.aasmart.goalpost.utils.ColorUtils
 import io.aasmart.goalpost.utils.GoalpostUtils
 import io.aasmart.goalpost.utils.InputUtils
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.text.DateFormatSymbols
@@ -327,6 +332,57 @@ private fun EditFloatingActionButton(
     }
 }
 
+/**
+ * A dialog that will prompt the user to confirm they want to delete a goal
+ *
+ * @param onVisibleChange A callback to change the dialog's visibility
+ * @param deleteGoal A callback to delete the goal
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ConfirmDeleteDialog(
+    onVisibleChange: (Boolean) -> Unit,
+    deleteGoal: suspend () -> Unit
+) {
+    val coroutineScope = rememberCoroutineScope()
+    AlertDialog(onDismissRequest = { onVisibleChange(false) }) {
+        Card(
+            elevation = CardDefaults.cardElevation(4.dp)
+        ) {
+            Text(
+                text = stringResource(id = R.string.confirm_delete_dialog),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(12.dp)
+                    .fillMaxWidth()
+            )
+            Row(
+                modifier = Modifier
+                    .padding(12.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
+            ) {
+                Button(
+                    onClick = { onVisibleChange(false) },
+                    shape = RoundedCornerShape(4.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(text = stringResource(id = R.string.dismiss))
+                }
+                OutlinedButton(
+                    onClick = {
+                        onVisibleChange(false)
+                        coroutineScope.launch { deleteGoal() }
+                    },
+                    shape = RoundedCornerShape(4.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(text = stringResource(id = R.string.confirm))
+                }
+            }
+        }
+    }
+}
 
 /**
  * A component that displays the details of a goal and also allows for the goal
@@ -362,9 +418,21 @@ private fun GoalDisplay(
     updateSelectedReflectionFrequencyIndex: (Int) -> Unit,
     isEditing: Boolean,
     reflectionTimeMillis: Long,
-    goalReflectionNav: (Goal, GoalReflection) -> Unit
+    goalReflectionNav: (Goal, GoalReflection) -> Unit,
+    removeGoal: suspend () -> Unit,
 ) {
     val scroll = rememberScrollState()
+
+    var confirmDeleteDialogVisible by remember {
+        mutableStateOf(false)
+    }
+
+    if(confirmDeleteDialogVisible) {
+        ConfirmDeleteDialog(
+            onVisibleChange = {confirmDeleteDialogVisible = it},
+            deleteGoal = removeGoal
+        )
+    }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -535,6 +603,31 @@ private fun GoalDisplay(
             goalReflectionTimeMillis = reflectionTimeMillis,
             goalReflectionNav = goalReflectionNav
         )
+
+        if(isEditing) {
+            OutlinedButton(
+                onClick = {
+                    confirmDeleteDialogVisible = true
+                },
+                shape = RoundedCornerShape(4.dp),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.error
+                ),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = null
+                )
+                Text(text = stringResource(id = R.string.delete_goal))
+            }
+        }
+
+
+
+        // !!! MUST BE LAST !!!
+        if(isEditing)
+            Spacer(modifier = Modifier.padding(bottom = 60.dp))
     }
 }
 
@@ -557,6 +650,7 @@ fun GoalDetailsScreen(
     reflectionTimeMillis: Long,
     getGoals: (Context) -> Flow<List<Goal>>,
     setGoals: suspend (Context, Goal) -> Unit,
+    removeGoal: suspend (Context, goalId: String) -> Unit,
     goalReflectionNav: (Goal, GoalReflection) -> Unit
 ) {
     /* IMPORTANT
@@ -657,7 +751,11 @@ fun GoalDetailsScreen(
                 updateSelectedReflectionFrequencyIndex = { selectedReflectionIntervalIndex = it },
                 isEditing = isEditing,
                 reflectionTimeMillis = reflectionTimeMillis,
-                goalReflectionNav = goalReflectionNav
+                goalReflectionNav = goalReflectionNav,
+                removeGoal = {
+                    removeGoal(context, goalId)
+                    goalpostNav.up()
+                }
             )
 
             if(isEditing) {
