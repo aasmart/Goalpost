@@ -48,6 +48,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.aasmart.goalpost.R
+import io.aasmart.goalpost.compose.components.FieldHeader
 import io.aasmart.goalpost.compose.components.GoalpostSlider
 import io.aasmart.goalpost.goals.models.Goal
 import io.aasmart.goalpost.goals.models.GoalReflection
@@ -88,24 +89,6 @@ private suspend fun updateGoal(
     }
 
     setGoal(context, updatedGoal)
-}
-
-@Composable
-private fun FieldHeader(
-    title: String,
-    subTitle: String
-) {
-    Column {
-        Text(
-            text = title,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            text = subTitle,
-            style = MaterialTheme.typography.labelMedium,
-            fontWeight = FontWeight.Light
-        )
-    }
 }
 
 @Composable

@@ -27,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import io.aasmart.goalpost.R
 import io.aasmart.goalpost.compose.GoalpostNav
 import io.aasmart.goalpost.compose.GoalpostNavScaffold
+import io.aasmart.goalpost.compose.components.FieldHeader
 import io.aasmart.goalpost.compose.components.TextFieldDatePicker
 import io.aasmart.goalpost.compose.components.TextFieldDropdown
 import io.aasmart.goalpost.goals.models.Goal
@@ -139,7 +139,6 @@ fun CreateGoalScreen(
     GoalpostNavScaffold(nav = goalpostNav) { padding ->
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .padding(8.dp)
                 .padding(padding)
@@ -147,12 +146,15 @@ fun CreateGoalScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
-                text = "Create Your New Goal",
+                text = stringResource(id = R.string.create_your_new_goal),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Medium
             )
 
-            Text(text="Define Your Goal")
+            FieldHeader(
+                title = stringResource(id = R.string.define_goal_title),
+                subTitle = stringResource(id = R.string.define_goal_subtitle)
+            )
 
             // Name Input
             OutlinedTextField(
@@ -227,7 +229,10 @@ fun CreateGoalScreen(
                     .height(250.dp)
             )
 
-            Text(text = "Meeting your Goal")
+            FieldHeader(
+                title = stringResource(id = R.string.meeting_goal_title),
+                subTitle = stringResource(id = R.string.meeting_goal_subtitle)
+            )
 
             // End time date picker
 

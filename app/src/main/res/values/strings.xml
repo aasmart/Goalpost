@@ -20,6 +20,22 @@
         this goal needs reflections. Reflections begin the day this goal is created.
     </string>
     <string name="create_reflection_frequency_info_desc">Reflection frequency information</string>
+    <string name="create_your_new_goal">Create Your New Goal</string>
+    <string name="define_goal_title">Define your goal</string>
+    <string name="define_goal_subtitle">
+        Make sure to come up with a concise name to easily recognize what
+        you want to accomplish with this goal. When describing your goal, make
+        sure to be as specific as possible with what you want to accomplish.
+    </string>
+    <string name="meeting_goal_title">Meeting your goal</string>
+    <string name="meeting_goal_subtitle">
+        Based off of your goal description, try to decide on a reasonable due
+        date. If you give yourself too little time, you may become discouraged if
+        you\'re struggling to reach the goal. Too long, and you may procrastinate.
+        \n\nThen to keep yourself on track, decide on how often you would like to
+        reflect on this goal.
+    </string>
+
     <string name="cancel_editing">Cancel Editing</string>
     <string name="save_changes">Save Changes</string>
     <string name="goal_name">Goal Name</string>
