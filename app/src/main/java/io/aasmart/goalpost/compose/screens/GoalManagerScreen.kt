@@ -15,6 +15,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Button
@@ -36,6 +38,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -78,33 +81,56 @@ private fun IncompleteGoalReflectionCard(
                     .padding(4.dp)
             )
 
-            val dateTooltipState = remember { RichTooltipState() }
-            RichTooltipBox(
-                title = { Text("Goal Dates") },
-                tooltipState = dateTooltipState,
-                text = {
-                    val date = ZonedDateTime.ofInstant(Instant.ofEpochMilli(goal.completionDate), ZoneId.of("UTC"))
-                    val dateString =
-                        "${date.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} " +
-                        "${date.dayOfMonth}, ${date.year}"
+            if(goal.accomplishedGoal == null) {
+                val dateTooltipState = remember { RichTooltipState() }
+                RichTooltipBox(
+                    title = { Text("Goal Dates") },
+                    tooltipState = dateTooltipState,
+                    text = {
+                        val date = ZonedDateTime.ofInstant(
+                            Instant.ofEpochMilli(goal.completionDate),
+                            ZoneId.of("UTC")
+                        )
+                        val dateString =
+                            "${date.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} " +
+                                    "${date.dayOfMonth}, ${date.year}"
 
-                    Text("You want to accomplish ${goal.title} by $dateString")
+                        Text("You want to accomplish ${goal.title} by $dateString")
+                    }
+                ) {
+                    IconButton(
+                        onClick = calendarScreenNav,
+                        modifier = Modifier
+                            .fillMaxHeight(.6f)
+                            .aspectRatio(1f)
+                            .tooltipAnchor()
+                    ) {
+                        Icon(
+                            Icons.Filled.DateRange,
+                            contentDescription = "View end date",
+                            modifier = Modifier.fillMaxSize(),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
-            ) {
-                IconButton(
-                    onClick = calendarScreenNav,
+            } else if(goal.accomplishedGoal) {
+                Icon(
+                    Icons.Filled.Check,
+                    contentDescription = stringResource(id = R.string.reflection_accomplished),
                     modifier = Modifier
                         .fillMaxHeight(.6f)
-                        .aspectRatio(1f)
-                        .tooltipAnchor()
-                ) {
-                    Icon(
-                        Icons.Filled.DateRange,
-                        contentDescription = "View end date",
-                        modifier = Modifier.fillMaxSize(),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
+                        .aspectRatio(1f),
+                    tint = colorResource(id = R.color.light_green)
+                )
+            } else {
+                Icon(
+                    Icons.Filled.Close,
+                    contentDescription = stringResource(id = R.string.reflection_didnt_accomplished),
+                    modifier = Modifier
+                        .fillMaxHeight(.6f)
+                        .aspectRatio(1f),
+                    tint = MaterialTheme.colorScheme.error
+                )
             }
 
             IconButton(
