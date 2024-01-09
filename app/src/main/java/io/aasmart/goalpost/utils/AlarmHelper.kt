@@ -76,6 +76,35 @@ object AlarmHelper {
         )
     }
 
+    fun <T : BroadcastReceiver> scheduleExactAlarm(
+        context: Context,
+        broadcastReceiverClass: Class<T>,
+        type: Int,
+        initialTriggerMillis: Long,
+        requestCode: Int,
+        extras: Map<String, String> = emptyMap()
+    ) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmIntent = Intent(context, broadcastReceiverClass).apply {
+            extras.forEach { this.putExtra(it.key, it.value) }
+        }
+
+        alarmManager.setExact(
+            type,
+            initialTriggerMillis,
+            PendingIntent.getBroadcast(
+                context,
+                requestCode,
+                alarmIntent,
+                PendingIntent.FLAG_IMMUTABLE
+            )
+        )
+
+        Log.d("Alarm Scheduled", "Scheduled an exact alarm with " +
+                "initial trigger $initialTriggerMillis"
+        )
+    }
+
     fun <T : BroadcastReceiver> cancelAlarm(
         context: Context,
         broadcastReceiverClass: Class<T>,

@@ -20,7 +20,7 @@ suspend fun scheduleReflectionAlarm(
             val targetMs = reflectionInstant.toEpochMilli()
 
             if(Instant.now().toEpochMilli() < targetMs) {
-                AlarmHelper.scheduleInexactAlarm(
+                AlarmHelper.scheduleExactAlarm(
                     context,
                     GoalReflectionReceiver::class.java,
                     initialTriggerMillis = targetMs,
@@ -28,7 +28,7 @@ suspend fun scheduleReflectionAlarm(
                     requestCode = requestCode
                 )
             } else {
-                AlarmHelper.scheduleInexactAlarm(
+                AlarmHelper.scheduleExactAlarm(
                     context,
                     GoalReflectionReceiver::class.java,
                     initialTriggerMillis = targetMs + AlarmManager.INTERVAL_DAY,

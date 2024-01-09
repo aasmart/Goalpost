@@ -23,7 +23,7 @@ object GoalReflectionNotification : GoalpostNotification() {
         }
 
         private fun snooze(context: Context) {
-            AlarmHelper.scheduleInexactAlarm(
+            AlarmHelper.scheduleExactAlarm(
                 context,
                 GoalReflectionReceiver::class.java,
                 AlarmManager.ELAPSED_REALTIME_WAKEUP,
