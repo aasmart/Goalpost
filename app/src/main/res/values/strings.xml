@@ -13,6 +13,12 @@
     <string name="submit">Submit</string>
     <string name="completed_goals">Completed Goals</string>
     <string name="in_progress_goals">In-Progress Goals</string>
+    <string name="goal_dates_info">Goal Dates Info</string>
+    <string name="goal_info_dates_accomplish_by">
+        You want to accomplish {GOAL} by {DATE}
+    </string>
+    <string name="view_goal_calendar">View goal calendar</string>
+    <string name="no_goals_set">You don\'t have any goals set.</string>
 
     <string name="create_reflection_frequency">Reflection Frequency</string>
     <string name="create_reflection_frequency_info">

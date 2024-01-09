@@ -84,7 +84,7 @@ private fun IncompleteGoalReflectionCard(
             if(goal.accomplishedGoal == null) {
                 val dateTooltipState = remember { RichTooltipState() }
                 RichTooltipBox(
-                    title = { Text("Goal Dates") },
+                    title = { Text(text = stringResource(id = R.string.goal_dates_info)) },
                     tooltipState = dateTooltipState,
                     text = {
                         val date = ZonedDateTime.ofInstant(
@@ -95,7 +95,11 @@ private fun IncompleteGoalReflectionCard(
                             "${date.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} " +
                                     "${date.dayOfMonth}, ${date.year}"
 
-                        Text("You want to accomplish ${goal.title} by $dateString")
+                        Text(
+                            text = stringResource(id = R.string.goal_info_dates_accomplish_by)
+                                .replace("{GOAL}", goal.title)
+                                .replace("{DATE}", dateString)
+                        )
                     }
                 ) {
                     IconButton(
@@ -107,7 +111,7 @@ private fun IncompleteGoalReflectionCard(
                     ) {
                         Icon(
                             Icons.Filled.DateRange,
-                            contentDescription = "View end date",
+                            contentDescription = stringResource(id = R.string.view_goal_calendar),
                             modifier = Modifier.fillMaxSize(),
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -141,7 +145,7 @@ private fun IncompleteGoalReflectionCard(
             ) {
                 Icon(
                     Icons.Default.KeyboardArrowRight,
-                    contentDescription = "View goal",
+                    contentDescription = stringResource(id = R.string.view),
                     modifier = Modifier.fillMaxSize(),
                     tint = MaterialTheme.colorScheme.primary
                 )
@@ -169,9 +173,9 @@ fun GoalsManager(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("You don't have any goals set.")
+                Text(stringResource(id = R.string.no_goals_set))
                 Button(onClick = goalpostNav.createGoal) {
-                    Text("Set Goals")
+                    Text(text = stringResource(id = R.string.set_goals))
                 }
             }
         } else {
