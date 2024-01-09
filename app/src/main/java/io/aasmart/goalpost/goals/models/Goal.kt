@@ -19,6 +19,7 @@ data class Goal(
      */
     val completionDate: Long,
     val reflections: List<GoalReflection>,
+    val accomplishedGoal: Boolean? = null,
     val id: String = UUID.randomUUID().toString()
 ) {
 

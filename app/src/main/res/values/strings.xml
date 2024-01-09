@@ -165,4 +165,12 @@
     <string name="reflection_incomplete_toast">
         You still have goal reflections to complete.
     </string>
+    <string name="reflection_accomplished_title">Did you accomplish this goal?</string>
+    <string name="reflection_accomplished_description">
+        Since this is the final reflection, do you think you have
+        accomplished this goal based off your previous answers? You CANNOT
+        change your response after selecting a response.
+    </string>
+    <string name="reflection_accomplished">Accomplished</string>
+    <string name="reflection_didnt_accomplished">Didn\'t accomplish</string>
 </resources>
