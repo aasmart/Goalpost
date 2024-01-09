@@ -165,62 +165,66 @@ fun GoalsManager(
     }
 
     GoalpostNavScaffold(nav = goalpostNav) { padding ->
-        if(goals.isEmpty()) {
-            Column(
-                modifier = Modifier
-                    .padding(padding)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
+        ) {
+            // Tab buttons for complete/incomplete goals
+            Row(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource(id = R.string.no_goals_set))
-                Button(onClick = goalpostNav.createGoal) {
-                    Text(text = stringResource(id = R.string.set_goals))
-                }
-            }
-        } else {
-            Column(
-                modifier = Modifier
-                    .padding(padding)
-                    .fillMaxSize()
-            ) {
-                // Tab buttons for complete/incomplete goals
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Button(
-                        onClick = { completeGoalScreen = false },
-                        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = (
+                Button(
+                    onClick = { completeGoalScreen = false },
+                    shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = (
                                 if(!completeGoalScreen)
                                     MaterialTheme.colorScheme.background
                                 else
                                     MaterialTheme.colorScheme.secondaryContainer
-                            ),
-                            contentColor = MaterialTheme.colorScheme.onBackground
-                        ),
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(text = stringResource(id = R.string.in_progress_goals))
-                    }
-                    Button(
-                        onClick = { completeGoalScreen = true },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = (
+                                ),
+                        contentColor = MaterialTheme.colorScheme.onBackground
+                    ),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(text = stringResource(id = R.string.in_progress_goals))
+                }
+                Button(
+                    onClick = { completeGoalScreen = true },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = (
                                 if(completeGoalScreen)
                                     MaterialTheme.colorScheme.background
                                 else
                                     MaterialTheme.colorScheme.secondaryContainer
-                            ),
-                            contentColor = MaterialTheme.colorScheme.onBackground
-                        ),
-                        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(text = stringResource(id = R.string.completed_goals))
-                    }
+                                ),
+                        contentColor = MaterialTheme.colorScheme.onBackground
+                    ),
+                    shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(text = stringResource(id = R.string.completed_goals))
                 }
+            }
+
+            if(goals.none { it.isCompleted() == completeGoalScreen }) {
+                Column(
+                    modifier = Modifier
+                        .padding(padding)
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if(!completeGoalScreen) {
+                        Text(stringResource(id = R.string.no_goals_set))
+                        Button(onClick = goalpostNav.createGoal) {
+                            Text(text = stringResource(id = R.string.set_goals))
+                        }
+                    } else
+                        Text(text = stringResource(id = R.string.no_goals_completed))
+                }
+            } else {
                 LazyColumn(
                     contentPadding = PaddingValues(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),

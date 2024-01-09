@@ -19,6 +19,7 @@
     </string>
     <string name="view_goal_calendar">View goal calendar</string>
     <string name="no_goals_set">You don\'t have any goals set.</string>
+    <string name="no_goals_completed">You do not have any completed goals.</string>
 
     <string name="create_reflection_frequency">Reflection Frequency</string>
     <string name="create_reflection_frequency_info">
