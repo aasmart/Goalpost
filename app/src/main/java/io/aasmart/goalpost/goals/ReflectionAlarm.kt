@@ -32,7 +32,7 @@ suspend fun scheduleReflectionAlarm(
                 AlarmHelper.scheduleInexactAlarm(
                     context,
                     GoalReflectionReceiver::class.java,
-                    initialTriggerMillis = targetMs + DAY_MS,
+                    initialTriggerMillis = targetMs + AlarmManager.INTERVAL_DAY,
                     type = AlarmManager.RTC_WAKEUP,
                     requestCode = requestCode
                 )

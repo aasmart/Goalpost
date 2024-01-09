@@ -1,7 +1,9 @@
 package io.aasmart.goalpost.compose
 
 import android.Manifest
+import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -71,10 +73,12 @@ import io.aasmart.goalpost.compose.screens.settings.SettingsScreen
 import io.aasmart.goalpost.compose.viewmodels.GoalpostViewModel
 import io.aasmart.goalpost.data.settingsDataStore
 import io.aasmart.goalpost.goals.models.Goal
+import io.aasmart.goalpost.goals.notifications.GoalReflectionNotification
 import io.aasmart.goalpost.goals.scheduleReflectionAlarm
 import io.aasmart.goalpost.goals.scheduleRemindersAlarm
 import io.aasmart.goalpost.utils.GoalpostUtils
 import io.aasmart.goalpost.utils.InputUtils
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.Instant
 
@@ -356,32 +360,39 @@ fun GoalpostApp(
         return
     }
 
-    LaunchedEffect(settings?.goalReflectionTimeMs, goals) {
-        val reflectionDateTime = settings?.let {
-            GoalpostUtils.timeAsTodayDateTime(it.goalReflectionTimeMs)
-        } ?: Instant.now()
-
-        val incompleteGoals = goals?.filter {
-            it.getCurrentReflection(Instant.now())?.isCompleted == false
-        } ?: emptyList()
-
-        if(Instant.now().toEpochMilli() > reflectionDateTime.toEpochMilli()
-            && incompleteGoals.isNotEmpty()
-        ) {
-            context.settingsDataStore.updateData {
-                it.toBuilder().setNeedsToReflect(true).build()
-            }
-        }
-
-        scheduleReflectionAlarm(context)
-    }
-
     LaunchedEffect(
         settings?.morningReminderTimeMs,
         settings?.midDayReminderTimeMs,
         settings?.eveningReminderTimeMs
     ) {
         scheduleRemindersAlarm(context)
+    }
+
+    LaunchedEffect(settings?.goalReflectionTimeMs) {
+        scheduleReflectionAlarm(context)
+    }
+
+    /*If the user is in the app, try to schedule the reflection time to reduce
+    * the reliance on an alarm*/
+    LaunchedEffect(settings?.goalReflectionTimeMs) {
+        if(settings?.goalReflectionTimeMs == null)
+            return@LaunchedEffect
+
+        val reflectionDateTime = settings?.let {
+            GoalpostUtils.timeAsTodayDateTime(it.goalReflectionTimeMs)
+        } ?: Instant.now()
+
+        delay(reflectionDateTime.toEpochMilli() - System.currentTimeMillis())
+
+        val incompleteGoals = goals?.filter {
+            it.getCurrentReflection(Instant.now())?.isCompleted == false
+        } ?: emptyList()
+
+        if(incompleteGoals.isNotEmpty()) {
+            context.settingsDataStore.updateData {
+                it.toBuilder().setNeedsToReflect(true).build()
+            }
+        }
     }
 
     NavHost(navController = navController, startDestination = Screen.Home.route) {
