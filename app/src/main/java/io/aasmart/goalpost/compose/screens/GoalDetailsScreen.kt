@@ -179,10 +179,7 @@ private fun GoalReflectionCalendar(
     }
     val firstDayDateTime = zonedNow
         .withDayOfMonth(1)
-        .withHour(0)
-        .withMinute(0)
-        .withSecond(0)
-        .withNano(0)
+        .with(ChronoField.MILLI_OF_DAY, 0)
 
     val firstDayOfWeek = firstDayDateTime.dayOfWeek.value
     val month = zonedNow.month
@@ -233,11 +230,11 @@ private fun GoalReflectionCalendar(
         * to the goal reflection itself*/
         val dateTimeGoalReflectionMap = goal.reflections
             .associateBy {
-                ZonedDateTime.ofInstant(
-                    Instant.ofEpochMilli(it.dateTimeMillis), ZoneId.systemDefault()
-                ).truncatedTo(ChronoUnit.DAYS)
-                .toInstant()
-                .toEpochMilli()
+                Instant.ofEpochMilli(it.dateTimeMillis)
+                    .atZone(ZoneId.systemDefault())
+                    .with(ChronoField.MILLI_OF_DAY, 0)
+                    .toInstant()
+                    .toEpochMilli()
             }
 
         LazyVerticalGrid(
@@ -262,8 +259,8 @@ private fun GoalReflectionCalendar(
             }
             items(month.maxLength()) {
                 val dayMillis = firstDayDateTime
+                    .plus(it.toLong(), ChronoUnit.DAYS)
                     .toInstant()
-                    .plusMillis((it) * 24 * 60 * 60 * 1000L)
                     .toEpochMilli()
 
                 val reflection = dateTimeGoalReflectionMap[dayMillis]
