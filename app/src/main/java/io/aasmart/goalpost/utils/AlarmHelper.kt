@@ -27,6 +27,7 @@ object AlarmHelper {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val alarmIntent = Intent(context, broadcastReceiverClass).apply {
             extras.forEach { this.putExtra(it.key, it.value) }
+            addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
         }
 
         // Run the repeating alarm after that
@@ -58,6 +59,7 @@ object AlarmHelper {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val alarmIntent = Intent(context, broadcastReceiverClass).apply {
             extras.forEach { this.putExtra(it.key, it.value) }
+            addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
         }
 
         alarmManager.set(
@@ -87,6 +89,7 @@ object AlarmHelper {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val alarmIntent = Intent(context, broadcastReceiverClass).apply {
             extras.forEach { this.putExtra(it.key, it.value) }
+            addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
         }
 
         alarmManager.setExact(

@@ -34,11 +34,15 @@ private suspend fun goalReflectionBroadcastHandler(context: Context) {
         .getGoals()
         .cancellable()
         .first()
+    val settings = context.settingsDataStore.data.first()
 
     val now = Instant.now()
 
     val reflectionGoals = goals.filter {
-        val reflection = it.getCurrentReflection(now)
+        val reflection = it.getCurrentReflection(
+            now,
+            settings.goalReflectionTimeMs
+        )
         return@filter reflection?.isCompleted == false
     }
 

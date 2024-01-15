@@ -382,7 +382,10 @@ fun GoalpostApp(
         delay(reflectionDateTime.toEpochMilli() - System.currentTimeMillis())
 
         val incompleteGoals = goals?.filter {
-            it.getCurrentReflection(Instant.now())?.isCompleted == false
+            it.getCurrentReflection(
+                Instant.now(),
+                settings?.goalReflectionTimeMs ?: 0
+            )?.isCompleted == false
         } ?: emptyList()
 
         if(incompleteGoals.isNotEmpty()) {
@@ -467,11 +470,15 @@ fun GoalpostApp(
         composable(Screen.GoalReflections.route) {
             GoalsReflectionScreen(
                 goals = goals ?: emptyList(),
+                goalReflectionTimeMillis = settings?.goalReflectionTimeMs ?: 0,
                 navGoalReflection = {
                     navController.navigate(
                         Screen.GoalReflections.Goal.createRoute(
                             it.id,
-                            it.getCurrentReflection(Instant.now())?.id ?: ""
+                            it.getCurrentReflection(
+                                Instant.now(),
+                                settings?.goalReflectionTimeMs ?: 0
+                            )?.id ?: ""
                         )
                     )
                 },
@@ -482,9 +489,10 @@ fun GoalpostApp(
         composable(Screen.GoalReflections.Goal.route, Screen.GoalReflections.Goal.args) {
             GoalReflectionScreen(
                 goalId = it.arguments?.getString("goalId") ?: "",
+                goalReflectionTimeMillis = settings?.goalReflectionTimeMs ?: 0,
                 getGoals = { context -> appViewModel.getGoals(context) },
                 setGoal = { context, goal -> appViewModel.setGoal(context, goal) },
-                { navController.navigateUp() }
+                navBack = { navController.navigateUp() }
             )
         }
     }

@@ -162,6 +162,7 @@ private fun FinishReflectionFAB(
 @Composable
 fun GoalsReflectionScreen(
     goals: List<Goal>,
+    goalReflectionTimeMillis: Long,
     navGoalReflection: (goal: Goal) -> Unit,
     backNav: () -> Unit,
     homeNav: () -> Unit
@@ -173,7 +174,7 @@ fun GoalsReflectionScreen(
 
     // Retrieve goals that only require reflections today
     val reflectionGoals = goals.map {
-        it to it.getCurrentReflection(dayBeginInstant)
+        it to it.getCurrentReflection(dayBeginInstant, goalReflectionTimeMillis)
     }.filter {
         it.second != null
     }.toMap()

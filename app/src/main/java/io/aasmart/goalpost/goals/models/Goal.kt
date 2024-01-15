@@ -101,16 +101,18 @@ data class Goal(
      * Gets the Goal's current reflection based on the given day in local time.
      * Will also return goals that are marked as completed
      */
-    fun getCurrentReflection(day: Instant): GoalReflection? {
+    fun getCurrentReflection(
+        day: Instant,
+        goalReflectionTimeMillis: Long
+    ): GoalReflection? {
         val currentZonedDateTime = day
             .atZone(ZoneId.systemDefault())
-            .truncatedTo(ChronoUnit.DAYS)
 
         return reflections.filter {
             val goalZonedDateTime = Instant
                 .ofEpochMilli(it.dateTimeMillis)
                 .atZone(ZoneId.systemDefault())
-                .truncatedTo(ChronoUnit.DAYS)
+                .with(ChronoField.MILLI_OF_DAY, goalReflectionTimeMillis)
 
             currentZonedDateTime >= goalZonedDateTime
         }.maxByOrNull {

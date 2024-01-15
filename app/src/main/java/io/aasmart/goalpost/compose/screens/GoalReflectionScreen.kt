@@ -428,12 +428,16 @@ private fun ConfirmExitDialog(
 fun GoalReflectionScreen(
     goalId: String,
     getGoals: (Context) -> Flow<List<Goal>>,
+    goalReflectionTimeMillis: Long,
     setGoal: suspend (Context, Goal) -> Unit,
     navBack: () -> Unit
 ) {
     val goals = getGoals(LocalContext.current).collectAsState(initial = null).value
     val goal = goals?.find { goal -> goal.id == goalId }
-    val reflection = goal?.getCurrentReflection(Instant.now())
+    val reflection = goal?.getCurrentReflection(
+        Instant.now(),
+        goalReflectionTimeMillis
+    )
 
     var showConfirmExitDialog by remember {
         mutableStateOf(false)
