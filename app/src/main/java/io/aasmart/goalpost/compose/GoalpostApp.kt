@@ -489,11 +489,10 @@ fun GoalpostApp(
         composable(Screen.GoalReflections.Goal.route, Screen.GoalReflections.Goal.args) {
             GoalReflectionScreen(
                 goalId = it.arguments?.getString("goalId") ?: "",
-                goalReflectionTimeMillis = settings?.goalReflectionTimeMs ?: 0,
+                goalReflectionId = it.arguments?.getString("reflectionId") ?: "",
                 getGoals = { context -> appViewModel.getGoals(context) },
-                setGoal = { context, goal -> appViewModel.setGoal(context, goal) },
-                navBack = { navController.navigateUp() }
-            )
+                setGoal = { context, goal -> appViewModel.setGoal(context, goal) }
+            ) { navController.navigateUp() }
         }
     }
 }

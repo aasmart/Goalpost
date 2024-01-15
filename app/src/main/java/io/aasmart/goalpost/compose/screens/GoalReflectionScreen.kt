@@ -54,7 +54,6 @@ import io.aasmart.goalpost.goals.models.Goal
 import io.aasmart.goalpost.goals.models.GoalReflection
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import java.time.Instant
 
 /**
  * Updates a goal in the goal database with a completed goal reflection
@@ -427,17 +426,14 @@ private fun ConfirmExitDialog(
 @Composable
 fun GoalReflectionScreen(
     goalId: String,
+    goalReflectionId: String,
     getGoals: (Context) -> Flow<List<Goal>>,
-    goalReflectionTimeMillis: Long,
     setGoal: suspend (Context, Goal) -> Unit,
     navBack: () -> Unit
 ) {
     val goals = getGoals(LocalContext.current).collectAsState(initial = null).value
     val goal = goals?.find { goal -> goal.id == goalId }
-    val reflection = goal?.getCurrentReflection(
-        Instant.now(),
-        goalReflectionTimeMillis
-    )
+    val reflection = goal?.reflections?.find { it.id == goalReflectionId }
 
     var showConfirmExitDialog by remember {
         mutableStateOf(false)

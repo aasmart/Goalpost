@@ -97,7 +97,7 @@ const val REMINDER_EDITING_GRACE_PERIOD_MILLIS = 2 * 60 * 60 * 1000L
 private fun GoalReflectionCalendarDay(
     goalReflection: GoalReflection?,
     goalReflectionTimeMillis: Long,
-    goalReflectionNav: () -> Unit,
+    goalReflectionNav: (GoalReflection) -> Unit,
     day: Int
 ) {
     val context = LocalContext.current
@@ -131,7 +131,7 @@ private fun GoalReflectionCalendarDay(
     Button(
         onClick = {
             if(goalReflection?.isCompleted == true)
-                goalReflectionNav()
+                goalReflectionNav(goalReflection)
             else
                 Toast.makeText(
                     context,
@@ -268,9 +268,8 @@ private fun GoalReflectionCalendar(
                     reflection,
                     day = (it + 1),
                     goalReflectionTimeMillis = goalReflectionTimeMillis,
-                    goalReflectionNav = {
-                        if (reflection != null)
-                            goalReflectionNav(goal, reflection)
+                    goalReflectionNav = { goalReflection ->
+                        goalReflectionNav(goal, goalReflection)
                     }
                 )
             }
