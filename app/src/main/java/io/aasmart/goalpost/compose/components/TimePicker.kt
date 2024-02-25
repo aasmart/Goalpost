@@ -79,9 +79,10 @@ fun TextFieldTimePicker(
     onVisibilityChanged: (Boolean) -> Unit,
     label: @Composable () -> Unit,
     timePickerDialogLabel: @Composable () -> Unit,
-    leadingIcon: @Composable () -> Unit,
-    supportingText: @Composable () -> Unit,
-    modifier: Modifier
+    modifier: Modifier = Modifier,
+    leadingIcon: @Composable () -> Unit = {},
+    supportingText: @Composable () -> Unit = {},
+    enabled: Boolean = true
 ) {
     TimePicker(
         timePickerState = timePickerState,
@@ -100,6 +101,7 @@ fun TextFieldTimePicker(
             readOnly = true,
             leadingIcon = leadingIcon,
             supportingText = supportingText,
+            enabled = enabled,
             interactionSource = remember { MutableInteractionSource() }
                 .also { interactionSource ->
                     LaunchedEffect(interactionSource) {
