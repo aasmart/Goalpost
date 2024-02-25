@@ -17,7 +17,7 @@ suspend fun scheduleRemindersAlarm(
         .data
         .collect {
             it.reminderNotifTimesList.forEachIndexed { i, time ->
-                if(i > it.reminderEnabledCount || !it.reminderEnabledList[i])
+                if(i >= it.reminderEnabledCount || !it.reminderEnabledList[i])
                     return@forEachIndexed
                 val reminderTime = GoalpostUtils.timeAsTodayDateTime(time)
                 val now = Instant.now()
