@@ -3,7 +3,6 @@ package io.aasmart.goalpost.compose
 import android.Manifest
 import android.os.Build
 import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -419,7 +418,12 @@ fun GoalpostApp(
             else
                 EnterTransition.None
         },
-        exitTransition = { ExitTransition.None },
+        exitTransition = {
+            fadeOut(
+                animationSpec = tween(150, easing = LinearEasing),
+                0.2f
+            )
+        },
         popExitTransition = {
             slideOutHorizontally(
                 animationSpec = tween(150, easing = LinearEasing)
