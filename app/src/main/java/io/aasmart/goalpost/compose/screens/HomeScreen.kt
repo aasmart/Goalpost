@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.aasmart.goalpost.R
@@ -84,11 +85,16 @@ fun GoalsSnippetCard(
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             if(selectedGoals.isEmpty()) {
-                Text(stringResource(id = R.string.set_goals_reminder))
+                Text(
+                    text = stringResource(id = R.string.set_goals_reminder),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(4.dp)
+                )
 
                 TextButton(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp),
                     colors = ButtonDefaults.textButtonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.onPrimary
