@@ -8,6 +8,14 @@ sealed class Screen(
     val route: String,
     val args: List<NamedNavArgument> = emptyList()
 ) {
+    object Config {
+        val slideOutRoute = listOf(
+            GoalDetails.route,
+            Settings.Category.route,
+            GoalReflections.Goal.route
+        )
+    }
+
     object Home : Screen("home")
     object GoalManager : Screen("goalManager")
     object Settings : Screen("settings") {

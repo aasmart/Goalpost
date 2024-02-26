@@ -2,6 +2,14 @@ package io.aasmart.goalpost.compose
 
 import android.Manifest
 import android.os.Build
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -395,7 +403,32 @@ fun GoalpostApp(
         }
     }
 
-    NavHost(navController = navController, startDestination = Screen.Home.route) {
+    NavHost(
+        navController = navController,
+        startDestination = Screen.Home.route,
+        enterTransition = {
+            val route = targetState.destination.route ?: ""
+            if(Screen.Config.slideOutRoute.any { route.startsWith(it) }) {
+                slideInHorizontally(
+                    animationSpec = tween(150, easing = LinearEasing)
+                ) { 1000 } + fadeIn(
+                    animationSpec = tween(150, easing = LinearEasing),
+                    0.2f
+                )
+            }
+            else
+                EnterTransition.None
+        },
+        exitTransition = { ExitTransition.None },
+        popExitTransition = {
+            slideOutHorizontally(
+                animationSpec = tween(150, easing = LinearEasing)
+            ) { 1000 } + fadeOut(
+                animationSpec = tween(150, easing = LinearEasing),
+                0.2f
+            )
+        }
+    ) {
         composable(Screen.Home.route) {
             if(showReflectionDialog)
                 GoalReflectionDialog { navGoalReflection() }
