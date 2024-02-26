@@ -1,6 +1,5 @@
 package io.aasmart.goalpost.compose.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -53,19 +51,14 @@ fun Greeting(name: String = "Person") {
 @Composable
 private fun GoalCardItem(goal: Goal) {
     Column(modifier = Modifier
-        .background(
-            MaterialTheme.colorScheme.primaryContainer,
-            RoundedCornerShape(4.dp)
-        )
         .fillMaxWidth()
-        .padding(4.dp)
     ) {
         Text(
             text = goal.title,
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = MaterialTheme.typography.titleMedium.fontSize
+                color = MaterialTheme.colorScheme.secondary,
+                fontSize = MaterialTheme.typography.titleLarge .fontSize
             )
         )
         Text(text = goal.description)
@@ -116,16 +109,9 @@ fun GoalsSnippetCard(
                 return@ElevatedCard
             }
 
-            Text(
-                text = stringResource(id = R.string.current_goal_snippet),
-                color = MaterialTheme.colorScheme.onBackground,
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(4.dp)
-            )
-
             LazyColumn(
                 contentPadding = PaddingValues(4.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 items(selectedGoals) {
                     GoalCardItem(goal = it)
