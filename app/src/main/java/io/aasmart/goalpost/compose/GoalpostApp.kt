@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -213,7 +214,7 @@ fun BottomNavBar(
             FilledIconButton(
                 onClick = createGoalHandle,
                 modifier = Modifier
-                    .weight(.8f)
+                    .fillMaxHeight(1f)
                     .aspectRatio(1f)
             ) {
                 Icon(
