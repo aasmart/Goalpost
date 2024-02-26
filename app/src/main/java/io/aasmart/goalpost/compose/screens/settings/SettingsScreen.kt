@@ -50,7 +50,9 @@ private fun CategoryItem(
         Text(
             text = goalpostSetting.categoryName,
             color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.weight(2f)
+            modifier = Modifier
+                .weight(2f)
+                .padding(horizontal = 4.dp)
         )
         Icon(
             Icons.Default.KeyboardArrowRight,
