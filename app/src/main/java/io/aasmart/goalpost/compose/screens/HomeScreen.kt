@@ -22,7 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,6 +33,12 @@ import io.aasmart.goalpost.R
 import io.aasmart.goalpost.compose.GoalpostNav
 import io.aasmart.goalpost.compose.GoalpostNavScaffold
 import io.aasmart.goalpost.goals.models.Goal
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoField
+import java.time.temporal.ChronoUnit
+import java.util.Locale
 
 @Composable
 fun Greeting(name: String = "Person") {
@@ -116,7 +124,7 @@ fun GoalsSnippetCard(
             )
 
             LazyColumn(
-                contentPadding = PaddingValues(6.dp),
+                contentPadding = PaddingValues(4.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 items(selectedGoals) {
@@ -139,10 +147,52 @@ fun GoalsSnippetCard(
 }
 
 @Composable
+private fun NextReflectionCard(
+    goals: Array<Goal>,
+    goalReflectionTimeMillis: Long,
+) {
+    if(goals.isEmpty())
+        return
+
+    val nextGoalReflectionDay = goals.minOf {
+        it.reflections.filter { ref -> !ref.isCompleted }.minOf { ref -> ref.dateTimeMillis }
+    }
+    val localDateTime = Instant
+        .ofEpochMilli(nextGoalReflectionDay)
+        .atZone(ZoneId.systemDefault())
+        .with(ChronoField.MILLI_OF_DAY, 0)
+        .plus(goalReflectionTimeMillis, ChronoUnit.MILLIS)
+    val dateString =
+            "${localDateTime.month.getDisplayName(java.time.format.TextStyle.SHORT, Locale.getDefault())} " +
+            "${localDateTime.dayOfMonth}" +
+            ", ${localDateTime.year} at " +
+            localDateTime.format(DateTimeFormatter.ofPattern("hh:mm a"))
+
+    ElevatedCard(
+        modifier = Modifier
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Text(
+            text = buildAnnotatedString {
+                append(text = stringResource(id = R.string.next_scheduled_reflection))
+                append(" ")
+                pushStyle(SpanStyle(color = MaterialTheme.colorScheme.primary))
+                append(dateString)
+                append(".")
+                toAnnotatedString()
+            },
+            modifier = Modifier.padding(4.dp)
+        )
+    }
+}
+
+@Composable
 fun HomeScreen(
     goalpostNav: GoalpostNav,
     goals: Array<Goal>,
-    preferredName: String
+    preferredName: String,
+    goalReflectionTimeMillis: Long,
 ) {
     GoalpostNavScaffold(nav = goalpostNav) {
         Box(modifier = Modifier
@@ -162,6 +212,7 @@ fun HomeScreen(
                     goalpostNav.goalManager,
                     goalpostNav.createGoal
                 )
+                NextReflectionCard(goals, goalReflectionTimeMillis)
             }
         }
     }

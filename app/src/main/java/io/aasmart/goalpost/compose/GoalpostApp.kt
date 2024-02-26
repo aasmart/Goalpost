@@ -441,7 +441,8 @@ fun GoalpostApp(
             HomeScreen(
                 goalpostNav,
                 goals = goals?.toTypedArray() ?: emptyArray(),
-                preferredName = settings?.preferredName ?: ""
+                preferredName = settings?.preferredName ?: "",
+                goalReflectionTimeMillis = settings?.goalReflectionTimeMs ?: 0
             )
         }
         composable(Screen.GoalManager.route, Screen.GoalManager.args) {

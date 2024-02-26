@@ -59,6 +59,7 @@
     <string name="set_goals_reminder">It looks like you haven\'t set any goals. Consider
         pressing \"Set Goals\" to set your goals.
     </string>
+    <string name="next_scheduled_reflection">Your next goal reflection is scheduled for</string>
     <string name="time_to_reflect">Time to Reflect!</string>
     <string name="reflection_dialog">Goods news, you have goals to reflect on!</string>
     <string name="reflections_dialog_button">Go to reflections</string>
