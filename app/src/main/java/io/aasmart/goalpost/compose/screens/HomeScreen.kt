@@ -142,7 +142,8 @@ private fun NextReflectionCard(
 
     val nextGoalReflectionDay = goals.minOfOrNull {
         it.reflections.filter { ref -> !ref.isCompleted }
-            .minOf { ref -> ref.dateTimeMillis }
+            .minOfOrNull { ref -> ref.dateTimeMillis }
+            ?: return
     } ?: return
 
     val localDateTime = Instant
