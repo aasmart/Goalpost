@@ -140,9 +140,11 @@ private fun NextReflectionCard(
     if(goals.isEmpty())
         return
 
-    val nextGoalReflectionDay = goals.minOf {
-        it.reflections.filter { ref -> !ref.isCompleted }.minOf { ref -> ref.dateTimeMillis }
-    }
+    val nextGoalReflectionDay = goals.minOfOrNull {
+        it.reflections.filter { ref -> !ref.isCompleted }
+            .minOf { ref -> ref.dateTimeMillis }
+    } ?: return
+
     val localDateTime = Instant
         .ofEpochMilli(nextGoalReflectionDay)
         .atZone(ZoneId.systemDefault())
