@@ -442,7 +442,12 @@ fun GoalpostApp(
                 goalpostNav,
                 goals = goals?.toTypedArray() ?: emptyArray(),
                 preferredName = settings?.preferredName ?: "",
-                goalReflectionTimeMillis = settings?.goalReflectionTimeMs ?: 0
+                goalReflectionTimeMillis = settings?.goalReflectionTimeMs ?: 0,
+                manageGoalNav = {
+                    navController.navigate(
+                        Screen.GoalDetails.createRoute(it.id)
+                    )
+                }
             )
         }
         composable(Screen.GoalManager.route, Screen.GoalManager.args) {

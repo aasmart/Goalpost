@@ -1,5 +1,6 @@
 package io.aasmart.goalpost.compose.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,9 +50,15 @@ fun Greeting(name: String = "Person") {
 }
 
 @Composable
-private fun GoalCardItem(goal: Goal) {
+private fun GoalCardItem(
+    goal: Goal,
+    manageGoalNav: (Goal) -> Unit
+) {
     Column(modifier = Modifier
         .fillMaxWidth()
+        .clickable {
+            manageGoalNav(goal)
+        }
     ) {
         Text(
             text = goal.title,
@@ -70,7 +77,8 @@ fun GoalsSnippetCard(
     goals: Array<Goal>,
     displayNumGoals: Int = 3,
     goalManagerHandle: () -> Unit,
-    createGoalHandle: () -> Unit
+    createGoalHandle: () -> Unit,
+    manageGoalNav: (Goal) -> Unit
 ) {
     val selectedGoals = goals
         .sortedBy { it.completionDate }
@@ -114,7 +122,7 @@ fun GoalsSnippetCard(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 items(selectedGoals) {
-                    GoalCardItem(goal = it)
+                    GoalCardItem(goal = it, manageGoalNav = manageGoalNav)
                 }
 
                 item {
@@ -182,6 +190,7 @@ fun HomeScreen(
     goals: Array<Goal>,
     preferredName: String,
     goalReflectionTimeMillis: Long,
+    manageGoalNav: (Goal) -> Unit
 ) {
     GoalpostNavScaffold(nav = goalpostNav) {
         Box(modifier = Modifier
@@ -199,7 +208,8 @@ fun HomeScreen(
                     goals,
                     3,
                     goalpostNav.goalManager,
-                    goalpostNav.createGoal
+                    goalpostNav.createGoal,
+                    manageGoalNav
                 )
                 NextReflectionCard(goals, goalReflectionTimeMillis)
             }
