@@ -67,7 +67,7 @@ private fun GoalCardItem(
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.secondary,
                 fontSize = MaterialTheme.typography.titleLarge .fontSize
-            ),
+            )
         )
         Text(text = goal.description)
     }
@@ -154,7 +154,8 @@ private fun NextReflectionCard(
         !it.isCompleted()
     }.minOfOrNull {
         it.reflections.filter { ref -> !ref.isCompleted }
-            .minOf { ref -> ref.dateTimeMillis }
+            .minOfOrNull { ref -> ref.dateTimeMillis }
+            ?: Long.MAX_VALUE
     } ?: return
 
     val localDateTime = Instant
