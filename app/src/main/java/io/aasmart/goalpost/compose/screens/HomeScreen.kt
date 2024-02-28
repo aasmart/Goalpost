@@ -81,6 +81,7 @@ fun GoalsSnippetCard(
     manageGoalNav: (Goal) -> Unit
 ) {
     val selectedGoals = goals
+        .filter { !it.isCompleted() }
         .sortedBy { it.completionDate }
         .take(displayNumGoals)
 
