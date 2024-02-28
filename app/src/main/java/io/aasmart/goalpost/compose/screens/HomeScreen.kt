@@ -26,6 +26,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.aasmart.goalpost.R
@@ -66,7 +67,7 @@ private fun GoalCardItem(
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.secondary,
                 fontSize = MaterialTheme.typography.titleLarge .fontSize
-            )
+            ),
         )
         Text(text = goal.description)
     }
@@ -149,10 +150,11 @@ private fun NextReflectionCard(
     if(goals.isEmpty())
         return
 
-    val nextGoalReflectionDay = goals.minOfOrNull {
+    val nextGoalReflectionDay = goals.filter {
+        !it.isCompleted()
+    }.minOfOrNull {
         it.reflections.filter { ref -> !ref.isCompleted }
-            .minOfOrNull { ref -> ref.dateTimeMillis }
-            ?: return
+            .minOf { ref -> ref.dateTimeMillis }
     } ?: return
 
     val localDateTime = Instant
@@ -175,7 +177,10 @@ private fun NextReflectionCard(
             text = buildAnnotatedString {
                 append(text = stringResource(id = R.string.next_scheduled_reflection))
                 append(" ")
-                pushStyle(SpanStyle(color = MaterialTheme.colorScheme.primary))
+                pushStyle(SpanStyle(
+                    color = MaterialTheme.colorScheme.secondary,
+                    textDecoration = TextDecoration.Underline
+                ))
                 append(dateString)
                 append(".")
                 toAnnotatedString()
