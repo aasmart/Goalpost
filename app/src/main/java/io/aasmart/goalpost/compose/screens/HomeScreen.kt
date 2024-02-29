@@ -44,8 +44,15 @@ import java.util.Locale
 fun Greeting(name: String = "Person") {
     Column {
         Text(
-            text = "${stringResource(id = R.string.salutation)}, $name",
-            fontSize = 36.sp
+            text = buildAnnotatedString {
+                pushStyle(SpanStyle(color = MaterialTheme.colorScheme.secondary))
+                append(stringResource(id = R.string.salutation))
+                append(", ")
+                pushStyle(SpanStyle(color = MaterialTheme.colorScheme.onBackground))
+                append(name)
+                toAnnotatedString()
+            },
+            fontSize = 20.sp
         )
     }
 }
