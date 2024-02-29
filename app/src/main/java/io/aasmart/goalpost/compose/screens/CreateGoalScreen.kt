@@ -28,6 +28,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -124,7 +125,9 @@ fun CreateGoalScreen(
     reflectionTime: Long,
 ) {
     var goalName by rememberSaveable { mutableStateOf("") }
+    var goalNameDirty by rememberSaveable { mutableStateOf(false) }
     var goalDescription by rememberSaveable { mutableStateOf("") }
+    var goalDescriptionDirty by rememberSaveable { mutableStateOf(false) }
 
     val isNameValid = InputUtils.isValidLength(
         goalName.trim(),
@@ -163,9 +166,13 @@ fun CreateGoalScreen(
                 label = {
                     Text(text = stringResource(id = R.string.goal_name))
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onFocusChanged {
+                        goalNameDirty = goalNameDirty || it.hasFocus
+                    },
                 maxLines = 1,
-                isError = !isNameValid,
+                isError = !isNameValid && goalNameDirty,
                 supportingText = {
                     if(!isNameValid)
                         Text(
@@ -201,7 +208,7 @@ fun CreateGoalScreen(
                 label = {
                     Text(text = stringResource(id = R.string.goal_description))
                 },
-                isError = !isDescriptionValid,
+                isError = !isDescriptionValid && goalDescriptionDirty,
                 supportingText = {
                     if(!isDescriptionValid)
                         Text(
@@ -227,6 +234,9 @@ fun CreateGoalScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(250.dp)
+                    .onFocusChanged {
+                        goalDescriptionDirty = goalDescriptionDirty || it.hasFocus
+                    },
             )
 
             FieldHeader(

@@ -52,13 +52,14 @@
     <string name="select_date">Select date</string>
     <string name="select_completion_date">Select goal completion date</string>
 
-    <string name="view_goals">Manage Goals</string>
+    <string name="view_goals">Manage All Goals</string>
     <string name="current_goal_snippet">Here are some of your goals</string>
     <string name="salutation">Hello</string>
     <string name="set_goals">Set Goals</string>
     <string name="set_goals_reminder">It looks like you haven\'t set any goals. Consider
-        pressing \"Set Goals\" to begin creating some goals.
+        pressing \"Set Goals\" to set your goals.
     </string>
+    <string name="next_scheduled_reflection">Your next goal reflection is scheduled for</string>
     <string name="time_to_reflect">Time to Reflect!</string>
     <string name="reflection_dialog">Goods news, you have goals to reflect on!</string>
     <string name="reflections_dialog_button">Go to reflections</string>

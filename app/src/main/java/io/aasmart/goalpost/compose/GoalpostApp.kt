@@ -2,12 +2,20 @@ package io.aasmart.goalpost.compose
 
 import android.Manifest
 import android.os.Build
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -206,7 +214,7 @@ fun BottomNavBar(
             FilledIconButton(
                 onClick = createGoalHandle,
                 modifier = Modifier
-                    .weight(.8f)
+                    .fillMaxHeight(1f)
                     .aspectRatio(1f)
             ) {
                 Icon(
@@ -395,7 +403,37 @@ fun GoalpostApp(
         }
     }
 
-    NavHost(navController = navController, startDestination = Screen.Home.route) {
+    NavHost(
+        navController = navController,
+        startDestination = Screen.Home.route,
+        enterTransition = {
+            val route = targetState.destination.route ?: ""
+            if(Screen.Config.slideOutRoute.any { route.startsWith(it) }) {
+                slideInHorizontally(
+                    animationSpec = tween(150, easing = LinearEasing)
+                ) { 1000 } + fadeIn(
+                    animationSpec = tween(150, easing = LinearEasing),
+                    0.2f
+                )
+            }
+            else
+                EnterTransition.None
+        },
+        exitTransition = {
+            fadeOut(
+                animationSpec = tween(150, easing = LinearEasing),
+                0.2f
+            )
+        },
+        popExitTransition = {
+            slideOutHorizontally(
+                animationSpec = tween(150, easing = LinearEasing)
+            ) { 1000 } + fadeOut(
+                animationSpec = tween(150, easing = LinearEasing),
+                0.2f
+            )
+        }
+    ) {
         composable(Screen.Home.route) {
             if(showReflectionDialog)
                 GoalReflectionDialog { navGoalReflection() }
@@ -403,7 +441,13 @@ fun GoalpostApp(
             HomeScreen(
                 goalpostNav,
                 goals = goals?.toTypedArray() ?: emptyArray(),
-                preferredName = settings?.preferredName ?: ""
+                preferredName = settings?.preferredName ?: "",
+                goalReflectionTimeMillis = settings?.goalReflectionTimeMs ?: 0,
+                manageGoalNav = {
+                    navController.navigate(
+                        Screen.GoalDetails.createRoute(it.id)
+                    )
+                }
             )
         }
         composable(Screen.GoalManager.route, Screen.GoalManager.args) {
