@@ -96,7 +96,8 @@ private fun GoalReflectionForm(
     goalReflection: GoalReflection,
     setGoal: suspend (Context, Goal) -> Unit,
     padding: PaddingValues,
-    navBack: () -> Unit
+    navBack: () -> Unit,
+    updateIsDirty: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
@@ -142,7 +143,10 @@ private fun GoalReflectionForm(
                 )
             },
             value = workedTowardsGoalSliderValue,
-            onValueChange = { workedTowardsGoalSliderValue = it },
+            onValueChange = {
+                workedTowardsGoalSliderValue = it
+                updateIsDirty()
+            },
             valueRange = GoalReflection.SLIDER_MIN_VAL..GoalReflection.SLIDER_MAX_VAL,
             steps = 3,
             stepLabels = mapOf(
@@ -166,7 +170,10 @@ private fun GoalReflectionForm(
         )
         TextField(
             value = progressTextAnswer, 
-            onValueChange = { progressTextAnswer = it },
+            onValueChange = {
+                progressTextAnswer = it
+                updateIsDirty()
+            },
             minLines = 8,
             placeholder = {
                 Text(
@@ -193,7 +200,10 @@ private fun GoalReflectionForm(
                 )
             },
             value = canDoBetterSlideValue,
-            onValueChange = { canDoBetterSlideValue = it },
+            onValueChange = {
+                canDoBetterSlideValue = it
+                updateIsDirty()
+            },
             valueRange = GoalReflection.SLIDER_MIN_VAL..GoalReflection.SLIDER_MAX_VAL,
             steps = 3,
             stepLabels = mapOf(
@@ -217,7 +227,10 @@ private fun GoalReflectionForm(
         )
         TextField(
             value = moreToAccomplishText,
-            onValueChange = { moreToAccomplishText = it },
+            onValueChange = {
+                moreToAccomplishText = it
+                updateIsDirty()
+            },
             minLines = 8,
             placeholder = {
                 Text(
@@ -242,7 +255,10 @@ private fun GoalReflectionForm(
         )
         TextField(
             value = changesToImproveText,
-            onValueChange = { changesToImproveText = it },
+            onValueChange = {
+                changesToImproveText = it
+                updateIsDirty()
+            },
             minLines = 8,
             placeholder = {
                 Text(
@@ -269,7 +285,10 @@ private fun GoalReflectionForm(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 OutlinedButton(
-                    onClick = { completedGoal = true },
+                    onClick = {
+                        completedGoal = true
+                        updateIsDirty()
+                    },
                     shape = RoundedCornerShape(4.dp),
                     enabled = completedGoal == null || completedGoal == true,
                     colors = ButtonDefaults.outlinedButtonColors(
@@ -284,7 +303,10 @@ private fun GoalReflectionForm(
                     Text(text = stringResource(id = R.string.reflection_accomplished))
                 }
                 OutlinedButton(
-                    onClick = { completedGoal = false },
+                    onClick = {
+                        completedGoal = false
+                        updateIsDirty()
+                    },
                     shape = RoundedCornerShape(4.dp),
                     enabled = completedGoal == null || completedGoal == false,
                     colors = ButtonDefaults.outlinedButtonColors(
@@ -347,6 +369,7 @@ private fun GoalReflectionForm(
 private fun ReflectionTopAppBar(
     goal: Goal?,
     reflectionCompleted: Boolean,
+    isDirty: Boolean,
     setConfirmExitDialogVisible: () -> Unit,
     navBack: () -> Unit
 ) {
@@ -364,8 +387,12 @@ private fun ReflectionTopAppBar(
                 onClick = {
                     if(reflectionCompleted)
                         navBack()
-                    else
-                        setConfirmExitDialogVisible()
+                    else {
+                        if(!isDirty)
+                            navBack()
+                        else
+                            setConfirmExitDialogVisible()
+                    }
                 }
             ) {
                 Icon(
@@ -434,6 +461,9 @@ fun GoalReflectionScreen(
     val goals = getGoals(LocalContext.current).collectAsState(initial = null).value
     val goal = goals?.find { goal -> goal.id == goalId }
     val reflection = goal?.reflections?.find { it.id == goalReflectionId }
+    var isDirty by rememberSaveable {
+        mutableStateOf(false)
+    }
 
     var showConfirmExitDialog by remember {
         mutableStateOf(false)
@@ -448,7 +478,8 @@ fun GoalReflectionScreen(
                 goal = goal,
                 reflectionCompleted = reflection?.isCompleted == true,
                 setConfirmExitDialogVisible = { showConfirmExitDialog = true },
-                navBack = navBack
+                navBack = navBack,
+                isDirty = isDirty
             )
         }
     ) { padding ->
@@ -473,7 +504,8 @@ fun GoalReflectionScreen(
             goalReflection = reflection,
             setGoal = setGoal,
             padding = padding,
-            navBack = navBack
+            navBack = navBack,
+            updateIsDirty = { isDirty = true }
         )
     }
 }
