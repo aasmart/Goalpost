@@ -665,7 +665,10 @@ fun GoalDetailsScreen(
         ?.beginDate
         ?.plus(REMINDER_EDITING_GRACE_PERIOD_MILLIS)
         ?: 0
-    fun checkEditingEnabled() = System.currentTimeMillis() < editingEnabledUntilMillis
+    fun checkEditingEnabled(): Boolean {
+        return System.currentTimeMillis() < editingEnabledUntilMillis
+                && goal?.isCompleted() == false
+    }
 
     Scaffold(
         topBar = { DetailsTopAppBar(goal = goal, navBack = goalpostNav.up) },
