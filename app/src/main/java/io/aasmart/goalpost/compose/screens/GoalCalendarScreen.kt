@@ -14,7 +14,10 @@ import io.aasmart.goalpost.compose.GoalpostNavScaffold
 fun GoalCalendarScreen(
     goalpostNav: GoalpostNav
 ) {
-    GoalpostNavScaffold(nav = goalpostNav) {
+    GoalpostNavScaffold(
+        nav = goalpostNav,
+        currentRoute = Screen.GoalCalendar.route
+    ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier

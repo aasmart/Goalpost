@@ -139,7 +139,9 @@ fun CreateGoalScreen(
         Goal.DESCRIPTION_MIN_LENGTH
     )
 
-    GoalpostNavScaffold(nav = goalpostNav) { padding ->
+    GoalpostNavScaffold(
+        nav = goalpostNav, currentRoute = Screen.CreateGoal.route
+    ) { padding ->
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier

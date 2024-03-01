@@ -14,15 +14,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.DateRange
@@ -32,7 +30,6 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -50,6 +47,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
@@ -168,14 +166,14 @@ fun PreferredNamePrompt() {
 
 @Composable
 fun BottomNavBar(
-    homeHandle: () -> Unit,
-    goalManagerHandle: () -> Unit,
-    settingsHandle: () -> Unit,
-    goalCalendarHandle: () -> Unit,
-    createGoalHandle: () -> Unit
+    nav: GoalpostNav,
+    currentRoute: String,
 ) {
+    val focusedAlpha = 1f
+    val unfocusedAlpha = 0.7f
+
     BottomAppBar(
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
     ) {
         Row(
             modifier = Modifier.padding(4.dp),
@@ -184,10 +182,13 @@ fun BottomNavBar(
         ) {
             // Home button
             IconButton(
-                onClick = homeHandle,
+                onClick = nav.home,
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxSize(.9f),
+                    .fillMaxSize(.9f)
+                    .alpha(
+                        if(currentRoute == Screen.Home.route) focusedAlpha else unfocusedAlpha
+                    )
             ) {
                 Icon(
                     Icons.Filled.Home,
@@ -198,10 +199,13 @@ fun BottomNavBar(
 
             // Goal manager button
             IconButton(
-                onClick = goalManagerHandle,
+                onClick = nav.goalManager,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxSize(.8f)
+                    .alpha(
+                        if(currentRoute == Screen.GoalManager.route) focusedAlpha else unfocusedAlpha
+                    )
             ) {
                 Icon(
                     Icons.Filled.CheckCircle,
@@ -211,26 +215,31 @@ fun BottomNavBar(
             }
 
             // Create goal button
-            FilledIconButton(
-                onClick = createGoalHandle,
+            IconButton(
+                onClick = nav.createGoal,
                 modifier = Modifier
-                    .fillMaxHeight(1f)
-                    .aspectRatio(1f)
+                    .weight(1f)
+                    .fillMaxSize(.85f)
+                    .alpha(
+                        if(currentRoute == Screen.CreateGoal.route) focusedAlpha else unfocusedAlpha
+                    )
             ) {
                 Icon(
-                    Icons.Filled.Add,
+                    Icons.Filled.AddCircle,
                     stringResource(id = R.string.create_goal),
-                    tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.fillMaxSize()
                 )
             }
 
             // View goal schedule button
             IconButton(
-                onClick = goalCalendarHandle,
+                onClick = nav.goalCalendar,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxSize(.8f)
+                    .alpha(
+                        if(currentRoute == Screen.GoalCalendar.route) focusedAlpha else unfocusedAlpha
+                    )
             ) {
                 Icon(
                     Icons.Filled.DateRange,
@@ -241,10 +250,13 @@ fun BottomNavBar(
 
             // Settings button
             IconButton(
-                onClick = settingsHandle,
+                onClick = nav.settings,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxSize(.8f)
+                    .alpha(
+                        if(currentRoute == Screen.Settings.route) focusedAlpha else unfocusedAlpha
+                    )
             ) {
                 Icon(
                     Icons.Filled.Settings,
@@ -296,18 +308,11 @@ fun GoalReflectionDialog(
 @Composable
 fun GoalpostNavScaffold(
     nav: GoalpostNav,
+    currentRoute: String,
     content: @Composable (padding: PaddingValues) -> Unit
 ) {
     Scaffold(
-        bottomBar = {
-            BottomNavBar(
-                homeHandle = nav.home,
-                goalManagerHandle = nav.goalManager,
-                settingsHandle = nav.settings,
-                goalCalendarHandle = nav.goalCalendar,
-                createGoalHandle = nav.createGoal
-            )
-        }
+        bottomBar = { BottomNavBar(nav, currentRoute) }
     ) {
         content(it)
     }

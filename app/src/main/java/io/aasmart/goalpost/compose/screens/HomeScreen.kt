@@ -206,7 +206,10 @@ fun HomeScreen(
     goalReflectionTimeMillis: Long,
     manageGoalNav: (Goal) -> Unit
 ) {
-    GoalpostNavScaffold(nav = goalpostNav) {
+    GoalpostNavScaffold(
+        nav = goalpostNav,
+        currentRoute = Screen.Home.route
+    ) {
         Box(modifier = Modifier
             .padding(it)
             .fillMaxSize()

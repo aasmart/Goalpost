@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.aasmart.goalpost.compose.GoalpostNav
 import io.aasmart.goalpost.compose.GoalpostNavScaffold
+import io.aasmart.goalpost.compose.screens.Screen
 
 @Composable
 private fun CategoryItem(
@@ -70,7 +71,10 @@ fun SettingsScreen(
     goalpostNav: GoalpostNav
 ) {
     val categories = SettingCategory.values()
-    GoalpostNavScaffold(nav = goalpostNav) { padding ->
+    GoalpostNavScaffold(
+        nav = goalpostNav,
+        currentRoute = Screen.Settings.route
+    ) { padding ->
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(4.dp),

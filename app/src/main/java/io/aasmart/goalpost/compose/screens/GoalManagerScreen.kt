@@ -164,7 +164,10 @@ fun GoalsManager(
         mutableStateOf(false)
     }
 
-    GoalpostNavScaffold(nav = goalpostNav) { padding ->
+    GoalpostNavScaffold(
+        nav = goalpostNav,
+        currentRoute = Screen.GoalManager.route
+    ) { padding ->
         Column(
             modifier = Modifier
                 .padding(padding)
