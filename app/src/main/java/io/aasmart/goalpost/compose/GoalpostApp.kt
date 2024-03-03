@@ -366,9 +366,7 @@ fun GoalpostApp(
     }
 
     LaunchedEffect(
-        settings?.morningReminderTimeMs,
-        settings?.midDayReminderTimeMs,
-        settings?.eveningReminderTimeMs
+        settings?.reminderNotifTimesList,
     ) {
         scheduleRemindersAlarm(context)
     }

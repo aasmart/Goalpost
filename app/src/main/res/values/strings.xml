@@ -89,16 +89,13 @@
     </string>
     <string name="snooze">Snooze 15 Minutes</string>
     <string name="notification_reminder_title">
-        Time to review goals!
+        Goal Reminders
     </string>
-    <string name="notification_reminder_morning_desc">Good morning! Begin your day by
-        reviewing your goals!
+    <string name="notification_reminder_review">
+        Take some time to review your goals.
     </string>
-    <string name="notification_reminder_midday_desc">Take a quick break to look
-        over your goals.
-    </string>
-    <string name="notification_reminder_evening_desc">As the day comes to a close,
-        review your goals or set new ones!
+    <string name="notification_reminder_incomplete_reflections">
+        Take some time to finish your goal reflections as well as review your goals!
     </string>
 
     <string name="dismiss">Dismiss</string>
@@ -112,20 +109,13 @@
     <string name="reminder_time_picker">Choose Reminder Time</string>
     <string name="reminder_time">Reminder Time</string>
 
-    <string name="morning_reminder_time">Morning Reminder Time</string>
-    <string name="choose_morning_reminder_time">Choose Morning Reminder Time</string>
-    <string name="morning_reminder_description">A time, ideally in a morning
-        that you\'ll receive a reminder about your goals.
+    <string name="goal_reminder_time">Goal Reminder Time</string>
+    <string name="choose_reminder_time">Choose a Reminder Time</string>
+    <string name="goal_reminder_description">
+        A time of day at which you will receive a reminder about your goals
     </string>
-    <string name="midday_reminder_time">Mid-Day Reminder Time</string>
-    <string name="choose_midday_reminder_time">Choose Mid-Day Reminder Time</string>
-    <string name="midday_reminder_description">A time, ideally during the middle of the day
-        that you\'ll receive a reminder about your goals.
-    </string>
-    <string name="evening_reminder_time">Evening Reminder Time</string>
-    <string name="choose_evening_reminder_time">Choose Evening Reminder Time</string>
-    <string name="evening_reminder_description">A time, ideally during the evening
-        that you\'ll receive a reminder about your goals.
+    <string name="schedule_goal_reminders">
+        Schedule Goal Reminders
     </string>
 
     <string name="view">View</string>
