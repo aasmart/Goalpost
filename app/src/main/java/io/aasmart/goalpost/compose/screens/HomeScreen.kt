@@ -37,7 +37,6 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoField
-import java.time.temporal.ChronoUnit
 import java.util.Locale
 
 @Composable
@@ -157,24 +156,29 @@ private fun NextReflectionCard(
     if(goals.isEmpty())
         return
 
-    val nextGoalReflectionDay = goals.filter {
+    /*Retrieve the next reflection time of an incomplete goal's reflection that is in the future
+    * (eliminates reflections that are not completed) */
+    val nextGoalReflectionDateTime = goals.filter {
         !it.isCompleted()
-    }.minOfOrNull {
-        it.reflections.filter { ref -> !ref.isCompleted }
-            .minOfOrNull { ref -> ref.dateTimeMillis }
-            ?: Long.MAX_VALUE
+    }.minOfOrNull { goal ->
+        goal.reflections
+            .filter { ref -> !ref.isCompleted }
+            .map { ref -> Instant
+                .ofEpochMilli(ref.dateTimeMillis)
+                .atZone(ZoneId.systemDefault())
+                .with(ChronoField.MILLI_OF_DAY, goalReflectionTimeMillis)
+            }
+            .filter { dateTime ->
+                dateTime.toInstant().toEpochMilli() >= Instant.now().toEpochMilli()
+            }
+            .minOrNull() ?: Instant.ofEpochMilli(Long.MAX_VALUE).atZone(ZoneId.systemDefault())
     } ?: return
 
-    val localDateTime = Instant
-        .ofEpochMilli(nextGoalReflectionDay)
-        .atZone(ZoneId.systemDefault())
-        .with(ChronoField.MILLI_OF_DAY, 0)
-        .plus(goalReflectionTimeMillis, ChronoUnit.MILLIS)
     val dateString =
-            "${localDateTime.month.getDisplayName(java.time.format.TextStyle.SHORT, Locale.getDefault())} " +
-            "${localDateTime.dayOfMonth}" +
-            ", ${localDateTime.year} at " +
-            localDateTime.format(DateTimeFormatter.ofPattern("hh:mm a"))
+        "${nextGoalReflectionDateTime.month.getDisplayName(java.time.format.TextStyle.SHORT, Locale.getDefault())} " +
+        "${nextGoalReflectionDateTime.dayOfMonth}" +
+        ", ${nextGoalReflectionDateTime.year} at " +
+                nextGoalReflectionDateTime.format(DateTimeFormatter.ofPattern("hh:mm a"))
 
     ElevatedCard(
         modifier = Modifier
