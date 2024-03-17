@@ -32,7 +32,7 @@ object GoalReminderNotification : GoalpostNotification() {
             // If they do, change the message.
             val settings = context.settingsDataStore.data.first()
             val notificationDescription = if(settings.needsToReflect)
-                    R.string.incomplete_reflections
+                    R.string.notification_reminder_incomplete_reflections
                 else
                     R.string.notification_reflect_desc
 

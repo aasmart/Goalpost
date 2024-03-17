@@ -85,7 +85,7 @@
 
     <string name="notification_reflect_title">Time to reflect on your goals!</string>
     <string name="notification_reflect_desc">
-        Reflection on your goals is an important part of accomplishing them.
+        Reflecting on your goals is important to accomplish them.
     </string>
     <string name="snooze">Snooze 15 Minutes</string>
     <string name="notification_reminder_title">
@@ -95,7 +95,7 @@
         Take some time to review your goals.
     </string>
     <string name="notification_reminder_incomplete_reflections">
-        Take some time to finish your goal reflections as well as review your goals!
+        Take some time to finish your goal reflections and review your goals!
     </string>
 
     <string name="dismiss">Dismiss</string>
