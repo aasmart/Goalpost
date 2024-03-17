@@ -271,7 +271,7 @@ private fun GoalReflectionForm(
         )
 
         var completedGoal by remember {
-            mutableStateOf<Boolean?>(null)
+            mutableStateOf(goal.accomplishedGoal)
         }
 
         if(isFinalReflection) {
