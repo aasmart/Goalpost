@@ -121,6 +121,6 @@ data class Goal(
     }
 
     fun isCompleted(): Boolean {
-        return reflections.none{ !it.isCompleted }
+        return reflections.none{ !it.isCompleted } || accomplishedGoal != null
     }
 }
