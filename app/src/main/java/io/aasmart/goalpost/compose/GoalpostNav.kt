@@ -7,5 +7,7 @@ data class GoalpostNav(
     val settingCategory: (String) -> Unit,
     val goalCalendar: () -> Unit,
     val createGoal: () -> Unit,
+    val login: () -> Unit,
+    val signup: () -> Unit,
     val up: () -> Unit,
 )

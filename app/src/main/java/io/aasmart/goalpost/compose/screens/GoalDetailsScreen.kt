@@ -63,7 +63,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.aasmart.goalpost.R
 import io.aasmart.goalpost.compose.GoalpostNav
-import io.aasmart.goalpost.compose.LoadingWheel
+import io.aasmart.goalpost.compose.components.LoadingWheel
 import io.aasmart.goalpost.compose.components.OutlinedTextFieldDatePicker
 import io.aasmart.goalpost.compose.components.OutlinedTextFieldDropdown
 import io.aasmart.goalpost.goals.models.Goal

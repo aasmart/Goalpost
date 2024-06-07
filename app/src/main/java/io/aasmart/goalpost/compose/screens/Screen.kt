@@ -16,6 +16,10 @@ sealed class Screen(
         )
     }
 
+    object Login : Screen("login")
+    object Signup : Screen("signup")
+    object Verify : Screen("verify")
+
     object Home : Screen("home")
     object GoalManager : Screen("goalManager")
     object Settings : Screen("settings") {

@@ -10,14 +10,12 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
@@ -29,7 +27,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -55,8 +52,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogWindowProvider
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -64,6 +61,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import io.aasmart.goalpost.R
+import io.aasmart.goalpost.compose.components.LoadingWheel
 import io.aasmart.goalpost.compose.screens.CreateGoalScreen
 import io.aasmart.goalpost.compose.screens.GoalCalendarScreen
 import io.aasmart.goalpost.compose.screens.GoalDetailsScreen
@@ -72,6 +70,9 @@ import io.aasmart.goalpost.compose.screens.GoalsManager
 import io.aasmart.goalpost.compose.screens.GoalsReflectionScreen
 import io.aasmart.goalpost.compose.screens.HomeScreen
 import io.aasmart.goalpost.compose.screens.Screen
+import io.aasmart.goalpost.compose.screens.auth.LoginScreen
+import io.aasmart.goalpost.compose.screens.auth.SignupScreen
+import io.aasmart.goalpost.compose.screens.auth.VerifyScreen
 import io.aasmart.goalpost.compose.screens.settings.SettingsCategoryScreen
 import io.aasmart.goalpost.compose.screens.settings.SettingsScreen
 import io.aasmart.goalpost.compose.viewmodels.GoalpostViewModel
@@ -84,85 +85,6 @@ import io.aasmart.goalpost.utils.InputUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.Instant
-
-@Composable
-fun PreferredNamePrompt() {
-    val minNameLength = 1
-    val maxNameLength = 32
-
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-    
-    var preferredName by rememberSaveable {
-        mutableStateOf("")
-    }
-    val isNameValid = InputUtils.isValidLength(
-        preferredName.trim(), 
-        minNameLength, 
-        maxNameLength
-    )
-    
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Text(
-            text = stringResource(id = R.string.like_to_call_you)
-        )
-        OutlinedTextField(
-            value = preferredName,
-            onValueChange = { preferredName = it },
-            isError = !isNameValid,
-            label = { Text(text = stringResource(id = R.string.name)) },
-            supportingText = {
-                if(!isNameValid)
-                    Text(
-                        text = stringResource(id = R.string.between_num_characters)
-                            .replace(
-                                "{LABEL}",
-                                stringResource(id = R.string.name)
-                            )
-                            .replace(
-                                "{MIN}",
-                                Goal.NAME_MIN_LENGTH.toString()
-                            )
-                            .replace(
-                                "{MAX}",
-                                Goal.NAME_MAX_LENGTH.toString()
-                            )
-                    )
-                else
-                    Text(
-                        text = stringResource(id = R.string.num_characters)
-                            .replace(
-                                "{NUM_CHARACTERS}",
-                                "${preferredName.trim().length}/${Goal.NAME_MAX_LENGTH}"
-                            )
-                    )
-            },
-            modifier = Modifier.fillMaxWidth(.95f)
-        )
-
-        val updateName = suspend {
-             context.settingsDataStore.updateData {
-                 it.toBuilder().setPreferredName(preferredName).build()
-             }
-        }
-
-        OutlinedButton(
-            onClick = {
-                coroutineScope.launch { updateName() }
-            },
-            enabled = isNameValid,
-            shape = RoundedCornerShape(4.dp)
-        ) {
-            Text(
-                text = "${stringResource(id = R.string.submit)} ${stringResource(id = R.string.name)}"
-            )
-        }
-    }
-}
 
 @Composable
 fun BottomNavBar(
@@ -187,7 +109,7 @@ fun BottomNavBar(
                     .weight(1f)
                     .fillMaxSize(.9f)
                     .alpha(
-                        if(currentRoute == Screen.Home.route) focusedAlpha else unfocusedAlpha
+                        if (currentRoute == Screen.Home.route) focusedAlpha else unfocusedAlpha
                     )
             ) {
                 Icon(
@@ -204,7 +126,7 @@ fun BottomNavBar(
                     .weight(1f)
                     .fillMaxSize(.8f)
                     .alpha(
-                        if(currentRoute == Screen.GoalManager.route) focusedAlpha else unfocusedAlpha
+                        if (currentRoute == Screen.GoalManager.route) focusedAlpha else unfocusedAlpha
                     )
             ) {
                 Icon(
@@ -221,7 +143,7 @@ fun BottomNavBar(
                     .weight(1f)
                     .fillMaxSize(.85f)
                     .alpha(
-                        if(currentRoute == Screen.CreateGoal.route) focusedAlpha else unfocusedAlpha
+                        if (currentRoute == Screen.CreateGoal.route) focusedAlpha else unfocusedAlpha
                     )
             ) {
                 Icon(
@@ -238,7 +160,7 @@ fun BottomNavBar(
                     .weight(1f)
                     .fillMaxSize(.8f)
                     .alpha(
-                        if(currentRoute == Screen.GoalCalendar.route) focusedAlpha else unfocusedAlpha
+                        if (currentRoute == Screen.GoalCalendar.route) focusedAlpha else unfocusedAlpha
                     )
             ) {
                 Icon(
@@ -255,7 +177,7 @@ fun BottomNavBar(
                     .weight(1f)
                     .fillMaxSize(.8f)
                     .alpha(
-                        if(currentRoute == Screen.Settings.route) focusedAlpha else unfocusedAlpha
+                        if (currentRoute == Screen.Settings.route) focusedAlpha else unfocusedAlpha
                     )
             ) {
                 Icon(
@@ -319,31 +241,14 @@ fun GoalpostNavScaffold(
 }
 
 @Composable
-fun LoadingWheel() {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        CircularProgressIndicator(
-            modifier = Modifier.width(48.dp),
-            color = MaterialTheme.colorScheme.secondary,
-            trackColor = MaterialTheme.colorScheme.surfaceVariant,
-        )
-    }
-}
-
-@Composable
 fun GoalpostApp(
     navController: NavHostController,
-    appViewModel: GoalpostViewModel = viewModel()
+    appViewModel: GoalpostViewModel = hiltViewModel()
 ) {
-    CheckPermissions()
-
     val context = LocalContext.current
+    val state = appViewModel.state
 
-    val goals by appViewModel
-        .getGoals(context)
-        .collectAsStateWithLifecycle(initialValue = null)
+    CheckPermissions()
 
     val goalpostNav = GoalpostNav(
         home = { navController.navigate(Screen.Home.route) },
@@ -352,23 +257,29 @@ fun GoalpostApp(
         goalManager = { navController.navigate(Screen.GoalManager.route) },
         createGoal = { navController.navigate(Screen.CreateGoal.route) },
         goalCalendar = { navController.navigate(Screen.GoalCalendar.route) },
+        login = { navController.navigate(Screen.Login.route) },
+        signup = { navController.navigate(Screen.Signup.route) },
         up = { navController.navigateUp() }
     )
+
+    val goals by appViewModel
+        .getGoals(context)
+        .collectAsStateWithLifecycle(initialValue = null)
 
     // Reflection dialog stuff
     val settings by context.settingsDataStore.data.collectAsStateWithLifecycle(initialValue = null)
     val showReflectionDialog = settings?.needsToReflect == true
     val navGoalReflection = { navController.navigate(Screen.GoalReflections.route) }
 
-    if(settings == null || goals == null) {
+    if(settings == null || goals == null || state.isLoading) {
         LoadingWheel()
         return
     }
 
-    if(settings?.preferredName?.isEmpty() == true) {
-        PreferredNamePrompt()
-        return
-    }
+    //if(settings?.preferredName?.isEmpty() == true) {
+    //    PreferredNamePrompt()
+    //    return
+    //}
 
     LaunchedEffect(
         settings?.reminderNotifTimesList,
@@ -408,7 +319,7 @@ fun GoalpostApp(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route,
+        startDestination = Screen.Verify.route,
         enterTransition = {
             val route = targetState.destination.route ?: ""
             if(Screen.Config.slideOutRoute.any { route.startsWith(it) }) {
@@ -437,6 +348,21 @@ fun GoalpostApp(
             )
         }
     ) {
+        composable(Screen.Verify.route) {
+            VerifyScreen(
+                goalpostNav = goalpostNav
+            )
+        }
+        composable(Screen.Login.route) {
+            LoginScreen(
+                goalpostNav = goalpostNav
+            )
+        }
+        composable(Screen.Signup.route) {
+            SignupScreen(
+                goalpostNav = goalpostNav
+            )
+        }
         composable(Screen.Home.route) {
             if(showReflectionDialog)
                 GoalReflectionDialog { navGoalReflection() }
@@ -444,7 +370,7 @@ fun GoalpostApp(
             HomeScreen(
                 goalpostNav,
                 goals = goals?.toTypedArray() ?: emptyArray(),
-                preferredName = settings?.preferredName ?: "",
+                preferredName = appViewModel.getFirstName(),
                 goalReflectionTimeMillis = settings?.goalReflectionTimeMs ?: 0,
                 manageGoalNav = {
                     navController.navigate(
